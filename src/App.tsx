@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AdminPage from './pages/AdminPage';
 import TopBar from './components/TopBar';
 import MainTabs from './components/MainTabs';
 import BottomNav from './components/BottomNav';
@@ -70,6 +71,7 @@ type MyMenuKey =
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('bazar_logged_in') === 'true');
   const [loggedInUserName, setLoggedInUserName] = useState(() => localStorage.getItem('bazar_user_name') || '');
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('bazar_is_admin') === 'true');
   const [authScreen, setAuthScreen] = useState<AuthScreen>(() =>
     localStorage.getItem('bazar_logged_in') === 'true' ? null : 'login'
   );
@@ -113,19 +115,23 @@ const App: React.FC = () => {
     }
   };
 
-  const login = (name?: string) => { 
+  const login = (name?: string, admin?: boolean) => { 
     const userName = name || '사용자';
     localStorage.setItem('bazar_logged_in', 'true'); 
     localStorage.setItem('bazar_user_name', userName);
+    if (admin) localStorage.setItem('bazar_is_admin', 'true');
     setIsLoggedIn(true); 
     setLoggedInUserName(userName);
+    setIsAdmin(!!admin);
     setIsGuest(false); setAuthScreen(null); setScreen({ type: 'home' }); setNavTab('home'); 
   };
   const logout = () => { 
     localStorage.removeItem('bazar_logged_in'); 
     localStorage.removeItem('bazar_user_name');
+    localStorage.removeItem('bazar_is_admin');
     setIsLoggedIn(false); 
     setLoggedInUserName('');
+    setIsAdmin(false);
     setIsGuest(false); setAuthScreen('login'); 
   };
 
@@ -181,6 +187,11 @@ const App: React.FC = () => {
         />
       </ToastProvider>
     );
+  }
+
+  // 관리자 페이지
+  if (isLoggedIn && isAdmin) {
+    return <AdminPage onLogout={logout} />;
   }
 
   const goHome = () => { setScreen({ type: 'home' }); setNavTab('home'); setFormDirty(false); setEditingProduct(null); };

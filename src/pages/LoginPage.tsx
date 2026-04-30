@@ -3,7 +3,7 @@ import styles from './LoginPage.module.css';
 import { useToast } from '../components/Toast';
 
 interface Props {
-  onLogin: (name?: string) => void;
+  onLogin: (name?: string, admin?: boolean) => void;
   onGoSignup: () => void;
   onFindAccount: (tab?: 'id' | 'pw') => void;
   onGuest?: () => void;
@@ -24,10 +24,14 @@ const LoginPage: React.FC<Props> = ({ onLogin, onGoSignup, onFindAccount, onGues
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('이메일 형식이 올바르지 않아요'); return; }
 
     setLoading(true);
-    // 실제 API 연동 전 임시 딜레이
     await new Promise((r) => setTimeout(r, 800));
     setLoading(false);
-    onLogin(email.split('@')[0]);
+    // 관리자 계정 감지
+    if (email === 'admin@bazar.kr' && password === 'admin1234') {
+      onLogin('관리자', true);
+    } else {
+      onLogin(email.split('@')[0]);
+    }
   };
 
   const handleSocial = (provider: string) => {
