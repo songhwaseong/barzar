@@ -1,0 +1,155 @@
+import React, { useState } from 'react';
+import { PRODUCT_DETAILS } from '../data/mockData';
+import styles from './ProductDetailPage.module.css';
+import View360Modal from '../components/View360Modal';
+
+interface Props {
+  productId: number;
+  onBack: () => void;
+  onSellerClick?: (seller: { name: string; temp: number; sales: number; location: string }) => void;
+  onAuctionClick?: () => void;
+  onChatClick?: () => void;
+}
+
+const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }) => {
+  const item = PRODUCT_DETAILS.find((p) => p.id === productId) ?? PRODUCT_DETAILS[0];
+  const [liked, setLiked] = useState(item.liked);
+  const [likeCount, setLikeCount] = useState(item.likeCount);
+  const [activeImg, setActiveImg] = useState(0);
+  const [show360, setShow360] = useState(false);
+
+  const TAG_LABEL: Record<string, string> = {
+    new: '거의새것', auction: '경매가능', free: '나눔', good: '상태양호',
+  };
+
+  return (
+    <>
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <button className={styles.back} onClick={onBack}>
+          <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+        </button>
+        <span className={styles.headerTitle}>상품 상세</span>
+        <div style={{ width: 20 }} />
+      </div>
+
+      <div className={styles.scroll}>
+        <div className={styles.twoCol}>
+
+          {/* ── 왼쪽: 이미지 ── */}
+          <div className={styles.imgArea}>
+            <div className={styles.mainImg}>
+              <img src={item.images[activeImg] ?? item.image} alt={item.name} className={styles.mainImgEl} />
+              <span className={styles.conditionBadge}>{item.condition}</span>
+              <button className={styles.btn360} onClick={() => setShow360(true)}>
+                <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0118.8-4.3M22 12.5a10 10 0 01-18.8 4.2"/>
+                </svg>
+                360°
+              </button>
+            </div>
+            <div className={styles.thumbRow}>
+              {item.images.map((img, i) => (
+                <button
+                  key={i}
+                  className={`${styles.thumb} ${activeImg === i ? styles.thumbActive : ''}`}
+                  onClick={() => setActiveImg(i)}
+                >
+                  <img src={img} alt="" className={styles.thumbImg} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* ── 오른쪽: 정보 ── */}
+          <div className={styles.rightCol}>
+
+            {/* 브레드크럼 */}
+            <div className={styles.breadcrumb}>
+              <span>홈</span>
+              <span>›</span>
+              <span>중고거래</span>
+              <span>›</span>
+              <strong>{item.category ?? '전자기기'}</strong>
+            </div>
+
+            {/* 상품명 + 좋아요 */}
+            <div className={styles.nameRow}>
+              <h1 className={styles.name}>{item.name}</h1>
+              <button className={styles.likeBtn} onClick={() => { setLiked(p => !p); setLikeCount(p => liked ? p - 1 : p + 1); }}>
+                <span className={styles.likeHeart}>{liked ? '❤️' : '🤍'}</span>
+                <span className={styles.likeCnt}>{likeCount}</span>
+              </button>
+            </div>
+
+            {/* 가격 */}
+            <p className={styles.price}>₩ {item.price.toLocaleString()}</p>
+            <p className={styles.meta}>{item.location} · {item.timeAgo}</p>
+
+            {/* 태그 */}
+            <div className={styles.tagRow}>
+              {item.tags.filter(tag => tag !== 'free' && tag !== 'auction').map((tag) => (
+                <span key={tag} className={`${styles.tag} ${styles[tag]}`}>{TAG_LABEL[tag]}</span>
+              ))}
+            </div>
+
+
+            {/* 상품 상태 */}
+            <div className={styles.conditionRow}>
+              <span className={styles.conditionRowLabel}>상품 상태</span>
+              <span className={styles.conditionRowValue}>{item.condition}</span>
+            </div>
+
+            {/* 판매자 */}
+            <div className={styles.sellerRow}>
+              <div className={styles.sellerAvatar}>😊</div>
+              <div className={styles.sellerInfo}>
+                <p className={styles.sellerName}>{item.seller}</p>
+                <div className={styles.sellerMeta}>
+                  <span className={styles.sellerTemp}>🌡 {item.sellerTemp}°C</span>
+                  <span className={styles.sellerSales}>거래 {item.sellerSales}회</span>
+                  <span className={styles.sellerLoc}>📍 {item.location}</span>
+                </div>
+              </div>
+              <button className={styles.profileBtn} onClick={() => onSellerClick?.({ name: item.seller, temp: item.sellerTemp, sales: item.sellerSales, location: item.location })}>프로필</button>
+            </div>
+
+            <div className={styles.divider} />
+
+            {/* 상품 설명 */}
+            <div className={styles.section}>
+              <p className={styles.sectionTitle}>상품 설명</p>
+              <p className={styles.description}>{item.description}</p>
+            </div>
+
+            <div className={styles.divider} />
+
+            {/* 거래 정보 */}
+            <div className={styles.section}>
+              <p className={styles.sectionTitle}>거래 정보</p>
+              <div className={styles.infoGrid}>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>상태</span><span className={styles.infoValue}>{item.condition}</span></div>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>지역</span><span className={styles.infoValue}>{item.location}</span></div>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>관심</span><span className={styles.infoValue}>{likeCount}명</span></div>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>경매 예정일</span><span className={styles.infoValue}>{item.auctionDate ?? '미정'}</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {show360 && (
+      <View360Modal
+        images={item.images}
+        productName={item.name}
+        onClose={() => setShow360(false)}
+      />
+    )}
+  </>
+  );
+};
+
+export default ProductDetailPage;

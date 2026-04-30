@@ -1,0 +1,80 @@
+.wrapper {
+  padding: 14px 16px 0;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: none;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7080;
+  transition: all 0.15s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.iconSelected {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(226,75,74,0.15);
+}
+
+.chip:active .icon {
+  transform: scale(0.92);
+}
+
+.label {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.labelSelected {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.chipSelected .icon {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.subTags {
+  font-size: 9px;
+  color: var(--muted);
+  white-space: nowrap;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  margin-top: -2px;
+}
