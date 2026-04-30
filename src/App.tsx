@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import AdminPage from './pages/AdminPage';
 import TopBar from './components/TopBar';
 import MainTabs from './components/MainTabs';
 import BottomNav from './components/BottomNav';
@@ -44,6 +43,7 @@ import PCLayout from './components/PCLayout';
 import { ToastProvider } from './components/Toast';
 import LeaveConfirmModal from './components/LeaveConfirmModal';
 import AlertModal from './components/AlertModal';
+import AdminPage from './pages/admin/AdminPage';
 import './styles/global.css';
 
 type AuthScreen = 'login' | 'signup' | 'find-id' | 'find-pw' | null;
@@ -69,9 +69,9 @@ type MyMenuKey =
   | '자주 묻는 질문' | '고객센터' | '이용약관' | '이용 가이드' | '내 등록 상품';
 
 const App: React.FC = () => {
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('bazar_is_admin') === 'true');
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('bazar_logged_in') === 'true');
   const [loggedInUserName, setLoggedInUserName] = useState(() => localStorage.getItem('bazar_user_name') || '');
-  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('bazar_is_admin') === 'true');
   const [authScreen, setAuthScreen] = useState<AuthScreen>(() =>
     localStorage.getItem('bazar_logged_in') === 'true' ? null : 'login'
   );
@@ -115,24 +115,31 @@ const App: React.FC = () => {
     }
   };
 
-  const login = (name?: string, admin?: boolean) => { 
-    const userName = name || '사용자';
-    localStorage.setItem('bazar_logged_in', 'true'); 
-    localStorage.setItem('bazar_user_name', userName);
-    if (admin) localStorage.setItem('bazar_is_admin', 'true');
-    setIsLoggedIn(true); 
-    setLoggedInUserName(userName);
-    setIsAdmin(!!admin);
-    setIsGuest(false); setAuthScreen(null); setScreen({ type: 'home' }); setNavTab('home'); 
+  const loginAsAdmin = () => {
+    localStorage.setItem('bazar_is_admin', 'true');
+    setIsAdmin(true);
+    setIsGuest(false);
+    setAuthScreen(null);
   };
-  const logout = () => { 
-    localStorage.removeItem('bazar_logged_in'); 
-    localStorage.removeItem('bazar_user_name');
+  const logoutAdmin = () => {
     localStorage.removeItem('bazar_is_admin');
-    setIsLoggedIn(false); 
-    setLoggedInUserName('');
     setIsAdmin(false);
-    setIsGuest(false); setAuthScreen('login'); 
+    setAuthScreen('login');
+  };
+  const login = (name?: string) => {
+    const userName = name || '사용자';
+    localStorage.setItem('bazar_logged_in', 'true');
+    localStorage.setItem('bazar_user_name', userName);
+    setIsLoggedIn(true);
+    setLoggedInUserName(userName);
+    setIsGuest(false); setAuthScreen(null); setScreen({ type: 'home' }); setNavTab('home');
+  };
+  const logout = () => {
+    localStorage.removeItem('bazar_logged_in');
+    localStorage.removeItem('bazar_user_name');
+    setIsLoggedIn(false);
+    setLoggedInUserName('');
+    setIsGuest(false); setAuthScreen('login');
   };
 
   // 로그인 필요 기능 접근 시 알럿
@@ -169,6 +176,11 @@ const App: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // 관리자 화면
+  if (isAdmin) {
+    return <ToastProvider><AdminPage onLogout={logoutAdmin} /></ToastProvider>;
+  }
+
   // 로그인 전
   if (!isLoggedIn && !isGuest) {
     if (authScreen === 'signup') {
@@ -181,17 +193,13 @@ const App: React.FC = () => {
       <ToastProvider>
         <LoginPage
           onLogin={login}
+          onAdmin={loginAsAdmin}
           onGoSignup={() => setAuthScreen('signup')}
           onFindAccount={(tab) => setAuthScreen(tab === 'pw' ? 'find-pw' : 'find-id')}
           onGuest={() => { setIsGuest(true); setScreen({ type: 'home' }); setNavTab('home'); }}
         />
       </ToastProvider>
     );
-  }
-
-  // 관리자 페이지
-  if (isLoggedIn && isAdmin) {
-    return <AdminPage onLogout={logout} />;
   }
 
   const goHome = () => { setScreen({ type: 'home' }); setNavTab('home'); setFormDirty(false); setEditingProduct(null); };

@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import styles from './LoginPage.module.css';
 import { useToast } from '../components/Toast';
 
+const ADMIN_EMAIL = 'admin@bazar.kr';
+const ADMIN_PASSWORD = 'admin1234';
+
 interface Props {
-  onLogin: (name?: string, admin?: boolean) => void;
+  onLogin: (name?: string) => void;
+  onAdmin: () => void;
   onGoSignup: () => void;
   onFindAccount: (tab?: 'id' | 'pw') => void;
   onGuest?: () => void;
 }
 
-const LoginPage: React.FC<Props> = ({ onLogin, onGoSignup, onFindAccount, onGuest }) => {
+const LoginPage: React.FC<Props> = ({ onLogin, onAdmin, onGoSignup, onFindAccount, onGuest }) => {
   const { showToast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,12 +30,12 @@ const LoginPage: React.FC<Props> = ({ onLogin, onGoSignup, onFindAccount, onGues
     setLoading(true);
     await new Promise((r) => setTimeout(r, 800));
     setLoading(false);
-    // 관리자 계정 감지
-    if (email === 'admin@bazar.kr' && password === 'admin1234') {
-      onLogin('관리자', true);
-    } else {
-      onLogin(email.split('@')[0]);
+
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      onAdmin();
+      return;
     }
+    onLogin(email.split('@')[0]);
   };
 
   const handleSocial = (provider: string) => {
