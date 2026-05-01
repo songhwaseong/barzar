@@ -1,0 +1,205 @@
+import React, { useState, useMemo } from 'react';
+import s from './admin.module.css';
+
+interface Settlement {
+  id: number;
+  seller: string;
+  productName: string;
+  type: '중고거래' | '경매';
+  saleAmount: number;
+  feeRate: number;
+  feeAmount: number;
+  netAmount: number;
+  status: '정산완료' | '정산대기' | '보류';
+  transactionDate: string;
+  settlementDate?: string;
+}
+
+interface FeeRule {
+  id: number;
+  type: '중고거래' | '경매';
+  category: string;
+  feeRate: number;
+  minFee: number;
+}
+
+const INITIAL_SETTLEMENTS: Settlement[] = [
+  { id: 1,  seller: '임채원',   productName: '캐논 EOS R6',            type: '중고거래', saleAmount: 2650000, feeRate: 3.5, feeAmount: 92750,  netAmount: 2557250, status: '정산완료', transactionDate: '2026.04.22', settlementDate: '2026.04.24' },
+  { id: 2,  seller: '임채원',   productName: '로랜드 피아노',           type: '중고거래', saleAmount: 1650000, feeRate: 3.5, feeAmount: 57750,  netAmount: 1592250, status: '정산완료', transactionDate: '2026.04.18', settlementDate: '2026.04.20' },
+  { id: 3,  seller: '김철수',   productName: '나이키 조던 1',           type: '중고거래', saleAmount: 320000,  feeRate: 3.5, feeAmount: 11200,  netAmount: 308800,  status: '정산완료', transactionDate: '2026.04.20', settlementDate: '2026.04.22' },
+  { id: 4,  seller: '운동화마니아', productName: '나이키 x 오프화이트 에어포스1', type: '경매', saleAmount: 980000, feeRate: 5.0, feeAmount: 49000, netAmount: 931000, status: '정산대기', transactionDate: '2026.04.27' },
+  { id: 5,  seller: '워치컬렉터', productName: 'AP 로얄오크 41mm',      type: '경매', saleAmount: 35000000, feeRate: 5.0, feeAmount: 1750000, netAmount: 33250000, status: '정산대기', transactionDate: '2026.04.26' },
+  { id: 6,  seller: '코딩러버',  productName: '맥북 프로 M3 Pro 16인치', type: '경매', saleAmount: 2800000, feeRate: 5.0, feeAmount: 140000, netAmount: 2660000, status: '보류',    transactionDate: '2026.04.25' },
+  { id: 7,  seller: '패션킹',    productName: '구찌 GG 마몽 숄더백',    type: '중고거래', saleAmount: 1250000, feeRate: 3.5, feeAmount: 43750,  netAmount: 1206250, status: '정산완료', transactionDate: '2026.04.23', settlementDate: '2026.04.25' },
+  { id: 8,  seller: '뷰티러버',  productName: 'SK-II 파테르나 크림',    type: '중고거래', saleAmount: 320000,  feeRate: 3.5, feeAmount: 11200,  netAmount: 308800,  status: '정산대기', transactionDate: '2026.04.28' },
+];
+
+const INITIAL_FEE_RULES: FeeRule[] = [
+  { id: 1, type: '중고거래', category: '전체',      feeRate: 3.5, minFee: 500  },
+  { id: 2, type: '경매',     category: '전체',      feeRate: 5.0, minFee: 1000 },
+  { id: 3, type: '중고거래', category: '명품',       feeRate: 4.0, minFee: 2000 },
+  { id: 4, type: '경매',     category: '시계/주얼리', feeRate: 5.5, minFee: 5000 },
+];
+
+const SettlementPage: React.FC = () => {
+  const [tab, setTab] = useState<'settlement' | 'fee'>('settlement');
+  const [settlements, setSettlements] = useState<Settlement[]>(INITIAL_SETTLEMENTS);
+  const [feeRules, setFeeRules] = useState<FeeRule[]>(INITIAL_FEE_RULES);
+  const [filterStatus, setFilterStatus] = useState('전체');
+  const [filterType, setFilterType] = useState('전체');
+  const [editFee, setEditFee] = useState<FeeRule | null>(null);
+
+  const filtered = useMemo(() => settlements.filter(t => {
+    if (filterStatus !== '전체' && t.status !== filterStatus) return false;
+    if (filterType !== '전체' && t.type !== filterType) return false;
+    return true;
+  }), [settlements, filterStatus, filterType]);
+
+  const summary = useMemo(() => ({
+    totalSale:    settlements.reduce((acc, t) => acc + t.saleAmount, 0),
+    totalFee:     settlements.reduce((acc, t) => acc + t.feeAmount, 0),
+    totalNet:     settlements.reduce((acc, t) => acc + t.netAmount, 0),
+    pendingCount: settlements.filter(t => t.status === '정산대기').length,
+  }), [settlements]);
+
+  const processSettlement = (id: number) => {
+    setSettlements(prev => prev.map(t => t.id === id ? { ...t, status: '정산완료', settlementDate: '2026.05.01' } : t));
+  };
+
+  const holdSettlement = (id: number) => {
+    setSettlements(prev => prev.map(t => t.id === id ? { ...t, status: '보류' } : t));
+  };
+
+  const statusColor: Record<Settlement['status'], string> = {
+    '정산완료': '#2E7D32', '정산대기': '#E65C00', '보류': '#C62828',
+  };
+  const statusBg: Record<Settlement['status'], string> = {
+    '정산완료': '#EAF7EC', '정산대기': '#FFF3E0', '보류': '#FDEEED',
+  };
+  const typeColor = { '중고거래': '#3B6D11', '경매': '#E65C00' };
+  const typeBg   = { '중고거래': '#EAF3DE', '경매': '#FFF3E0' };
+
+  return (
+    <div className={s.page}>
+      <div className={s.header}>
+        <div className={s.title}>정산 / 수수료 관리</div>
+        <div className={s.subtitle}>거래 정산 현황과 수수료 정책을 관리합니다.</div>
+      </div>
+
+      {/* 요약 카드 */}
+      <div className={s.statRow}>
+        <div className={s.statCard}>
+          <div className={s.statNum}>{(summary.totalSale / 10000).toLocaleString()}<span style={{ fontSize: 14 }}>만원</span></div>
+          <div className={s.statLabel}>총 거래금액</div>
+        </div>
+        <div className={s.statCard}>
+          <div className={`${s.statNum} ${s.statNumAmber}`}>{(summary.totalFee / 10000).toLocaleString()}<span style={{ fontSize: 14 }}>만원</span></div>
+          <div className={s.statLabel}>총 수수료 수익</div>
+        </div>
+        <div className={s.statCard}>
+          <div className={`${s.statNum} ${s.statNumGreen}`}>{(summary.totalNet / 10000).toLocaleString()}<span style={{ fontSize: 14 }}>만원</span></div>
+          <div className={s.statLabel}>총 정산 금액</div>
+        </div>
+        <div className={s.statCard}>
+          <div className={`${s.statNum} ${s.statNumRed}`}>{summary.pendingCount}<span style={{ fontSize: 14 }}>건</span></div>
+          <div className={s.statLabel}>정산 대기</div>
+        </div>
+      </div>
+
+      {/* 탭 */}
+      <div style={{ display: 'flex', gap: 4, marginBottom: 16, borderBottom: '2px solid #E8E8EF' }}>
+        {(['settlement', 'fee'] as const).map(t => (
+          <button key={t} onClick={() => setTab(t)} style={{ padding: '10px 20px', fontWeight: tab === t ? 700 : 500, fontSize: 14, color: tab === t ? '#E24B4A' : '#8B8FA8', background: 'none', border: 'none', borderBottom: tab === t ? '2px solid #E24B4A' : '2px solid transparent', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', marginBottom: -2 }}>
+            {t === 'settlement' ? '💰 정산 내역' : '⚙️ 수수료 정책'}
+          </button>
+        ))}
+      </div>
+
+      {/* 정산 내역 탭 */}
+      {tab === 'settlement' && (
+        <>
+          <div className={s.filterRow}>
+            {['전체', '정산완료', '정산대기', '보류'].map(v => (
+              <button key={v} className={`${s.filterBtn} ${filterStatus === v ? s.filterActive : ''}`} onClick={() => setFilterStatus(v)}>{v}</button>
+            ))}
+            <div style={{ width: 1, background: '#E8E8EF', margin: '0 4px' }} />
+            {['전체', '중고거래', '경매'].map(v => (
+              <button key={v} className={`${s.filterBtn} ${filterType === v ? s.filterActive : ''}`} onClick={() => setFilterType(v)}>{v}</button>
+            ))}
+            <span style={{ fontSize: 13, color: '#8B8FA8', marginLeft: 'auto' }}>총 {filtered.length}건</span>
+          </div>
+          <table className={s.table}>
+            <thead>
+              <tr><th>유형</th><th>판매자</th><th>상품</th><th>거래금액</th><th>수수료</th><th>정산금액</th><th>상태</th><th>거래일</th><th>관리</th></tr>
+            </thead>
+            <tbody>
+              {filtered.map(t => (
+                <tr key={t.id}>
+                  <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: typeBg[t.type], color: typeColor[t.type] }}>{t.type}</span></td>
+                  <td style={{ fontWeight: 600 }}>{t.seller}</td>
+                  <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.productName}</td>
+                  <td>₩{t.saleAmount.toLocaleString()}</td>
+                  <td style={{ color: '#E65C00', fontWeight: 600 }}>₩{t.feeAmount.toLocaleString()}<span style={{ fontSize: 11, color: '#8B8FA8', marginLeft: 2 }}>({t.feeRate}%)</span></td>
+                  <td style={{ fontWeight: 700 }}>₩{t.netAmount.toLocaleString()}</td>
+                  <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: statusBg[t.status], color: statusColor[t.status] }}>{t.status}</span></td>
+                  <td style={{ fontSize: 12, color: '#8B8FA8' }}>{t.transactionDate}</td>
+                  <td>
+                    {t.status === '정산대기' && <button className={s.actionBtn} style={{ color: '#2E7D32', borderColor: '#2E7D32' }} onClick={() => processSettlement(t.id)}>정산처리</button>}
+                    {t.status === '정산대기' && <button className={`${s.actionBtn} ${s.actionBtnDanger}`} onClick={() => holdSettlement(t.id)}>보류</button>}
+                    {t.status === '보류' && <button className={s.actionBtn} onClick={() => processSettlement(t.id)}>정산처리</button>}
+                    {t.status === '정산완료' && <span style={{ fontSize: 12, color: '#8B8FA8' }}>{t.settlementDate}</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {/* 수수료 정책 탭 */}
+      {tab === 'fee' && (
+        <>
+          <table className={s.table}>
+            <thead>
+              <tr><th>거래 유형</th><th>카테고리</th><th>수수료율</th><th>최소 수수료</th><th>관리</th></tr>
+            </thead>
+            <tbody>
+              {feeRules.map(r => (
+                <tr key={r.id}>
+                  <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: typeBg[r.type], color: typeColor[r.type] }}>{r.type}</span></td>
+                  <td style={{ fontWeight: 600 }}>{r.category}</td>
+                  <td>
+                    {editFee?.id === r.id
+                      ? <input type="number" step="0.1" style={{ width: 80, padding: '4px 8px', border: '1px solid #E0E0E0', borderRadius: 6, fontSize: 13 }} value={editFee.feeRate} onChange={e => setEditFee(p => p ? { ...p, feeRate: parseFloat(e.target.value) } : null)} />
+                      : <span style={{ fontWeight: 700, color: '#E65C00' }}>{r.feeRate}%</span>
+                    }
+                  </td>
+                  <td>
+                    {editFee?.id === r.id
+                      ? <input type="number" step="100" style={{ width: 100, padding: '4px 8px', border: '1px solid #E0E0E0', borderRadius: 6, fontSize: 13 }} value={editFee.minFee} onChange={e => setEditFee(p => p ? { ...p, minFee: parseInt(e.target.value) } : null)} />
+                      : `₩${r.minFee.toLocaleString()}`
+                    }
+                  </td>
+                  <td>
+                    {editFee?.id === r.id
+                      ? <>
+                          <button className={s.actionBtnPrimary} style={{ padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', marginRight: 4 }} onClick={() => { setFeeRules(prev => prev.map(f => f.id === r.id ? { ...f, feeRate: editFee.feeRate, minFee: editFee.minFee } : f)); setEditFee(null); }}>저장</button>
+                          <button className={s.actionBtn} onClick={() => setEditFee(null)}>취소</button>
+                        </>
+                      : <button className={s.actionBtn} onClick={() => setEditFee({ ...r })}>수정</button>
+                    }
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ marginTop: 12, padding: 14, background: '#FFF8E1', borderRadius: 10, fontSize: 13, color: '#856404', lineHeight: 1.6 }}>
+            ⚠️ 수수료 변경사항은 변경 이후 체결되는 거래부터 적용됩니다. 진행 중인 경매 및 기존 거래에는 영향을 미치지 않습니다.
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default SettlementPage;

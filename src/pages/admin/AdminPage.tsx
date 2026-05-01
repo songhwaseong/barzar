@@ -3,6 +3,11 @@ import { PRODUCTS, AUCTION_ITEMS } from '../../data/mockData';
 import { myProductStore } from '../../data/myProductStore';
 import { REPORTS } from '../../data/adminData';
 import { MEMBERS } from '../../data/memberData';
+import DashboardPage from './DashboardPage';
+import NoticePage from './NoticePage';
+import BannerPage from './BannerPage';
+import SettlementPage from './SettlementPage';
+import InquiryPage from './InquiryPage';
 import ReportListPage from './ReportListPage';
 import SuspiciousPage from './SuspiciousPage';
 import SanctionPage from './SanctionPage';
@@ -78,11 +83,17 @@ const buildInitialProducts = (): AdminProduct[] => {
 
 // ─── 사이드바 메뉴 구조 ─────────────────────────────────────────────────
 type MenuKey =
+  | '대시보드'
   | '상품 관리'
   | '신고 현황' | '사기 감지' | '제재 내역' | '채팅 로그'
-  | '회원 목록' | '탈퇴 회원';
+  | '회원 목록' | '탈퇴 회원'
+  | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ';
 
 const SIDE_SECTIONS = [
+  {
+    label: '개요',
+    items: [{ key: '대시보드' as MenuKey, icon: '📊', label: '대시보드' }],
+  },
   {
     label: '상품',
     items: [{ key: '상품 관리' as MenuKey, icon: '📦', label: '상품 관리' }],
@@ -103,6 +114,20 @@ const SIDE_SECTIONS = [
       { key: '탈퇴 회원' as MenuKey, icon: '🗃️', label: '탈퇴 회원' },
     ],
   },
+  {
+    label: '콘텐츠',
+    items: [
+      { key: '공지사항'    as MenuKey, icon: '📢', label: '공지사항' },
+      { key: '카테고리/배너' as MenuKey, icon: '🖼️', label: '카테고리/배너' },
+    ],
+  },
+  {
+    label: '운영',
+    items: [
+      { key: '정산/수수료'   as MenuKey, icon: '💰', label: '정산/수수료' },
+      { key: '고객문의/FAQ'  as MenuKey, icon: '💬', label: '고객문의/FAQ' },
+    ],
+  },
 ];
 
 const CATEGORY_OPTIONS = ['전체', '디지털/가전', '패션/의류', '명품', '시계/주얼리', '신발', '스포츠/레저', '뷰티/미용', '게임/취미', '음향/악기', '한정판', '이월상품'];
@@ -112,7 +137,7 @@ const CATEGORY_OPTIONS = ['전체', '디지털/가전', '패션/의류', '명품
 interface Props { onLogout: () => void; }
 
 const AdminPage: React.FC<Props> = ({ onLogout }) => {
-  const [activeMenu, setActiveMenu] = useState<MenuKey>('상품 관리');
+  const [activeMenu, setActiveMenu] = useState<MenuKey>('대시보드');
   const [products, setProducts] = useState<AdminProduct[]>(buildInitialProducts);
 
   // 상품관리 필터 상태
@@ -310,13 +335,18 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
   // ─── 메뉴별 컨텐츠 렌더 ─────────────────────────────────────────
   const renderContent = () => {
     switch (activeMenu) {
+      case '대시보드':   return <DashboardPage totalProducts={products.length} />;
       case '상품 관리':  return renderProducts();
       case '신고 현황':  return <ReportListPage />;
       case '사기 감지':  return <SuspiciousPage />;
       case '제재 내역':  return <SanctionPage />;
       case '채팅 로그':  return <ChatLogPage />;
-      case '회원 목록':  return <MemberListPage />;
-      case '탈퇴 회원':  return <WithdrawnMemberPage />;
+      case '회원 목록':    return <MemberListPage />;
+      case '탈퇴 회원':    return <WithdrawnMemberPage />;
+      case '공지사항':     return <NoticePage />;
+      case '카테고리/배너': return <BannerPage />;
+      case '정산/수수료':  return <SettlementPage />;
+      case '고객문의/FAQ': return <InquiryPage />;
       default: return null;
     }
   };

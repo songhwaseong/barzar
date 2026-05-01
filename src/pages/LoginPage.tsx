@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import styles from './LoginPage.module.css';
 import { useToast } from '../components/Toast';
 
-const ADMIN_EMAIL = 'admin@bazar.kr';
-const ADMIN_PASSWORD = 'admin1234';
+const ADMIN_CREDENTIALS = [
+  { email: 'admin@bazar.kr',    password: 'admin1234'  },
+  { email: 'manager@bazar.kr',  password: 'manager5678' },
+  { email: 'support@bazar.kr',  password: 'support9012' },
+];
 
 interface Props {
   onLogin: (name?: string) => void;
@@ -31,7 +34,7 @@ const LoginPage: React.FC<Props> = ({ onLogin, onAdmin, onGoSignup, onFindAccoun
     await new Promise((r) => setTimeout(r, 800));
     setLoading(false);
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    if (ADMIN_CREDENTIALS.some(c => c.email === email && c.password === password)) {
       onAdmin();
       return;
     }
