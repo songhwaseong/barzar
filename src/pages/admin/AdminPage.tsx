@@ -160,26 +160,33 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
     return null;
   };
 
-  // ─── 상품 통계 ────────────────────────────────────────────────────
-  const stats = useMemo(() => ({
-    total:    products.length,
-    trade:    products.filter(p => p.type === '중고거래').length,
-    auction:  products.filter(p => p.type === '경매').length,
-    selling:  products.filter(p => p.status === '판매중').length,
-    inBid:    products.filter(p => p.status === '경매중').length,
-    done:     products.filter(p => p.status === '거래완료').length,
-    won:      products.filter(p => p.status === '낙찰').length,
-    failed:   products.filter(p => p.status === '유찰').length,
-    hidden:   products.filter(p => p.status === '숨김').length,
-  }), [products]);
-
-  // ─── 필터링된 상품 목록 ──────────────────────────────────────────
-  const filtered = useMemo(() => {
+  // ─── 검색/드롭다운 필터만 적용 (statFilter 제외) ────────────────
+  const baseFiltered = useMemo(() => {
     return products.filter(p => {
       if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.seller.toLowerCase().includes(search.toLowerCase())) return false;
       if (categoryFilter !== '전체' && p.category !== categoryFilter) return false;
       if (statusFilter !== '전체' && p.status !== statusFilter) return false;
       if (typeFilter !== '전체' && p.type !== typeFilter) return false;
+      return true;
+    });
+  }, [products, search, categoryFilter, statusFilter, typeFilter]);
+
+  // ─── 상품 통계 (검색 결과 기준) ──────────────────────────────────
+  const stats = useMemo(() => ({
+    total:    baseFiltered.length,
+    trade:    baseFiltered.filter(p => p.type === '중고거래').length,
+    auction:  baseFiltered.filter(p => p.type === '경매').length,
+    selling:  baseFiltered.filter(p => p.status === '판매중').length,
+    inBid:    baseFiltered.filter(p => p.status === '경매중').length,
+    done:     baseFiltered.filter(p => p.status === '거래완료').length,
+    won:      baseFiltered.filter(p => p.status === '낙찰').length,
+    failed:   baseFiltered.filter(p => p.status === '유찰').length,
+    hidden:   baseFiltered.filter(p => p.status === '숨김').length,
+  }), [baseFiltered]);
+
+  // ─── 필터링된 상품 목록 (statFilter 추가 적용) ───────────────────
+  const filtered = useMemo(() => {
+    return baseFiltered.filter(p => {
       if (statFilter === '중고거래' && p.type !== '중고거래') return false;
       if (statFilter === '경매' && p.type !== '경매') return false;
       if (statFilter === '판매중' && p.status !== '판매중') return false;
@@ -187,7 +194,7 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
       if (statFilter === '숨김' && p.status !== '숨김') return false;
       return true;
     });
-  }, [products, search, categoryFilter, statusFilter, typeFilter, statFilter]);
+  }, [baseFiltered, statFilter]);
 
   const handleStatusChange = (id: string, newStatus: AdminProduct['status']) => {
     setProducts(prev => prev.map(p => p.id === id ? { ...p, status: newStatus } : p));
@@ -201,7 +208,6 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
 
   const handleStatClick = (key: string) => {
     setStatFilter(prev => prev === key ? null : key);
-    setSearch(''); setCategoryFilter('전체'); setStatusFilter('전체'); setTypeFilter('전체');
   };
 
   // ─── 상품관리 렌더 ───────────────────────────────────────────────
@@ -228,7 +234,6 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
             onClick={() => {
               if (s.key === null) {
                 setStatFilter(null);
-                setSearch(''); setCategoryFilter('전체'); setStatusFilter('전체'); setTypeFilter('전체');
               } else {
                 handleStatClick(s.key);
               }
