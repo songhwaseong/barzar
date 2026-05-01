@@ -98,6 +98,24 @@ export const MEMBERS: Member[] = [
     mannerTemp: 35.0, salesCount: 0, purchaseCount: 4, bidCount: 9,
     status: 'active', reportCount: 1, sanctionCount: 0,
   },
+  {
+    memberNo: '2026041500061', name: '오민서', email: 'minseo@email.com', phone: '010-1122-3344',
+    joinedAt: '2026.04.15', lastLoginAt: '2026.05.01 10:30',
+    mannerTemp: 36.5, salesCount: 0, purchaseCount: 0, bidCount: 2,
+    status: 'active', reportCount: 0, sanctionCount: 0,
+  },
+  {
+    memberNo: '2026042200062', name: '강도현', email: 'dohyun@email.com', phone: '010-5566-7788',
+    joinedAt: '2026.04.22', lastLoginAt: '2026.05.01 14:11',
+    mannerTemp: 36.5, salesCount: 0, purchaseCount: 1, bidCount: 0,
+    status: 'active', reportCount: 0, sanctionCount: 0,
+  },
+  {
+    memberNo: '2026042800063', name: '윤하린', email: 'harin@email.com', phone: '010-9900-1122',
+    joinedAt: '2026.04.28', lastLoginAt: '2026.05.02 09:05',
+    mannerTemp: 36.5, salesCount: 0, purchaseCount: 0, bidCount: 1,
+    status: 'active', reportCount: 0, sanctionCount: 0,
+  },
 ];
 
 export const MEMBER_TRANSACTIONS: MemberTransaction[] = [

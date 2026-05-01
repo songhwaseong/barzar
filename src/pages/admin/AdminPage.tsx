@@ -1,15 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { PRODUCTS, AUCTION_ITEMS } from '../../data/mockData';
 import { myProductStore } from '../../data/myProductStore';
-import { REPORTS } from '../../data/adminData';
 import { MEMBERS } from '../../data/memberData';
 import DashboardPage from './DashboardPage';
 import NoticePage from './NoticePage';
 import BannerPage from './BannerPage';
 import SettlementPage from './SettlementPage';
 import InquiryPage from './InquiryPage';
-import ReportListPage from './ReportListPage';
-import SuspiciousPage from './SuspiciousPage';
+import FalseBidPage from './FalseBidPage';
 import SanctionPage from './SanctionPage';
 import ChatLogPage from './ChatLogPage';
 import MemberListPage from './MemberListPage';
@@ -17,7 +15,7 @@ import WithdrawnMemberPage from './WithdrawnMemberPage';
 import styles from './AdminPage.module.css';
 
 // ─── 관리자용 통합 상품 타입 ───────────────────────────────────────────
-type TradeStatus   = '판매중' | '거래완료' | '숨김';
+type TradeStatus   = '경매예정' | '낙찰' | '숨김';
 type AuctionStatus = '경매중' | '낙찰'    | '유찰' | '숨김';
 type ProductStatus = TradeStatus | AuctionStatus;
 
@@ -45,7 +43,7 @@ const buildInitialProducts = (): AdminProduct[] => {
     seller: getSeller(p.id),
     category: p.category,
     price: p.price,
-    status: '판매중',
+    status: '경매예정',
     registeredAt: `2026.04.${String(28 - (p.id % 14)).padStart(2, '0')}`,
   }));
 
@@ -85,7 +83,7 @@ const buildInitialProducts = (): AdminProduct[] => {
 type MenuKey =
   | '대시보드'
   | '상품 관리'
-  | '신고 현황' | '사기 감지' | '제재 내역' | '채팅 로그'
+  | '허위입찰' | '제재 내역' | '채팅 로그'
   | '회원 목록' | '탈퇴 회원'
   | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ';
 
@@ -101,10 +99,9 @@ const SIDE_SECTIONS = [
   {
     label: '신고/제재',
     items: [
-      { key: '신고 현황' as MenuKey, icon: '🚨', label: '신고 현황' },
-      { key: '사기 감지' as MenuKey, icon: '🔍', label: '사기 감지' },
+      { key: '허위입찰' as MenuKey, icon: '⚠️', label: '허위입찰' },
       { key: '제재 내역' as MenuKey, icon: '🔒', label: '제재 내역' },
-      { key: '채팅 로그' as MenuKey, icon: '💬', label: '채팅 로그' },
+      { key: '채팅 로그' as MenuKey, icon: '💬', label: '채팅 로그(보류)' },
     ],
   },
   {
@@ -144,18 +141,17 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('전체');
   const [statusFilter, setStatusFilter] = useState('전체');
-  const [typeFilter, setTypeFilter] = useState('전체');
   const [statFilter, setStatFilter] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   // 삭제 확인 모달
   const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
 
   // ─── 배지 카운트 (사이드바용) ──────────────────────────────────────
-  const pendingReports = REPORTS.filter(r => r.status === 'pending').length;
   const suspendedMembers = MEMBERS.filter(m => m.status === 'suspended' || m.status === 'permanent').length;
 
   const getBadge = (key: MenuKey): number | null => {
-    if (key === '신고 현황') return pendingReports;
     if (key === '회원 목록') return suspendedMembers;
     return null;
   };
@@ -166,19 +162,17 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
       if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.seller.toLowerCase().includes(search.toLowerCase())) return false;
       if (categoryFilter !== '전체' && p.category !== categoryFilter) return false;
       if (statusFilter !== '전체' && p.status !== statusFilter) return false;
-      if (typeFilter !== '전체' && p.type !== typeFilter) return false;
       return true;
     });
-  }, [products, search, categoryFilter, statusFilter, typeFilter]);
+  }, [products, search, categoryFilter, statusFilter]);
 
   // ─── 상품 통계 (검색 결과 기준) ──────────────────────────────────
   const stats = useMemo(() => ({
     total:    baseFiltered.length,
     trade:    baseFiltered.filter(p => p.type === '중고거래').length,
     auction:  baseFiltered.filter(p => p.type === '경매').length,
-    selling:  baseFiltered.filter(p => p.status === '판매중').length,
+    selling:  baseFiltered.filter(p => p.status === '경매예정').length,
     inBid:    baseFiltered.filter(p => p.status === '경매중').length,
-    done:     baseFiltered.filter(p => p.status === '거래완료').length,
     won:      baseFiltered.filter(p => p.status === '낙찰').length,
     failed:   baseFiltered.filter(p => p.status === '유찰').length,
     hidden:   baseFiltered.filter(p => p.status === '숨김').length,
@@ -187,10 +181,10 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
   // ─── 필터링된 상품 목록 (statFilter 추가 적용) ───────────────────
   const filtered = useMemo(() => {
     return baseFiltered.filter(p => {
-      if (statFilter === '중고거래' && p.type !== '중고거래') return false;
-      if (statFilter === '경매' && p.type !== '경매') return false;
-      if (statFilter === '판매중' && p.status !== '판매중') return false;
-      if (statFilter === '거래완료' && p.status !== '거래완료') return false;
+      if (statFilter === '경매예정' && p.status !== '경매예정') return false;
+      if (statFilter === '경매중' && p.status !== '경매중') return false;
+      if (statFilter === '낙찰' && p.status !== '낙찰') return false;
+      if (statFilter === '유찰' && p.status !== '유찰') return false;
       if (statFilter === '숨김' && p.status !== '숨김') return false;
       return true;
     });
@@ -208,7 +202,11 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
 
   const handleStatClick = (key: string) => {
     setStatFilter(prev => prev === key ? null : key);
+    setCurrentPage(1);
   };
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   // ─── 상품관리 렌더 ───────────────────────────────────────────────
   const renderProducts = () => (
@@ -219,11 +217,8 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
       <div className={styles.statsRow}>
         {[
           { key: null,       label: '전체 상품', value: stats.total },
-          { key: '중고거래', label: '중고거래',   value: stats.trade },
-          { key: '경매',     label: '경매',       value: stats.auction },
-          { key: '판매중',   label: '판매중',     value: stats.selling },
+          { key: '경매예정', label: '경매예정',   value: stats.selling },
           { key: '경매중',   label: '경매중',     value: stats.inBid },
-          { key: '거래완료', label: '거래완료',   value: stats.done },
           { key: '낙찰',     label: '낙찰',       value: stats.won },
           { key: '유찰',     label: '유찰',       value: stats.failed },
           { key: '숨김',     label: '숨김',       value: stats.hidden },
@@ -253,17 +248,14 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
             className={styles.searchInput}
             placeholder="상품명 또는 판매자 검색"
             value={search}
-            onChange={e => { setSearch(e.target.value); setStatFilter(null); }}
+            onChange={e => { setSearch(e.target.value); setStatFilter(null); setCurrentPage(1); }}
           />
         </div>
-        <select className={styles.filterSelect} value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setStatFilter(null); }}>
+        <select className={styles.filterSelect} value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setStatFilter(null); setCurrentPage(1); }}>
           {CATEGORY_OPTIONS.map(c => <option key={c}>{c}</option>)}
         </select>
-        <select className={styles.filterSelect} value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setStatFilter(null); }}>
-          {['전체', '판매중', '경매중', '거래완료', '낙찰', '유찰', '숨김'].map(s => <option key={s}>{s}</option>)}
-        </select>
-        <select className={styles.filterSelect} value={typeFilter} onChange={e => { setTypeFilter(e.target.value); setStatFilter(null); }}>
-          {['전체', '중고거래', '경매'].map(t => <option key={t}>{t}</option>)}
+        <select className={styles.filterSelect} value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setStatFilter(null); setCurrentPage(1); }}>
+          {['전체', '경매예정', '경매중', '낙찰', '유찰', '숨김'].map(s => <option key={s}>{s}</option>)}
         </select>
         <span className={styles.filterCount}>총 {filtered.length}건</span>
       </div>
@@ -282,7 +274,7 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
               </tr>
             </thead>
             <tbody>
-              {filtered.map(p => (
+              {paginated.map(p => (
                 <tr key={p.id}>
                   <td>
                     <div className={styles.productCell}>
@@ -302,9 +294,8 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
                   <td>₩{p.price.toLocaleString()}</td>
                   <td>
                     <span className={`${styles.statusBadge} ${
-                      p.status === '판매중'   ? styles.statusOn     :
+                      p.status === '경매예정' ? styles.statusOn     :
                       p.status === '경매중'   ? styles.statusBid    :
-                      p.status === '거래완료' ? styles.statusDone   :
                       p.status === '낙찰'     ? styles.statusWon    :
                       p.status === '유찰'     ? styles.statusFailed :
                       styles.statusHidden
@@ -318,19 +309,13 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
                         value={p.status}
                         onChange={e => handleStatusChange(p.id, e.target.value as ProductStatus)}
                       >
-                        {p.type === '경매'
-                          ? <>
-                              <option value="경매중">경매중</option>
-                              <option value="낙찰">낙찰</option>
-                              <option value="유찰">유찰</option>
-                              <option value="숨김">숨김</option>
-                            </>
-                          : <>
-                              <option value="판매중">판매중</option>
-                              <option value="거래완료">거래완료</option>
-                              <option value="숨김">숨김</option>
-                            </>
-                        }
+                        <>
+                          <option value="경매예정">경매예정</option>
+                          <option value="경매중">경매중</option>
+                          <option value="낙찰">낙찰</option>
+                          <option value="유찰">유찰</option>
+                          <option value="숨김">숨김</option>
+                        </>
                       </select>
                       <button className={styles.deleteBtn} onClick={() => setDeleteTarget(p)}>삭제</button>
                     </div>
@@ -341,6 +326,28 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
           </table>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, marginTop: 20 }}>
+          <button
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: currentPage === 1 ? '#F5F5F5' : '#fff', color: currentPage === 1 ? '#ccc' : '#333', cursor: currentPage === 1 ? 'default' : 'pointer', fontSize: 13 }}
+          >이전</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: currentPage === page ? '#E24B4A' : '#fff', color: currentPage === page ? '#fff' : '#333', cursor: 'pointer', fontWeight: currentPage === page ? 700 : 400, fontSize: 13 }}
+            >{page}</button>
+          ))}
+          <button
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: currentPage === totalPages ? '#F5F5F5' : '#fff', color: currentPage === totalPages ? '#ccc' : '#333', cursor: currentPage === totalPages ? 'default' : 'pointer', fontSize: 13 }}
+          >다음</button>
+        </div>
+      )}
     </>
   );
 
@@ -349,8 +356,7 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
     switch (activeMenu) {
       case '대시보드':   return <DashboardPage totalProducts={products.length} />;
       case '상품 관리':  return renderProducts();
-      case '신고 현황':  return <ReportListPage />;
-      case '사기 감지':  return <SuspiciousPage />;
+      case '허위입찰':   return <FalseBidPage />;
       case '제재 내역':  return <SanctionPage />;
       case '채팅 로그':  return <ChatLogPage />;
       case '회원 목록':    return <MemberListPage />;

@@ -25,7 +25,7 @@ const CONDITIONS: { value: Condition; label: string; desc: string }[] = [
   { value: 'C급', label: 'C급', desc: '하자 있음' },
 ];
 const TRADE_METHODS: TradeMethod[] = ['직거래', '택배', '둘다'];
-const STATUS_OPTIONS: MyProduct['status'][] = ['판매중', '거래완료', '숨김'];
+const STATUS_OPTIONS: MyProduct['status'][] = ['경매예정', '낙찰', '숨김'];
 
 const formatPrice = (v: string) => v.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 

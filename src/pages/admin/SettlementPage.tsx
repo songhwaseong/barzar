@@ -18,7 +18,7 @@ interface Settlement {
 interface FeeRule {
   id: number;
   type: '중고거래' | '경매';
-  category: string;
+  minAmount: number;
   feeRate: number;
   minFee: number;
 }
@@ -35,10 +35,10 @@ const INITIAL_SETTLEMENTS: Settlement[] = [
 ];
 
 const INITIAL_FEE_RULES: FeeRule[] = [
-  { id: 1, type: '중고거래', category: '전체',      feeRate: 3.5, minFee: 500  },
-  { id: 2, type: '경매',     category: '전체',      feeRate: 5.0, minFee: 1000 },
-  { id: 3, type: '중고거래', category: '명품',       feeRate: 4.0, minFee: 2000 },
-  { id: 4, type: '경매',     category: '시계/주얼리', feeRate: 5.5, minFee: 5000 },
+  { id: 1, type: '중고거래', minAmount: 0,        feeRate: 3.5, minFee: 500   },
+  { id: 2, type: '중고거래', minAmount: 500000,   feeRate: 4.0, minFee: 2000  },
+  { id: 3, type: '경매',     minAmount: 0,        feeRate: 5.0, minFee: 1000  },
+  { id: 4, type: '경매',     minAmount: 1000000,  feeRate: 5.5, minFee: 5000  },
 ];
 
 const SettlementPage: React.FC = () => {
@@ -130,16 +130,15 @@ const SettlementPage: React.FC = () => {
           </div>
           <table className={s.table}>
             <thead>
-              <tr><th>유형</th><th>판매자</th><th>상품</th><th>거래금액</th><th>수수료</th><th>정산금액</th><th>상태</th><th>거래일</th><th>관리</th></tr>
+              <tr><th>판매자</th><th>상품</th><th>낙찰가</th><th>수수료</th><th>정산금액</th><th>상태</th><th>거래일</th><th>관리</th></tr>
             </thead>
             <tbody>
               {filtered.map(t => (
                 <tr key={t.id}>
-                  <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: typeBg[t.type], color: typeColor[t.type] }}>{t.type}</span></td>
                   <td style={{ fontWeight: 600 }}>{t.seller}</td>
                   <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.productName}</td>
                   <td>₩{t.saleAmount.toLocaleString()}</td>
-                  <td style={{ color: '#E65C00', fontWeight: 600 }}>₩{t.feeAmount.toLocaleString()}<span style={{ fontSize: 11, color: '#8B8FA8', marginLeft: 2 }}>({t.feeRate}%)</span></td>
+                  <td style={{ color: '#E65C00', fontWeight: 600 }}>₩{t.feeAmount.toLocaleString()}</td>
                   <td style={{ fontWeight: 700 }}>₩{t.netAmount.toLocaleString()}</td>
                   <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: statusBg[t.status], color: statusColor[t.status] }}>{t.status}</span></td>
                   <td style={{ fontSize: 12, color: '#8B8FA8' }}>{t.transactionDate}</td>
@@ -161,13 +160,17 @@ const SettlementPage: React.FC = () => {
         <>
           <table className={s.table}>
             <thead>
-              <tr><th>거래 유형</th><th>카테고리</th><th>수수료율</th><th>최소 수수료</th><th>관리</th></tr>
+              <tr><th>기준 금액</th><th>수수료율</th><th>최소 수수료</th><th>관리</th></tr>
             </thead>
             <tbody>
               {feeRules.map(r => (
                 <tr key={r.id}>
-                  <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: typeBg[r.type], color: typeColor[r.type] }}>{r.type}</span></td>
-                  <td style={{ fontWeight: 600 }}>{r.category}</td>
+                  <td>
+                    {editFee?.id === r.id
+                      ? <input type="number" step="10000" style={{ width: 120, padding: '4px 8px', border: '1px solid #E0E0E0', borderRadius: 6, fontSize: 13 }} value={editFee.minAmount} onChange={e => setEditFee(p => p ? { ...p, minAmount: parseInt(e.target.value) } : null)} />
+                      : <span style={{ fontWeight: 600 }}>₩{r.minAmount.toLocaleString()} 이상</span>
+                    }
+                  </td>
                   <td>
                     {editFee?.id === r.id
                       ? <input type="number" step="0.1" style={{ width: 80, padding: '4px 8px', border: '1px solid #E0E0E0', borderRadius: 6, fontSize: 13 }} value={editFee.feeRate} onChange={e => setEditFee(p => p ? { ...p, feeRate: parseFloat(e.target.value) } : null)} />
@@ -183,7 +186,7 @@ const SettlementPage: React.FC = () => {
                   <td>
                     {editFee?.id === r.id
                       ? <>
-                          <button className={s.actionBtnPrimary} style={{ padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', marginRight: 4 }} onClick={() => { setFeeRules(prev => prev.map(f => f.id === r.id ? { ...f, feeRate: editFee.feeRate, minFee: editFee.minFee } : f)); setEditFee(null); }}>저장</button>
+                          <button className={s.actionBtnPrimary} style={{ padding: '5px 12px', borderRadius: 6, border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', marginRight: 4 }} onClick={() => { setFeeRules(prev => prev.map(f => f.id === r.id ? { ...f, minAmount: editFee.minAmount, feeRate: editFee.feeRate, minFee: editFee.minFee } : f)); setEditFee(null); }}>저장</button>
                           <button className={s.actionBtn} onClick={() => setEditFee(null)}>취소</button>
                         </>
                       : <button className={s.actionBtn} onClick={() => setEditFee({ ...r })}>수정</button>

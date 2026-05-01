@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MEMBER_TRANSACTIONS, type Member } from '../../data/memberData';
+import { type Member } from '../../data/memberData';
 import { SANCTIONS } from '../../data/adminData';
 import styles from './admin.module.css';
 
@@ -19,13 +19,12 @@ const statusColor = (s: Member['status']) => ({
 const tempColor = (t: number) => t >= 40 ? '#3B6D11' : t >= 35 ? '#EF9F27' : '#E24B4A';
 
 const MemberDetailPage: React.FC<Props> = ({ member, onBack, onUpdateStatus }) => {
-  const [activeTab, setActiveTab] = useState<'info' | 'transaction' | 'sanction'>('info');
+  const [activeTab, setActiveTab] = useState<'sanction'>('sanction');
   const [showSanctionModal, setShowSanctionModal] = useState(false);
   const [sanctionType, setSanctionType] = useState<Member['status']>('suspended');
   const [suspendUntil, setSuspendUntil] = useState('');
   const [sanctionReason, setSanctionReason] = useState('');
 
-  const transactions = MEMBER_TRANSACTIONS.filter(t => t.memberNo === member.memberNo);
   const sanctions = SANCTIONS.filter(s => s.memberNo === member.memberNo);
 
   const handleSanction = () => {
@@ -33,15 +32,6 @@ const MemberDetailPage: React.FC<Props> = ({ member, onBack, onUpdateStatus }) =
     onUpdateStatus(member.memberNo, sanctionType, suspendUntil || undefined);
     setShowSanctionModal(false);
   };
-
-  const txStatusColor = (s: string) => ({
-    completed: { color: '#0F5132', background: '#D1E7DD' },
-    pending: { color: '#856404', background: '#FFF3CD' },
-    cancelled: { color: '#842029', background: '#F8D7DA' },
-  }[s] || {});
-
-  const txTypeLabel = (t: string) => ({ sale: '판매', purchase: '구매', bid: '입찰' }[t] || t);
-  const txTypeColor = (t: string) => ({ sale: '#639922', purchase: '#185FA5', bid: '#534AB7' }[t] || '#888');
 
   return (
     <div className={styles.page}>
@@ -102,65 +92,6 @@ const MemberDetailPage: React.FC<Props> = ({ member, onBack, onUpdateStatus }) =
           </button>
         )}
       </div>
-
-      {/* 탭 */}
-      <div style={{ display: 'flex', gap: 0, borderBottom: '2px solid #F0F0F0', marginBottom: 16 }}>
-        {([
-          { id: 'info', label: '기본 정보' },
-          { id: 'transaction', label: `거래 내역 ${transactions.length}건` },
-          { id: 'sanction', label: `제재 이력 ${sanctions.length}건` },
-        ] as const).map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              padding: '10px 20px', background: 'none', border: 'none',
-              borderBottom: activeTab === tab.id ? '2px solid #E24B4A' : '2px solid transparent',
-              marginBottom: -2, fontWeight: activeTab === tab.id ? 700 : 500,
-              color: activeTab === tab.id ? '#E24B4A' : '#8B8FA8',
-              cursor: 'pointer', fontSize: 14, fontFamily: 'Noto Sans KR, sans-serif',
-            }}
-          >{tab.label}</button>
-        ))}
-      </div>
-
-      {/* 기본 정보 탭 */}
-      {activeTab === 'info' && (
-        <div style={{ background: '#fff', borderRadius: 14, padding: '20px 24px', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-          {[
-            { label: '신고 접수 건수', value: `${member.reportCount}건` },
-            { label: '제재 횟수', value: `${member.sanctionCount}회` },
-          ].map(({ label, value }) => (
-            <div key={label} className={styles.infoRow}>
-              <span className={styles.infoLabel}>{label}</span>
-              <span className={styles.infoValue}>{value}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* 거래 내역 탭 */}
-      {activeTab === 'transaction' && (
-        <table className={styles.table}>
-          <thead>
-            <tr><th>유형</th><th>상품명</th><th>금액</th><th>거래일</th><th>상태</th></tr>
-          </thead>
-          <tbody>
-            {transactions.length === 0 && (
-              <tr><td colSpan={5} className={styles.emptyText}>거래 내역이 없습니다</td></tr>
-            )}
-            {transactions.map(t => (
-              <tr key={t.id}>
-                <td><span style={{ fontSize: 12, fontWeight: 600, color: txTypeColor(t.type) }}>{txTypeLabel(t.type)}</span></td>
-                <td style={{ fontSize: 13 }}>{t.productName}</td>
-                <td style={{ fontSize: 13, fontWeight: 500 }}>₩{t.amount.toLocaleString()}</td>
-                <td style={{ fontSize: 12, color: '#8B8FA8' }}>{t.date}</td>
-                <td><span className={styles.badge} style={txStatusColor(t.status) as any}>{{ completed:'완료', pending:'진행중', cancelled:'취소' }[t.status]}</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
 
       {/* 제재 이력 탭 */}
       {activeTab === 'sanction' && (

@@ -5,7 +5,7 @@ import styles from './MySubPage.module.css';
 import editStyles from './MyProductsPage.module.css';
 import LeaveConfirmModal from '../../components/LeaveConfirmModal';
 
-const TABS = ['전체', '판매중', '거래완료', '숨김'];
+const TABS = ['전체', '경매예정', '낙찰', '숨김'];
 
 interface Props {
   onBack: () => void;
@@ -22,7 +22,7 @@ const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
     : myProductStore.filter(p => p.status === tab);
 
   const statusColor = (s: MyProduct['status']) =>
-    s === '판매중' ? styles.statusOn : s === '거래완료' ? styles.statusDone : styles.statusHidden;
+    s === '경매예정' ? styles.statusOn : s === '낙찰' ? styles.statusDone : styles.statusHidden;
 
   const handleDelete = () => {
     if (!deleteTarget) return;
@@ -62,7 +62,7 @@ const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
               <span className={`${styles.statusBadge} ${statusColor(p.status)}`}>{p.status}</span>
               <div className={editStyles.btnRow}>
                 <button className={editStyles.editBtn} onClick={() => onEdit(p)}>수정</button>
-                {p.status === '판매중' && (
+                {p.status === '경매예정' && (
                   <button className={editStyles.deleteBtn} onClick={() => setDeleteTarget(p)}>삭제</button>
                 )}
               </div>

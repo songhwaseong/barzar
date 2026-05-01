@@ -13,7 +13,7 @@ export interface MyProduct {
   description: string;
   location: string;
   auctionDate: string;
-  status: '판매중' | '거래완료' | '숨김';
+  status: '경매예정' | '낙찰' | '숨김';
   price: number;
   timeAgo: string;
 }
@@ -32,7 +32,7 @@ export const myProductStore: MyProduct[] = [
     description: '한 번도 사용하지 않은 새 상품입니다. 정품 보증서 포함.',
     location: PRODUCTS[0].location,
     auctionDate: PRODUCTS[0].auctionDate ?? '',
-    status: '판매중',
+    status: '경매예정',
     price: PRODUCTS[0].price,
     timeAgo: PRODUCTS[0].timeAgo,
   },
@@ -49,7 +49,7 @@ export const myProductStore: MyProduct[] = [
     description: '6개월 사용했으며 스크래치 없습니다.',
     location: PRODUCTS[1].location,
     auctionDate: '',
-    status: '거래완료',
+    status: '낙찰',
     price: PRODUCTS[1].price,
     timeAgo: PRODUCTS[1].timeAgo,
   },
@@ -66,7 +66,7 @@ export const myProductStore: MyProduct[] = [
     description: '착용 1회 미만 새 제품과 동일합니다. 박스 포함.',
     location: PRODUCTS[4].location,
     auctionDate: PRODUCTS[4].auctionDate ?? '',
-    status: '판매중',
+    status: '경매예정',
     price: PRODUCTS[4].price,
     timeAgo: '1시간 전',
   },
@@ -83,7 +83,7 @@ export const myProductStore: MyProduct[] = [
     description: '3년 사용, 패브릭 상태 양호합니다. 분해 가능.',
     location: PRODUCTS[2].location,
     auctionDate: PRODUCTS[2].auctionDate ?? '',
-    status: '판매중',
+    status: '경매예정',
     price: PRODUCTS[2].price,
     timeAgo: '3시간 전',
   },
