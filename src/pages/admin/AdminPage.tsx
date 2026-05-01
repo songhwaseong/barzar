@@ -224,9 +224,16 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
         ].map(s => (
           <div
             key={s.label}
-            className={`${styles.statCard} ${statFilter === s.key && s.key !== null ? styles.statCardActive : ''}`}
-            onClick={() => s.key !== null && handleStatClick(s.key)}
-            style={{ cursor: s.key !== null ? 'pointer' : 'default' }}
+            className={`${styles.statCard} ${statFilter === s.key ? styles.statCardActive : ''}`}
+            onClick={() => {
+              if (s.key === null) {
+                setStatFilter(null);
+                setSearch(''); setCategoryFilter('전체'); setStatusFilter('전체'); setTypeFilter('전체');
+              } else {
+                handleStatClick(s.key);
+              }
+            }}
+            style={{ cursor: 'pointer' }}
           >
             <div className={styles.statLabel}>{s.label}</div>
             <div className={styles.statValue}>{s.value.toLocaleString()}<span className={styles.statUnit}>건</span></div>
