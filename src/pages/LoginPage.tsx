@@ -3,7 +3,8 @@ import styles from './LoginPage.module.css';
 import { useToast } from '../components/Toast';
 
 const ADMIN_CREDENTIALS = [
-  { email: 'admin@bazar.kr',    password: 'admin1234'  },
+  { email: 'admin@admin.com',   password: 'admin'       },
+  { email: 'admin@bazar.kr',    password: 'admin1234'   },
   { email: 'manager@bazar.kr',  password: 'manager5678' },
   { email: 'support@bazar.kr',  password: 'support9012' },
 ];

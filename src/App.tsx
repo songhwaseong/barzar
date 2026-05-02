@@ -122,6 +122,7 @@ const App: React.FC = () => {
   const loginAsAdmin = () => {
     localStorage.setItem('bazar_is_admin', 'true');
     localStorage.setItem('bazar_admin_view', 'admin');
+    localStorage.setItem('bazar_admin_login_at', new Date().toISOString());
     setIsAdmin(true);
     setAdminViewMode('admin');
     setIsGuest(false);
@@ -131,6 +132,7 @@ const App: React.FC = () => {
     localStorage.removeItem('bazar_is_admin');
     localStorage.removeItem('bazar_admin_idle_warned');
     localStorage.removeItem('bazar_admin_view');
+    localStorage.removeItem('bazar_admin_login_at');
     setIsAdmin(false);
     setAdminViewMode('admin');
     setAuthScreen('login');

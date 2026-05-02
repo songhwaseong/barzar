@@ -15,11 +15,11 @@ interface FalseBidCase {
 }
 
 const INITIAL_CASES: FalseBidCase[] = [
-  { id: 1, memberNo: 'M00234', memberName: '김민준', auctionItem: '나이키 에어맥스 270', bidAmount: 320000, reason: '반복적인 최고가 입찰 후 취소', detectedAt: '2026.04.28 14:22', status: 'open' },
-  { id: 2, memberNo: 'M00891', memberName: '이서연', auctionItem: '애플워치 울트라2', bidAmount: 950000, reason: '동일 IP 다계정 입찰 의심', detectedAt: '2026.04.27 09:15', status: 'investigating' },
-  { id: 3, memberNo: 'M01102', memberName: '박지훈', auctionItem: '소니 WH-1000XM5', bidAmount: 180000, reason: '낙찰 후 결제 미이행 3회', detectedAt: '2026.04.26 17:40', status: 'open' },
-  { id: 4, memberNo: 'M00456', memberName: '최수아', auctionItem: '구찌 GG 마몽 백', bidAmount: 1250000, reason: '비정상적인 단시간 연속 입찰', detectedAt: '2026.04.25 11:03', status: 'resolved' },
-  { id: 5, memberNo: 'M00778', memberName: '정도윤', auctionItem: '레고 테크닉 42156', bidAmount: 220000, reason: '허위 계정으로 가격 끌어올리기 의심', detectedAt: '2026.04.24 08:55', status: 'investigating' },
+  { id: 1, memberNo: '2025011500234', memberName: '김민준', auctionItem: '나이키 에어맥스 270', bidAmount: 320000, reason: '반복적인 최고가 입찰 후 취소', detectedAt: '2026.04.28 14:22', status: 'open' },
+  { id: 2, memberNo: '2024092300891', memberName: '이서연', auctionItem: '애플워치 울트라2', bidAmount: 950000, reason: '동일 IP 다계정 입찰 의심', detectedAt: '2026.04.27 09:15', status: 'investigating' },
+  { id: 3, memberNo: '2025030601102', memberName: '박지훈', auctionItem: '소니 WH-1000XM5', bidAmount: 180000, reason: '낙찰 후 결제 미이행 3회', detectedAt: '2026.04.26 17:40', status: 'open' },
+  { id: 4, memberNo: '2024071200456', memberName: '최수아', auctionItem: '구찌 GG 마몽 백', bidAmount: 1250000, reason: '비정상적인 단시간 연속 입찰', detectedAt: '2026.04.25 11:03', status: 'resolved' },
+  { id: 5, memberNo: '2024112800778', memberName: '정도윤', auctionItem: '레고 테크닉 42156', bidAmount: 220000, reason: '허위 계정으로 가격 끌어올리기 의심', detectedAt: '2026.04.24 08:55', status: 'investigating' },
 ];
 
 const statusLabel = (s: BidStatus) => ({ open: '신규', investigating: '조사중', resolved: '해결' }[s]);
@@ -63,7 +63,6 @@ const FalseBidPage: React.FC = () => {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>ID</th>
             <th>회원번호</th>
             <th>이름</th>
             <th>경매 상품</th>
@@ -77,7 +76,7 @@ const FalseBidPage: React.FC = () => {
         <tbody>
           {list.map(c => (
             <tr key={c.id}>
-              <td style={{ color: '#8B8FA8', fontSize: 12 }}>#{c.id}</td>
+
               <td style={{ fontSize: 12 }}>{c.memberNo}</td>
               <td style={{ fontSize: 13, fontWeight: 500 }}>{c.memberName}</td>
               <td style={{ fontSize: 12, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.auctionItem}</td>
@@ -86,7 +85,6 @@ const FalseBidPage: React.FC = () => {
               <td style={{ fontSize: 12, color: '#8B8FA8', whiteSpace: 'nowrap' }}>{c.detectedAt}</td>
               <td><span className={`${styles.badge} ${statusClass(c.status)}`}>{statusLabel(c.status)}</span></td>
               <td>
-                <button className={styles.actionBtn} onClick={() => setSelected(c)}>상세</button>
                 {c.status === 'open' && (
                   <button className={`${styles.actionBtn} ${styles.actionBtnDanger}`} onClick={() => updateStatus(c.id, 'investigating')}>조사 시작</button>
                 )}

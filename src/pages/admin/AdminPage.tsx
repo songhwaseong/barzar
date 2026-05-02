@@ -179,6 +179,15 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
     localStorage.setItem(IDLE_STORAGE_KEY, String(v));
   };
 
+  // ─── 로그인 시각 ──────────────────────────────────────────────────
+  const loginAt = (() => {
+    const raw = localStorage.getItem('bazar_admin_login_at');
+    if (!raw) return '';
+    const d = new Date(raw);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  })();
+
   const clearCountdown = () => {
     if (countdownRef.current) { clearInterval(countdownRef.current); countdownRef.current = null; }
   };
@@ -465,6 +474,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
         </div>
         <div className={styles.headerRight}>
           <span className={styles.headerAdmin}><strong>관리자</strong>로 로그인 중</span>
+          {loginAt && <span className={styles.headerClock}>접속 : {loginAt}</span>}
           <button className={styles.normalBtn} onClick={onSwitchToNormal} title="일반 화면">🏠</button>
           <button className={styles.logoutBtn} onClick={onLogout}>로그아웃</button>
         </div>
