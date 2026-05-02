@@ -34,6 +34,8 @@ interface Props {
   isLoggedIn?: boolean;
   loggedInUserName?: string;
   onAuthClick?: () => void;
+  isAdmin?: boolean;
+  onSwitchToAdmin?: () => void;
   children: React.ReactNode;
 }
 
@@ -47,7 +49,9 @@ const MAIN_TABS: { id: MainTab; label: string }[] = [
 const PCLayout: React.FC<Props> = ({
   mainTab, navTab, onMainTabChange, onNavTabChange,
   onSellClick, onSearch, notificationCount = 0,
-  isLoggedIn = false, loggedInUserName = '', onAuthClick, children,
+  isLoggedIn = false, loggedInUserName = '', onAuthClick,
+  isAdmin = false, onSwitchToAdmin,
+  children,
 }) => {
   const [query, setQuery] = React.useState('');
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
@@ -109,6 +113,9 @@ const PCLayout: React.FC<Props> = ({
               </svg>
               등록
             </button>
+            {isAdmin && (
+              <button className={styles.adminBtn} onClick={onSwitchToAdmin} title="관리자 화면">🖥️</button>
+            )}
             {isLoggedIn ? (
               <div className={styles.userDropdownWrap} ref={dropdownRef}>
                 <button

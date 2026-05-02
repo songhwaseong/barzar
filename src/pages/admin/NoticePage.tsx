@@ -116,10 +116,6 @@ const NoticePage: React.FC = () => {
       {/* 필터 + 작성 버튼 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {['전체', '게시중', '예약', '숨김'].map(v => (
-            <button key={v} className={`${s.filterBtn} ${filterStatus === v ? s.filterActive : ''}`} onClick={() => setFilterStatus(v)}>{v}</button>
-          ))}
-          <div style={{ width: 1, background: '#E8E8EF', margin: '0 4px' }} />
           {['전체', ...CATEGORIES].map(v => (
             <button key={v} className={`${s.filterBtn} ${filterCategory === v ? s.filterActive : ''}`} onClick={() => setFilterCategory(v)}>{v}</button>
           ))}
@@ -153,7 +149,6 @@ const NoticePage: React.FC = () => {
               <td>{n.author}</td>
               <td>{n.createdAt}</td>
               <td>
-                <button className={s.actionBtn} onClick={() => togglePin(n.id)}>{n.isPinned ? '고정해제' : '고정'}</button>
                 <button className={s.actionBtn} onClick={() => openEdit(n)}>수정</button>
                 <button className={`${s.actionBtn} ${s.actionBtnDanger}`} onClick={() => setDeleteTarget(n)}>삭제</button>
               </td>

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { REPORTS, SANCTIONS, SUSPICIOUS_CASES } from '../../data/adminData';
+import { SANCTIONS } from '../../data/adminData';
 import { MEMBERS } from '../../data/memberData';
 import { PRODUCTS, AUCTION_ITEMS } from '../../data/mockData';
 import styles from './DashboardPage.module.css';
@@ -13,54 +13,30 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
     const activeMembers   = MEMBERS.filter(m => m.status === 'active').length;
     const suspendedMembers = MEMBERS.filter(m => m.status === 'suspended' || m.status === 'permanent').length;
     const withdrawnMembers = MEMBERS.filter(m => m.status === 'withdrawn').length;
-    const pendingReports  = REPORTS.filter(r => r.status === 'pending').length;
-    const openSuspicious  = SUSPICIOUS_CASES.filter(c => c.status !== 'resolved').length;
     const totalSanctions  = SANCTIONS.length;
-
-    const totalSales = MEMBERS.reduce((sum, m) => sum + m.salesCount, 0);
-    const totalPurchases = MEMBERS.reduce((sum, m) => sum + m.purchaseCount, 0);
+    const wonCount    = AUCTION_ITEMS.filter(a => !a.isLive && a.id % 3 !== 0).length;
+    const failedCount = AUCTION_ITEMS.filter(a => !a.isLive && a.id % 3 === 0).length;
 
     return {
       totalMembers: MEMBERS.length,
       activeMembers,
       suspendedMembers,
       withdrawnMembers,
-      pendingReports,
-      openSuspicious,
       totalSanctions,
+      wonCount,
+      failedCount,
       totalProducts,
       tradeProducts: PRODUCTS.length,
       auctionProducts: AUCTION_ITEMS.length,
-      totalSales,
-      totalPurchases,
     };
   }, [totalProducts]);
 
-  const recentReports = REPORTS.slice().sort((a, b) =>
-    b.createdAt.localeCompare(a.createdAt)
-  ).slice(0, 5);
-
-  const openCases = SUSPICIOUS_CASES.filter(c => c.status !== 'resolved');
+  const wonItems    = AUCTION_ITEMS.filter(a => !a.isLive && a.id % 3 !== 0).slice(0, 5);
+  const failedItems = AUCTION_ITEMS.filter(a => !a.isLive && a.id % 3 === 0).slice(0, 5);
 
   const recentSanctions = SANCTIONS.slice().sort((a, b) =>
     b.createdAt.localeCompare(a.createdAt)
   ).slice(0, 3);
-
-  const reportTypeLabel = (type: string) =>
-    type === 'product' ? '상품' : type === 'chat' ? '채팅' : '후기';
-
-  const reportStatusLabel = (status: string) => {
-    if (status === 'pending')  return { label: '처리중', cls: styles.badgePending };
-    if (status === 'approved') return { label: '승인',   cls: styles.badgeApproved };
-    if (status === 'rejected') return { label: '반려',   cls: styles.badgeRejected };
-    return { label: '삭제됨', cls: styles.badgeDeleted };
-  };
-
-  const severityLabel = (sev: string) => {
-    if (sev === 'high')   return { label: '높음', cls: styles.sevHigh };
-    if (sev === 'medium') return { label: '중간', cls: styles.sevMed };
-    return { label: '낮음', cls: styles.sevLow };
-  };
 
   const sanctionTypeLabel = (type: string) => {
     if (type === 'warning')    return '경고';
@@ -94,21 +70,21 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
           </div>
         </div>
 
-        <div className={`${styles.summaryCard} ${styles.cardRed}`}>
-          <div className={styles.cardIcon}>🚨</div>
+        <div className={`${styles.summaryCard} ${styles.cardGreen}`}>
+          <div className={styles.cardIcon}>🏆</div>
           <div className={styles.cardBody}>
-            <div className={styles.cardLabel}>미처리 신고</div>
-            <div className={styles.cardValue}>{stats.pendingReports.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
-            <div className={styles.cardSub}>전체 신고 {REPORTS.length}건</div>
+            <div className={styles.cardLabel}>낙찰</div>
+            <div className={styles.cardValue}>{stats.wonCount.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
+            <div className={styles.cardSub}>경매 종료 후 낙찰 완료</div>
           </div>
         </div>
 
         <div className={`${styles.summaryCard} ${styles.cardOrange}`}>
-          <div className={styles.cardIcon}>🔍</div>
+          <div className={styles.cardIcon}>📭</div>
           <div className={styles.cardBody}>
-            <div className={styles.cardLabel}>사기 감지 (처리중)</div>
-            <div className={styles.cardValue}>{stats.openSuspicious.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
-            <div className={styles.cardSub}>전체 {SUSPICIOUS_CASES.length}건 중 미해결</div>
+            <div className={styles.cardLabel}>유찰</div>
+            <div className={styles.cardValue}>{stats.failedCount.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
+            <div className={styles.cardSub}>경매 종료 후 유찰 처리</div>
           </div>
         </div>
 
@@ -121,76 +97,52 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
           </div>
         </div>
 
-        <div className={`${styles.summaryCard} ${styles.cardTeal}`}>
-          <div className={styles.cardIcon}>🤝</div>
-          <div className={styles.cardBody}>
-            <div className={styles.cardLabel}>누적 거래</div>
-            <div className={styles.cardValue}>{(stats.totalSales + stats.totalPurchases).toLocaleString()}<span className={styles.cardUnit}>건</span></div>
-            <div className={styles.cardSub}>판매 {stats.totalSales} · 구매 {stats.totalPurchases}</div>
-          </div>
-        </div>
       </div>
 
       {/* ─── 하단 3열 ─── */}
       <div className={styles.bottomGrid}>
 
-        {/* 최근 신고 */}
+        {/* 최근 낙찰 현황 */}
         <div className={styles.panel}>
           <div className={styles.panelHeader}>
-            <span className={styles.panelTitle}>최근 신고 현황</span>
-            <span className={styles.panelBadge}>{stats.pendingReports}건 미처리</span>
+            <span className={styles.panelTitle}>최근 낙찰 현황</span>
+            <span className={styles.panelBadgeGreen}>{wonItems.length}건</span>
           </div>
           <div className={styles.panelBody}>
-            {recentReports.map(r => {
-              const s = reportStatusLabel(r.status);
-              return (
-                <div key={r.id} className={styles.reportRow}>
-                  <div className={styles.reportLeft}>
-                    <span className={styles.reportType}>{reportTypeLabel(r.type)}</span>
-                    <div>
-                      <div className={styles.reportName}>{r.targetName}</div>
-                      <div className={styles.reportMeta}>{r.reason} · {r.createdAt}</div>
-                    </div>
-                  </div>
-                  <span className={`${styles.statusBadge} ${s.cls}`}>{s.label}</span>
+            {wonItems.length === 0 ? (
+              <div className={styles.emptyMsg}>낙찰 내역이 없습니다.</div>
+            ) : wonItems.map(a => (
+              <div key={a.id} className={styles.auctionRow}>
+                <img src={a.image} alt={a.name} className={styles.auctionThumb} />
+                <div className={styles.auctionInfo}>
+                  <div className={styles.auctionName}>{a.name}</div>
+                  <div className={styles.auctionMeta}>{a.category} · 입찰 {a.bidCount}회</div>
                 </div>
-              );
-            })}
+                <div className={styles.auctionPrice}>{a.currentPrice.toLocaleString()}원</div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* 사기 감지 */}
+        {/* 최근 유찰 현황 */}
         <div className={styles.panel}>
           <div className={styles.panelHeader}>
-            <span className={styles.panelTitle}>사기 감지 현황</span>
-            <span className={styles.panelBadge}>{openCases.length}건 진행중</span>
+            <span className={styles.panelTitle}>최근 유찰 현황</span>
+            <span className={styles.panelBadgeGray}>{failedItems.length}건</span>
           </div>
           <div className={styles.panelBody}>
-            {openCases.length === 0 ? (
-              <div className={styles.emptyMsg}>진행중인 사기 감지 건이 없습니다.</div>
-            ) : openCases.map(c => {
-              const sev = severityLabel(c.severity);
-              const typeMap: Record<string, string> = {
-                bid_manipulation: '입찰 조작',
-                duplicate_account: '중복 계정',
-                fake_review: '허위 후기',
-                fraud: '사기',
-              };
-              return (
-                <div key={c.id} className={styles.caseRow}>
-                  <div className={styles.caseLeft}>
-                    <span className={`${styles.sevBadge} ${sev.cls}`}>{sev.label}</span>
-                    <div>
-                      <div className={styles.caseName}>{c.memberName}</div>
-                      <div className={styles.caseMeta}>{typeMap[c.caseType]} · {c.detectedAt}</div>
-                    </div>
-                  </div>
-                  <span className={styles.caseStatus}>
-                    {c.status === 'open' ? '🔴 미조사' : '🟡 조사중'}
-                  </span>
+            {failedItems.length === 0 ? (
+              <div className={styles.emptyMsg}>유찰 내역이 없습니다.</div>
+            ) : failedItems.map(a => (
+              <div key={a.id} className={styles.auctionRow}>
+                <img src={a.image} alt={a.name} className={styles.auctionThumb} />
+                <div className={styles.auctionInfo}>
+                  <div className={styles.auctionName}>{a.name}</div>
+                  <div className={styles.auctionMeta}>{a.category} · 입찰 {a.bidCount}회</div>
                 </div>
-              );
-            })}
+                <div className={styles.auctionPriceFailed}>{a.currentPrice.toLocaleString()}원</div>
+              </div>
+            ))}
           </div>
         </div>
 

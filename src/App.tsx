@@ -115,17 +115,28 @@ const App: React.FC = () => {
     }
   };
 
+  const [adminViewMode, setAdminViewMode] = useState<'admin' | 'normal'>(
+    () => (localStorage.getItem('bazar_admin_view') as 'admin' | 'normal') ?? 'admin'
+  );
+
   const loginAsAdmin = () => {
     localStorage.setItem('bazar_is_admin', 'true');
+    localStorage.setItem('bazar_admin_view', 'admin');
     setIsAdmin(true);
+    setAdminViewMode('admin');
     setIsGuest(false);
     setAuthScreen(null);
   };
   const logoutAdmin = () => {
     localStorage.removeItem('bazar_is_admin');
+    localStorage.removeItem('bazar_admin_idle_warned');
+    localStorage.removeItem('bazar_admin_view');
     setIsAdmin(false);
+    setAdminViewMode('admin');
     setAuthScreen('login');
   };
+  const switchToNormal = () => { localStorage.setItem('bazar_admin_view', 'normal'); setAdminViewMode('normal'); };
+  const switchToAdmin  = () => { localStorage.setItem('bazar_admin_view', 'admin');  setAdminViewMode('admin');  };
   const login = (name?: string) => {
     const userName = name || '사용자';
     localStorage.setItem('bazar_logged_in', 'true');
@@ -144,7 +155,7 @@ const App: React.FC = () => {
 
   // 로그인 필요 기능 접근 시 알럿
   const requireLogin = (action: () => void) => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn && !isAdmin) {
       showAlert(
         '로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠어요?',
         () => { setIsGuest(false); setAuthScreen('login'); },
@@ -177,12 +188,16 @@ const App: React.FC = () => {
   }, []);
 
   // 관리자 화면
-  if (isAdmin) {
-    return <ToastProvider><AdminPage onLogout={logoutAdmin} /></ToastProvider>;
+  if (isAdmin && adminViewMode === 'admin') {
+    return (
+      <ToastProvider>
+        <AdminPage onLogout={logoutAdmin} onSwitchToNormal={switchToNormal} />
+      </ToastProvider>
+    );
   }
 
   // 로그인 전
-  if (!isLoggedIn && !isGuest) {
+  if (!isLoggedIn && !isGuest && !isAdmin) {
     if (authScreen === 'signup') {
       return <ToastProvider><SignupPage onSignup={login} onGoLogin={() => setAuthScreen('login')} /></ToastProvider>;
     }
@@ -207,7 +222,7 @@ const App: React.FC = () => {
   const goNav = (tab: NavTab) => {
     const action = () => {
       // 비로그인 상태에서 보호된 탭 접근 차단
-      if (!isLoggedIn && PROTECTED_TABS.includes(tab)) {
+      if (!isLoggedIn && !isAdmin && PROTECTED_TABS.includes(tab)) {
         requireLogin(() => {});
         return;
       }
@@ -227,7 +242,7 @@ const App: React.FC = () => {
   };
   const PROTECTED_MAIN_TABS: MainTab[] = ['관심목록'];
   const handleMainTabChange = (tab: MainTab) => {
-    if (!isLoggedIn && PROTECTED_MAIN_TABS.includes(tab)) {
+    if (!isLoggedIn && !isAdmin && PROTECTED_MAIN_TABS.includes(tab)) {
       requireLogin(() => {});
       return;
     }
@@ -268,7 +283,7 @@ const App: React.FC = () => {
   const renderNavPage = () => {
     if (screen.type === 'sellPage') return <SellPage onBack={goHome} onDirtyChange={setFormDirty} />;
     if (screen.type === 'sellerProfile') return <SellerProfilePage seller={screen.seller} onBack={goHome} onProductClick={handleProductClick} />;
-    if (screen.type === 'auctionDetail') return <AuctionDetailPage itemId={screen.id} onBack={goHome} isLoggedIn={isLoggedIn} onRequireLogin={() => requireLogin(() => {})} onSellerClick={(seller) => setScreen({ type: 'sellerProfile', seller })} />;
+    if (screen.type === 'auctionDetail') return <AuctionDetailPage itemId={screen.id} onBack={goHome} isLoggedIn={isLoggedIn || isAdmin} onRequireLogin={() => requireLogin(() => {})} onSellerClick={(seller) => setScreen({ type: 'sellerProfile', seller })} />;
     if (screen.type === 'productDetail') return (
       <ProductDetailPage
         productId={screen.id}
@@ -320,9 +335,11 @@ const App: React.FC = () => {
       onSellClick={() => requireLogin(() => setScreen({ type: 'sellPage' }))}
       onSearch={handleSearch}
       notificationCount={3}
-      isLoggedIn={isLoggedIn}
-      loggedInUserName={loggedInUserName}
-      onAuthClick={isLoggedIn ? logout : () => { setIsGuest(false); setAuthScreen('login'); }}
+      isLoggedIn={isLoggedIn || isAdmin}
+      loggedInUserName={isAdmin ? '관리자' : loggedInUserName}
+      onAuthClick={isAdmin ? logoutAdmin : (isLoggedIn ? logout : () => { setIsGuest(false); setAuthScreen('login'); })}
+      isAdmin={isAdmin}
+      onSwitchToAdmin={switchToAdmin}
     >
       {isHomePage ? (
         <>

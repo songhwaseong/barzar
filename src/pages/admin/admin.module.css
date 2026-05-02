@@ -38,7 +38,7 @@
 .table th {
   background: #F8F8F9;
   padding: 12px 14px;
-  text-align: left;
+  text-align: center;
   font-size: 11px;
   font-weight: 600;
   color: #8B8FA8;
@@ -53,7 +53,11 @@
   color: #1A1A1A;
   border-bottom: 1px solid #F6F6F6;
   vertical-align: middle;
+  text-align: center;
 }
+
+.table th:first-child,
+.table td:first-child { text-align: left; }
 
 .table tr:last-child td { border-bottom: none; }
 .table tr:hover td { background: #FAFAFA; }

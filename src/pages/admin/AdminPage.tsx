@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { PRODUCTS, AUCTION_ITEMS } from '../../data/mockData';
 import { myProductStore } from '../../data/myProductStore';
 import { MEMBERS } from '../../data/memberData';
@@ -12,6 +12,8 @@ import SanctionPage from './SanctionPage';
 import ChatLogPage from './ChatLogPage';
 import MemberListPage from './MemberListPage';
 import WithdrawnMemberPage from './WithdrawnMemberPage';
+import AdminSettingsPage, { IDLE_OPTIONS } from './AdminSettingsPage';
+import type { IdleMinutes } from './AdminSettingsPage';
 import styles from './AdminPage.module.css';
 
 // ─── 관리자용 통합 상품 타입 ───────────────────────────────────────────
@@ -85,7 +87,8 @@ type MenuKey =
   | '상품 관리'
   | '허위입찰' | '제재 내역' | '채팅 로그'
   | '회원 목록' | '탈퇴 회원'
-  | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ';
+  | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ'
+  | '설정';
 
 const SIDE_SECTIONS = [
   {
@@ -115,7 +118,7 @@ const SIDE_SECTIONS = [
     label: '콘텐츠',
     items: [
       { key: '공지사항'    as MenuKey, icon: '📢', label: '공지사항' },
-      { key: '카테고리/배너' as MenuKey, icon: '🖼️', label: '카테고리/배너' },
+      { key: '카테고리/배너' as MenuKey, icon: '🖼️', label: '카테고리' },
     ],
   },
   {
@@ -125,17 +128,97 @@ const SIDE_SECTIONS = [
       { key: '고객문의/FAQ'  as MenuKey, icon: '💬', label: '고객문의/FAQ' },
     ],
   },
+  {
+    label: '시스템',
+    items: [
+      { key: '설정' as MenuKey, icon: '⚙️', label: '설정' },
+    ],
+  },
 ];
 
 const CATEGORY_OPTIONS = ['전체', '디지털/가전', '패션/의류', '명품', '시계/주얼리', '신발', '스포츠/레저', '뷰티/미용', '게임/취미', '음향/악기', '한정판', '이월상품'];
 
 
 // ─── AdminPage ─────────────────────────────────────────────────────────
-interface Props { onLogout: () => void; }
+interface Props { onLogout: () => void; onSwitchToNormal: () => void; }
 
-const AdminPage: React.FC<Props> = ({ onLogout }) => {
+const WARN_COUNTDOWN_S = 30; // 경고 후 30초 뒤 자동 로그아웃
+const IDLE_STORAGE_KEY = 'bazar_admin_idle_minutes';
+const IDLE_WARNED_KEY  = 'bazar_admin_idle_warned';
+
+const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   const [activeMenu, setActiveMenu] = useState<MenuKey>('대시보드');
   const [products, setProducts] = useState<AdminProduct[]>(buildInitialProducts);
+
+  // ─── 자동 로그아웃 ─────────────────────────────────────────────────
+  const [idleMinutes, setIdleMinutes] = useState<IdleMinutes>(() => {
+    const saved = localStorage.getItem(IDLE_STORAGE_KEY);
+    const parsed = saved ? Number(saved) : 10;
+    return (IDLE_OPTIONS.map(o => o.value) as number[]).includes(parsed)
+      ? (parsed as IdleMinutes)
+      : 10;
+  });
+  const [showIdleModal, setShowIdleModal] = useState(false);
+  const [countdown, setCountdown] = useState(WARN_COUNTDOWN_S);
+  const idleTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countdownRef   = useRef<ReturnType<typeof setInterval> | null>(null);
+  const idleMinutesRef = useRef(idleMinutes);
+
+  useEffect(() => { idleMinutesRef.current = idleMinutes; }, [idleMinutes]);
+
+  // 새로고침 시 경고 상태였으면 즉시 로그아웃
+  useEffect(() => {
+    if (localStorage.getItem(IDLE_WARNED_KEY)) {
+      localStorage.removeItem(IDLE_WARNED_KEY);
+      onLogout();
+    }
+  }, [onLogout]);
+
+  const handleChangeIdleMinutes = (v: IdleMinutes) => {
+    setIdleMinutes(v);
+    localStorage.setItem(IDLE_STORAGE_KEY, String(v));
+  };
+
+  const clearCountdown = () => {
+    if (countdownRef.current) { clearInterval(countdownRef.current); countdownRef.current = null; }
+  };
+
+  const startCountdown = useCallback(() => {
+    setCountdown(WARN_COUNTDOWN_S);
+    clearCountdown();
+    countdownRef.current = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          clearCountdown();
+          onLogout();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, [onLogout]);
+
+  const resetIdleTimer = useCallback(() => {
+    if (showIdleModal) return; // 경고 모달 중엔 활동 무시
+    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    idleTimerRef.current = setTimeout(() => {
+      localStorage.setItem(IDLE_WARNED_KEY, '1');
+      setShowIdleModal(true);
+      startCountdown();
+    }, idleMinutesRef.current * 60 * 1000);
+  }, [showIdleModal, startCountdown]);
+
+  // 활동 이벤트 감지
+  useEffect(() => {
+    const events: (keyof DocumentEventMap)[] = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(e => document.addEventListener(e, resetIdleTimer, { passive: true }));
+    resetIdleTimer(); // 초기 타이머 시작
+    return () => {
+      events.forEach(e => document.removeEventListener(e, resetIdleTimer));
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      clearCountdown();
+    };
+  }, [resetIdleTimer]);
 
   // 상품관리 필터 상태
   const [search, setSearch] = useState('');
@@ -147,6 +230,9 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
 
   // 삭제 확인 모달
   const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
+
+  // 상품 상세 모달
+  const [detailProduct, setDetailProduct] = useState<AdminProduct | null>(null);
 
   // ─── 배지 카운트 (사이드바용) ──────────────────────────────────────
   const suspendedMembers = MEMBERS.filter(m => m.status === 'suspended' || m.status === 'permanent').length;
@@ -270,7 +356,7 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>상품</th><th>유형</th><th>판매자</th><th>가격</th><th>상태</th><th>등록일</th><th>관리</th>
+                <th>상품</th><th>판매자</th><th>가격</th><th>상태</th><th>등록일</th><th>관리</th>
               </tr>
             </thead>
             <tbody>
@@ -280,15 +366,10 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
                     <div className={styles.productCell}>
                       <img src={p.image} alt={p.name} className={styles.productThumb} />
                       <div>
-                        <div className={styles.productName}>{p.name}</div>
+                        <div className={styles.productName} style={{ cursor: 'pointer', textDecoration: 'underline' }} onClick={() => setDetailProduct(p)}>{p.name}</div>
                         <div className={styles.productCategory}>{p.category}</div>
                       </div>
                     </div>
-                  </td>
-                  <td>
-                    <span className={`${styles.typeBadge} ${p.type === '중고거래' ? styles.typeTrade : styles.typeAuction}`}>
-                      {p.type}
-                    </span>
                   </td>
                   <td>{p.seller}</td>
                   <td>₩{p.price.toLocaleString()}</td>
@@ -317,7 +398,6 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
                           <option value="숨김">숨김</option>
                         </>
                       </select>
-                      <button className={styles.deleteBtn} onClick={() => setDeleteTarget(p)}>삭제</button>
                     </div>
                   </td>
                 </tr>
@@ -365,6 +445,12 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
       case '카테고리/배너': return <BannerPage />;
       case '정산/수수료':  return <SettlementPage />;
       case '고객문의/FAQ': return <InquiryPage />;
+      case '설정': return (
+        <AdminSettingsPage
+          idleMinutes={idleMinutes}
+          onChangeIdleMinutes={handleChangeIdleMinutes}
+        />
+      );
       default: return null;
     }
   };
@@ -379,6 +465,7 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
         </div>
         <div className={styles.headerRight}>
           <span className={styles.headerAdmin}><strong>관리자</strong>로 로그인 중</span>
+          <button className={styles.normalBtn} onClick={onSwitchToNormal} title="일반 화면">🏠</button>
           <button className={styles.logoutBtn} onClick={onLogout}>로그아웃</button>
         </div>
       </header>
@@ -414,6 +501,51 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
           {renderContent()}
         </main>
       </div>
+
+      {/* 상품 상세 모달 */}
+      {detailProduct && (
+        <div className={styles.modalOverlay} onClick={() => setDetailProduct(null)}>
+          <div className={styles.modal} style={{ width: 400 }} onClick={e => e.stopPropagation()}>
+            <img src={detailProduct.image} alt={detailProduct.name} style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10, marginBottom: 16 }} />
+            <div className={styles.modalTitle}>{detailProduct.name}</div>
+            <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[
+                { label: '유형',    value: detailProduct.type },
+                { label: '카테고리', value: detailProduct.category },
+                { label: '판매자',  value: detailProduct.seller },
+                { label: '가격',    value: `₩${detailProduct.price.toLocaleString()}` },
+                { label: '상태',    value: detailProduct.status },
+                { label: '등록일',  value: detailProduct.registeredAt },
+              ].map(({ label, value }) => (
+                <div key={label} style={{ display: 'flex', gap: 8, fontSize: 13 }}>
+                  <span style={{ width: 70, color: '#8B8FA8', fontWeight: 600, flexShrink: 0 }}>{label}</span>
+                  <span style={{ color: '#1A1A2E', fontWeight: 500 }}>{value}</span>
+                </div>
+              ))}
+            </div>
+            <div className={styles.modalBtns} style={{ marginTop: 20 }}>
+              <button className={styles.modalCancelBtn} onClick={() => setDetailProduct(null)}>닫기</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 자동 로그아웃 경고 모달 */}
+      {showIdleModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalIcon}>⏱️</div>
+            <div className={styles.modalTitle}>자동 로그아웃 예정</div>
+            <div className={styles.modalDesc}>
+              {idleMinutes}분간 입력이 없었습니다.<br />
+              <span className={styles.idleCountdown}>{countdown}초</span> 후 자동으로 로그아웃됩니다.
+            </div>
+            <div className={styles.modalBtns}>
+              <button className={styles.modalDeleteBtn} onClick={onLogout}>로그아웃</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 삭제 확인 모달 */}
       {deleteTarget && (

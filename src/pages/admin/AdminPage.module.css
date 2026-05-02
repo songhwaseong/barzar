@@ -59,6 +59,18 @@
   transition: background 0.15s;
 }
 .logoutBtn:hover { background: rgba(255,255,255,0.2); }
+.normalBtn {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1A1A2E;
+  background: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.normalBtn:hover { opacity: 0.85; }
 
 /* 사이드바 + 컨텐츠 */
 .body {
@@ -242,7 +254,7 @@
   font-size: 12px;
   font-weight: 700;
   color: #8B8FA8;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #E8E8EF;
   white-space: nowrap;
 }
@@ -257,7 +269,9 @@
   font-size: 13px;
   color: #2A2A3A;
   vertical-align: middle;
+  text-align: center;
 }
+.table tbody td:first-child { text-align: left; }
 
 /* 상품 이미지 + 이름 셀 */
 .productCell {
@@ -316,6 +330,7 @@
 .actionCell {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 .statusSelect {
@@ -396,4 +411,11 @@
   flex: 1; padding: 12px; border: none; border-radius: 10px;
   font-size: 14px; font-weight: 700; background: #E24B4A; color: #fff;
   cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+}
+.idleCountdown {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #E24B4A;
+  min-width: 32px;
 }

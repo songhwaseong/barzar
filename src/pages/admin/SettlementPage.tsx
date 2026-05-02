@@ -122,10 +122,6 @@ const SettlementPage: React.FC = () => {
             {['전체', '정산완료', '정산대기', '보류'].map(v => (
               <button key={v} className={`${s.filterBtn} ${filterStatus === v ? s.filterActive : ''}`} onClick={() => setFilterStatus(v)}>{v}</button>
             ))}
-            <div style={{ width: 1, background: '#E8E8EF', margin: '0 4px' }} />
-            {['전체', '중고거래', '경매'].map(v => (
-              <button key={v} className={`${s.filterBtn} ${filterType === v ? s.filterActive : ''}`} onClick={() => setFilterType(v)}>{v}</button>
-            ))}
             <span style={{ fontSize: 13, color: '#8B8FA8', marginLeft: 'auto' }}>총 {filtered.length}건</span>
           </div>
           <table className={s.table}>
