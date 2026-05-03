@@ -8,6 +8,10 @@ interface Props {
   totalProducts: number;
 }
 
+const CardIcon = ({ color, children }: { color: string; children: React.ReactNode }) => (
+  <svg width="24" height="24" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">{children}</svg>
+);
+
 const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
   const stats = useMemo(() => {
     const activeMembers   = MEMBERS.filter(m => m.status === 'active').length;
@@ -16,6 +20,8 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
     const totalSanctions  = SANCTIONS.length;
     const wonCount    = AUCTION_ITEMS.filter(a => !a.isLive && a.id % 3 !== 0).length;
     const failedCount = AUCTION_ITEMS.filter(a => !a.isLive && a.id % 3 === 0).length;
+
+    const recentProducts = PRODUCTS.filter(p => p.timeAgo.includes('분 전') || p.timeAgo.includes('시간 전'));
 
     return {
       totalMembers: MEMBERS.length,
@@ -28,6 +34,8 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
       totalProducts,
       tradeProducts: PRODUCTS.length,
       auctionProducts: AUCTION_ITEMS.length,
+      recentProductCount: recentProducts.length,
+      recentProductName: recentProducts[0]?.name ?? '-',
     };
   }, [totalProducts]);
 
@@ -53,7 +61,11 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
       {/* ─── 요약 카드 ─── */}
       <div className={styles.summaryGrid}>
         <div className={`${styles.summaryCard} ${styles.cardBlue}`}>
-          <div className={styles.cardIcon}>👥</div>
+          <div className={styles.cardIcon}>
+            <CardIcon color="#3B82F6">
+              <circle cx="9" cy="6" r="3.5"/><path d="M1.5 21v-2a5.5 5.5 0 0115 0v2"/><circle cx="18.5" cy="6.5" r="2.5"/><path d="M22.5 21v-1.5a4 4 0 00-3-3.86"/>
+            </CardIcon>
+          </div>
           <div className={styles.cardBody}>
             <div className={styles.cardLabel}>전체 회원</div>
             <div className={styles.cardValue}>{stats.totalMembers.toLocaleString()}<span className={styles.cardUnit}>명</span></div>
@@ -62,7 +74,11 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
         </div>
 
         <div className={`${styles.summaryCard} ${styles.cardGreen}`}>
-          <div className={styles.cardIcon}>📦</div>
+          <div className={styles.cardIcon}>
+            <CardIcon color="#22C55E">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+            </CardIcon>
+          </div>
           <div className={styles.cardBody}>
             <div className={styles.cardLabel}>전체 상품</div>
             <div className={styles.cardValue}>{stats.totalProducts.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
@@ -71,7 +87,11 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
         </div>
 
         <div className={`${styles.summaryCard} ${styles.cardGreen}`}>
-          <div className={styles.cardIcon}>🏆</div>
+          <div className={styles.cardIcon}>
+            <CardIcon color="#22C55E">
+              <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/><path d="M8 8h.01M12 6v4M16 8h.01"/>
+            </CardIcon>
+          </div>
           <div className={styles.cardBody}>
             <div className={styles.cardLabel}>낙찰</div>
             <div className={styles.cardValue}>{stats.wonCount.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
@@ -79,8 +99,25 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
           </div>
         </div>
 
+        <div className={`${styles.summaryCard} ${styles.cardTeal}`}>
+          <div className={styles.cardIcon}>
+            <CardIcon color="#14B8A6">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </CardIcon>
+          </div>
+          <div className={styles.cardBody}>
+            <div className={styles.cardLabel}>최근 등록 상품</div>
+            <div className={styles.cardValue}>{stats.recentProductCount.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
+            <div className={styles.cardSub} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{stats.recentProductName}</div>
+          </div>
+        </div>
+
         <div className={`${styles.summaryCard} ${styles.cardOrange}`}>
-          <div className={styles.cardIcon}>📭</div>
+          <div className={styles.cardIcon}>
+            <CardIcon color="#F97316">
+              <circle cx="12" cy="12" r="9"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>
+            </CardIcon>
+          </div>
           <div className={styles.cardBody}>
             <div className={styles.cardLabel}>유찰</div>
             <div className={styles.cardValue}>{stats.failedCount.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
@@ -89,7 +126,11 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
         </div>
 
         <div className={`${styles.summaryCard} ${styles.cardPurple}`}>
-          <div className={styles.cardIcon}>🔒</div>
+          <div className={styles.cardIcon}>
+            <CardIcon color="#A855F7">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </CardIcon>
+          </div>
           <div className={styles.cardBody}>
             <div className={styles.cardLabel}>누적 제재</div>
             <div className={styles.cardValue}>{stats.totalSanctions.toLocaleString()}<span className={styles.cardUnit}>건</span></div>
@@ -154,7 +195,11 @@ const DashboardPage: React.FC<Props> = ({ totalProducts }) => {
           <div className={styles.panelBody}>
             {recentSanctions.map(s => (
               <div key={s.id} className={styles.sanctionRow}>
-                <div className={styles.sanctionIcon}>🔒</div>
+                <div className={styles.sanctionIcon}>
+                  <svg width="16" height="16" fill="none" stroke="#A855F7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
                 <div className={styles.sanctionBody}>
                   <div className={styles.sanctionName}>
                     {s.memberName}

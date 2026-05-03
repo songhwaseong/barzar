@@ -12,9 +12,10 @@ interface Faq {
 
 interface Inquiry {
   id: number;
+  memberId: string;
   name: string;
   email: string;
-  category: '거래' | '결제' | '경매' | '계정' | '기타';
+  category: '결제' | '경매' | '계정' | '기타';
   title: string;
   content: string;
   status: '답변대기' | '답변완료' | '처리중';
@@ -36,11 +37,11 @@ const INITIAL_FAQS: Faq[] = [
 ];
 
 const INITIAL_INQUIRIES: Inquiry[] = [
-  { id: 1, name: '박지영', email: 'jiyoung@email.com', category: '거래',  title: '판매자가 배송을 안 보내요', content: '입금한 지 3일이 지났는데 배송이 안 왔습니다. 환불 받을 수 있나요?',         status: '답변완료', createdAt: '2026.04.28 14:22', answer: '안녕하세요. 확인 결과 판매자에게 경고 조치 후 환불 처리를 도와드렸습니다.', answeredAt: '2026.04.28 16:30' },
-  { id: 2, name: '임채원', email: 'chaewon@email.com', category: '경매', title: '낙찰됐는데 결제 버튼이 안 눌려요', content: '낙찰 알림을 받았는데 결제 버튼이 비활성화되어 있습니다.',                    status: '처리중',   createdAt: '2026.04.29 09:11' },
-  { id: 3, name: '권나영', email: 'nayoung@email.com', category: '결제', title: '카드 결제가 계속 실패해요',      content: 'PG사 오류인지 결제가 3번 연속 실패합니다. 카드사 확인해도 문제없다고 합니다.',  status: '답변대기', createdAt: '2026.04.29 11:40' },
-  { id: 4, name: '백승우', email: 'seungwoo@email.com', category: '계정', title: '비밀번호 찾기 메일이 안 와요',  content: '비밀번호 찾기를 눌렀는데 이메일이 오지 않습니다. 스팸함도 확인했습니다.',       status: '답변대기', createdAt: '2026.04.29 13:22' },
-  { id: 5, name: '정수민', email: 'sumin@email.com',    category: '기타', title: '앱 다크모드 지원 요청',         content: '다크모드가 없어서 밤에 쓰기 불편합니다. 추가해주세요!',                         status: '답변완료', createdAt: '2026.04.27 20:00', answer: '소중한 의견 감사합니다. 다크모드는 6월 업데이트에서 제공 예정입니다.', answeredAt: '2026.04.28 09:00' },
+  { id: 1, memberId: '2024031500001', name: '박지영',  email: 'jiyoung@email.com',  category: '결제', title: '판매자가 배송을 안 보내요',        content: '입금한 지 3일이 지났는데 배송이 안 왔습니다. 환불 받을 수 있나요?',        status: '답변완료', createdAt: '2026.04.28 14:22', answer: '안녕하세요. 확인 결과 판매자에게 경고 조치 후 환불 처리를 도와드렸습니다.', answeredAt: '2026.04.28 16:30' },
+  { id: 2, memberId: '2024040100009', name: '임채원',  email: 'chaewon@email.com',  category: '경매', title: '낙찰됐는데 결제 버튼이 안 눌려요',  content: '낙찰 알림을 받았는데 결제 버튼이 비활성화되어 있습니다.',                   status: '처리중',   createdAt: '2026.04.29 09:11' },
+  { id: 3, memberId: '2024062000022', name: '권나영',  email: 'nayoung@email.com',  category: '결제', title: '카드 결제가 계속 실패해요',         content: 'PG사 오류인지 결제가 3번 연속 실패합니다. 카드사 확인해도 문제없다고 합니다.', status: '답변대기', createdAt: '2026.04.29 11:40' },
+  { id: 4, memberId: '2024070100025', name: '백승우',  email: 'seungwoo@email.com', category: '계정', title: '비밀번호 찾기 메일이 안 와요',      content: '비밀번호 찾기를 눌렀는데 이메일이 오지 않습니다. 스팸함도 확인했습니다.',    status: '답변대기', createdAt: '2026.04.29 13:22' },
+  { id: 5, memberId: '2024081200038', name: '정수민',  email: 'sumin@email.com',    category: '기타', title: '앱 다크모드 지원 요청',            content: '다크모드가 없어서 밤에 쓰기 불편합니다. 추가해주세요!',                      status: '답변완료', createdAt: '2026.04.27 20:00', answer: '소중한 의견 감사합니다. 다크모드는 6월 업데이트에서 제공 예정입니다.', answeredAt: '2026.04.28 09:00' },
 ];
 
 const InquiryPage: React.FC = () => {
@@ -140,27 +141,35 @@ const InquiryPage: React.FC = () => {
       {/* 고객 문의 탭 */}
       {tab === 'inquiry' && (
         <>
-          <div className={s.filterRow}>
-            {['전체', '답변대기', '처리중', '답변완료'].map(v => (
-              <button key={v} className={`${s.filterBtn} ${filterStatus === v ? s.filterActive : ''}`} onClick={() => setFilterStatus(v)}>{v}</button>
-            ))}
-            <div style={{ width: 1, background: '#E8E8EF', margin: '0 4px' }} />
-            {['전체', '거래', '결제', '경매', '계정', '기타'].map(v => (
-              <button key={v} className={`${s.filterBtn} ${filterCat === v ? s.filterActive : ''}`} onClick={() => setFilterCat(v)}>{v}</button>
-            ))}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 16, alignItems: 'center' }}>
+            <select
+              value={filterStatus}
+              onChange={e => setFilterStatus(e.target.value)}
+              style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 110 }}
+            >
+              {['전체', '답변대기', '처리중', '답변완료'].map(v => <option key={v}>{v}</option>)}
+            </select>
+            <select
+              value={filterCat}
+              onChange={e => setFilterCat(e.target.value)}
+              style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 110 }}
+            >
+              {['전체', '결제', '경매', '계정', '기타'].map(v => <option key={v}>{v}</option>)}
+            </select>
           </div>
           <table className={s.table}>
             <thead>
-              <tr><th>구분</th><th>제목</th><th>작성자</th><th>상태</th><th>접수일</th><th>관리</th></tr>
+              <tr><th>제목</th><th>회원번호</th><th>작성자</th><th>이메일</th><th>상태</th><th>접수일</th><th>관리</th></tr>
             </thead>
             <tbody>
               {filteredInquiries.length === 0
-                ? <tr><td colSpan={6} className={s.emptyText}>문의가 없습니다.</td></tr>
+                ? <tr><td colSpan={7} className={s.emptyText}>문의가 없습니다.</td></tr>
                 : filteredInquiries.map(i => (
                   <tr key={i.id}>
-                    <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: '#F0F1F4', color: '#4A4A6A' }}>{i.category}</span></td>
                     <td style={{ fontWeight: 600, cursor: 'pointer', color: '#1A1A2E' }} onClick={() => { setSelected(i); setAnswerText(i.answer ?? ''); }}>{i.title}</td>
+                    <td style={{ fontSize: 12, color: '#8B8FA8', fontFamily: 'monospace' }}>{i.memberId}</td>
                     <td>{i.name}</td>
+                    <td style={{ fontSize: 12, color: '#8B8FA8' }}>{i.email}</td>
                     <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: statusBg[i.status], color: statusColor[i.status] }}>{i.status}</span></td>
                     <td style={{ fontSize: 12, color: '#8B8FA8' }}>{i.createdAt}</td>
                     <td>
@@ -180,11 +189,13 @@ const InquiryPage: React.FC = () => {
       {tab === 'faq' && (
         <>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {['전체', ...FAQ_CATEGORIES].map(v => (
-                <button key={v} className={`${s.filterBtn} ${faqCat === v ? s.filterActive : ''}`} onClick={() => setFaqCat(v)}>{v}</button>
-              ))}
-            </div>
+            <select
+              value={faqCat}
+              onChange={e => setFaqCat(e.target.value)}
+              style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 130 }}
+            >
+              {['전체', ...FAQ_CATEGORIES].map(v => <option key={v}>{v}</option>)}
+            </select>
             <button className={s.actionBtnPrimary} style={{ padding: '8px 18px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif' }} onClick={openFaqNew}>+ FAQ 추가</button>
           </div>
           <table className={s.table}>
@@ -222,7 +233,6 @@ const InquiryPage: React.FC = () => {
               <button className={s.modalClose} onClick={() => setSelected(null)}>✕</button>
             </div>
             <div className={s.infoRow}><div className={s.infoLabel}>작성자</div><div className={s.infoValue}>{selected.name} ({selected.email})</div></div>
-            <div className={s.infoRow}><div className={s.infoLabel}>구분</div><div className={s.infoValue}>{selected.category}</div></div>
             <div className={s.infoRow}><div className={s.infoLabel}>접수일</div><div className={s.infoValue}>{selected.createdAt}</div></div>
             <div className={s.divider} />
             <div style={{ fontSize: 14, lineHeight: 1.7, color: '#2A2A3A', marginBottom: 16 }}>{selected.content}</div>

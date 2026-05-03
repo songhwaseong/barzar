@@ -86,6 +86,12 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
 
             {/* 가격 */}
             <p className={styles.price}>₩ {item.price.toLocaleString()}</p>
+            {item.immediatePrice && (
+              <div className={styles.immediatePriceRow}>
+                <span className={styles.immediatePriceLabel}>즉시낙찰가</span>
+                <span className={styles.immediatePriceValue}>₩ {item.immediatePrice.toLocaleString()}</span>
+              </div>
+            )}
             <p className={styles.meta}>{item.location} · {item.timeAgo}</p>
 
             {/* 태그 */}

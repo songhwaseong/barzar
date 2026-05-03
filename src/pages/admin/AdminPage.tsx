@@ -23,11 +23,13 @@ type ProductStatus = TradeStatus | AuctionStatus;
 
 interface AdminProduct {
   id: string;
+  productNo: string;
   image: string;
   name: string;
   type: '중고거래' | '경매';
   seller: string;
   category: string;
+  condition: string;
   price: number;
   status: ProductStatus;
   registeredAt: string;
@@ -36,14 +38,19 @@ interface AdminProduct {
 const SELLERS = ['운동화마니아', '코딩러버', '사진작가K', '기타리스트', '워치컬렉터', '뷰티러버', '패션킹', '게이머Z', '오디오파일', '홈퍼니싱'];
 const getSeller = (id: number) => SELLERS[id % SELLERS.length];
 
+const YY = String(new Date().getFullYear()).slice(2);
+const makeProductNo = (seq: number) => `${YY}${String(seq).padStart(5, '0')}`;
+
 const buildInitialProducts = (): AdminProduct[] => {
-  const tradeItems: AdminProduct[] = PRODUCTS.map(p => ({
+  const tradeItems: AdminProduct[] = PRODUCTS.map((p, i) => ({
     id: `trade-${p.id}`,
+    productNo: makeProductNo(i + 1),
     image: p.image,
     name: p.name,
     type: '중고거래',
     seller: getSeller(p.id),
     category: p.category,
+    condition: p.condition,
     price: p.price,
     status: '경매예정',
     registeredAt: `2026.04.${String(28 - (p.id % 14)).padStart(2, '0')}`,
@@ -54,25 +61,29 @@ const buildInitialProducts = (): AdminProduct[] => {
     return a.id % 3 === 0 ? '유찰' : '낙찰';
   };
 
-  const auctionItems: AdminProduct[] = AUCTION_ITEMS.map(a => ({
+  const auctionItems: AdminProduct[] = AUCTION_ITEMS.map((a, i) => ({
     id: `auction-${a.id}`,
+    productNo: makeProductNo(PRODUCTS.length + i + 1),
     image: a.image,
     name: a.name,
     type: '경매',
     seller: getSeller(a.id + 3),
     category: a.category,
+    condition: a.condition,
     price: a.currentPrice,
     status: auctionStatus(a),
     registeredAt: `2026.04.${String(27 - (a.id % 12)).padStart(2, '0')}`,
   }));
 
-  const myItems: AdminProduct[] = myProductStore.map(p => ({
+  const myItems: AdminProduct[] = myProductStore.map((p, i) => ({
     id: `my-${p.id}`,
+    productNo: makeProductNo(PRODUCTS.length + AUCTION_ITEMS.length + i + 1),
     image: p.images[p.mainImageIndex] ?? p.images[0],
     name: p.title,
     type: '중고거래',
     seller: 'hwaseong',
     category: p.category,
+    condition: p.condition,
     price: p.price,
     status: p.status,
     registeredAt: '2026.04.25',
@@ -90,48 +101,79 @@ type MenuKey =
   | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ'
   | '설정';
 
-const SIDE_SECTIONS = [
+const IC = (p: React.SVGProps<SVGSVGElement>) => (
+  <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24" {...p}/>
+);
+
+const SIDE_ICONS: Record<MenuKey, React.ReactNode> = {
+  /* LayoutDashboard */
+  '대시보드':    <IC><rect x="3" y="3" width="7" height="10" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="17" width="7" height="4" rx="1.5"/></IC>,
+  /* ShoppingBag */
+  '상품 관리':   <IC><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></IC>,
+  /* Flag */
+  '허위입찰':    <IC><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></IC>,
+  /* ShieldX */
+  '제재 내역':   <IC><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/><line x1="14.5" y1="9.5" x2="9.5" y2="14.5"/></IC>,
+  /* FileText */
+  '채팅 로그':   <IC><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></IC>,
+  /* Users */
+  '회원 목록':   <IC><circle cx="9" cy="6" r="3.5"/><path d="M1.5 21v-2a5.5 5.5 0 0115 0v2"/><circle cx="18.5" cy="6.5" r="2.5"/><path d="M22.5 21v-1.5a4 4 0 00-3-3.86"/></IC>,
+  /* UserMinus */
+  '탈퇴 회원':   <IC><circle cx="9" cy="7" r="3.5"/><path d="M1.5 21v-2a5.5 5.5 0 0111 0v2"/><line x1="16" y1="12" x2="22" y2="12"/></IC>,
+  /* Megaphone */
+  '공지사항':    <IC><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></IC>,
+  /* PanelLeft / Columns */
+  '카테고리/배너': <IC><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="2" y1="9" x2="9" y2="9"/><line x1="2" y1="15" x2="9" y2="15"/></IC>,
+  /* Receipt */
+  '정산/수수료':  <IC><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z"/><line x1="8" y1="9.5" x2="16" y2="9.5"/><line x1="8" y1="13.5" x2="14" y2="13.5"/></IC>,
+  /* MessageCircleQuestion */
+  '고객문의/FAQ': <IC><path d="M12 21a9 9 0 100-18 9 9 0 000 18z"/><path d="M9.5 9.5a3 3 0 115 2.5c-.5.5-1.5 1-1.5 2"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></IC>,
+  /* SlidersHorizontal */
+  '설정':        <IC><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="12" x2="3" y2="12"/><line x1="21" y1="18" x2="3" y2="18"/><circle cx="8" cy="6" r="2" fill="#fff"/><circle cx="16" cy="12" r="2" fill="#fff"/><circle cx="8" cy="18" r="2" fill="#fff"/></IC>,
+};
+
+const SIDE_SECTIONS: { label: string; items: { key: MenuKey; label: string }[] }[] = [
   {
     label: 'Overview',
-    items: [{ key: '대시보드' as MenuKey, icon: '📊', label: 'Dashboard' }],
+    items: [{ key: '대시보드', label: 'Dashboard' }],
   },
   {
     label: 'Products',
-    items: [{ key: '상품 관리' as MenuKey, icon: '📦', label: 'Product Management' }],
+    items: [{ key: '상품 관리', label: 'Product Management' }],
   },
   {
     label: 'Reports & Sanctions',
     items: [
-      { key: '허위입찰' as MenuKey, icon: '⚠️', label: 'False Bids' },
-      { key: '제재 내역' as MenuKey, icon: '🔒', label: 'Sanction History' },
-      { key: '채팅 로그' as MenuKey, icon: '💬', label: 'Chat Logs (On Hold)' },
+      { key: '허위입찰', label: 'False Bids' },
+      { key: '제재 내역', label: 'Sanction History' },
+      { key: '채팅 로그', label: 'Chat Logs (On Hold)' },
     ],
   },
   {
     label: 'Members',
     items: [
-      { key: '회원 목록' as MenuKey, icon: '👥', label: 'Member List' },
-      { key: '탈퇴 회원' as MenuKey, icon: '🗃️', label: 'Withdrawn Members' },
+      { key: '회원 목록', label: 'Member List' },
+      { key: '탈퇴 회원', label: 'Withdrawn Members' },
     ],
   },
   {
     label: 'Content',
     items: [
-      { key: '공지사항' as MenuKey, icon: '📢', label: 'Notices' },
-      { key: '카테고리/배너' as MenuKey, icon: '🖼️', label: 'Categories' },
+      { key: '공지사항', label: 'Notices' },
+      { key: '카테고리/배너', label: 'Categories' },
     ],
   },
   {
     label: 'Operations',
     items: [
-      { key: '정산/수수료' as MenuKey, icon: '💰', label: 'Settlements & Fees' },
-      { key: '고객문의/FAQ' as MenuKey, icon: '💬', label: 'Inquiries & FAQ' },
+      { key: '정산/수수료', label: 'Settlements & Fees' },
+      { key: '고객문의/FAQ', label: 'Inquiries & FAQ' },
     ],
   },
   {
     label: 'System',
     items: [
-      { key: '설정' as MenuKey, icon: '⚙️', label: 'Settings' },
+      { key: '설정', label: 'Settings' },
     ],
   },
 ];
@@ -239,6 +281,16 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
 
   // 삭제 확인 모달
   const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
+
+  // 승인/취소 확인 모달
+  const [approveTarget, setApproveTarget] = useState<{ product: AdminProduct; action: 'approve' | 'cancel' } | null>(null);
+
+  const handleApproveConfirm = () => {
+    if (!approveTarget) return;
+    const newStatus: ProductStatus = approveTarget.action === 'approve' ? '경매중' : '경매예정';
+    handleStatusChange(approveTarget.product.id, newStatus);
+    setApproveTarget(null);
+  };
 
   // 상품 상세 모달
   const [detailProduct, setDetailProduct] = useState<AdminProduct | null>(null);
@@ -362,16 +414,26 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
             <div className={styles.emptyText}>검색 결과가 없습니다</div>
           </div>
         ) : (
-          <table className={styles.table}>
+          <table className={styles.table} style={{ tableLayout: 'fixed' }}>
+            <colgroup>
+              <col style={{ width: 100 }} />
+              <col style={{ width: 220 }} />
+              <col style={{ width: 110 }} />
+              <col style={{ width: 110 }} />
+              <col style={{ width: 110 }} />
+              <col style={{ width: 130 }} />
+              <col style={{ width: 80 }} />
+            </colgroup>
             <thead>
               <tr>
-                <th>상품</th><th>판매자</th><th>가격</th><th>상태</th><th>등록일</th><th>관리</th>
+                <th style={{ textAlign: 'center' }}>상품번호</th><th style={{ textAlign: 'center' }}>상품</th><th>판매자</th><th>가격</th><th>등록일</th><th>관리</th><th>승인</th>
               </tr>
             </thead>
             <tbody>
               {paginated.map(p => (
                 <tr key={p.id}>
-                  <td>
+                  <td style={{ fontSize: 12, color: '#8B8FA8', fontFamily: 'monospace', textAlign: 'center' }}>{p.productNo}</td>
+                  <td style={{ textAlign: 'left' }}>
                     <div className={styles.productCell}>
                       <img src={p.image} alt={p.name} className={styles.productThumb} />
                       <div>
@@ -382,14 +444,6 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                   </td>
                   <td>{p.seller}</td>
                   <td>₩{p.price.toLocaleString()}</td>
-                  <td>
-                    <span className={`${styles.statusBadge} ${p.status === '경매예정' ? styles.statusOn :
-                        p.status === '경매중' ? styles.statusBid :
-                          p.status === '낙찰' ? styles.statusWon :
-                            p.status === '유찰' ? styles.statusFailed :
-                              styles.statusHidden
-                      }`}>{p.status}</span>
-                  </td>
                   <td>{p.registeredAt}</td>
                   <td>
                     <div className={styles.actionCell}>
@@ -407,6 +461,24 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                         </>
                       </select>
                     </div>
+                  </td>
+                  <td>
+                    {p.status === '경매예정' && (
+                      <button
+                        className={styles.approveBtn}
+                        onClick={() => setApproveTarget({ product: p, action: 'approve' })}
+                      >
+                        승인
+                      </button>
+                    )}
+                    {p.status === '경매중' && (
+                      <button
+                        className={styles.cancelBtn}
+                        onClick={() => setApproveTarget({ product: p, action: 'cancel' })}
+                      >
+                        취소
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -469,7 +541,6 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
       <header className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className={styles.headerLogo}><span>BAZ</span>AR</span>
-          <span className={styles.headerBadge}>ADMIN</span>
         </div>
         <div className={styles.headerRight}>
           <span className={styles.headerAdmin}><strong>관리자</strong>로 로그인 중</span>
@@ -499,7 +570,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                       className={`${styles.sideItem} ${activeMenu === m.key ? styles.sideItemActive : ''}`}
                       onClick={() => setActiveMenu(m.key)}
                     >
-                      <span className={styles.sideIcon}>{m.icon}</span>
+                      <span className={styles.sideIcon}>{SIDE_ICONS[m.key]}</span>
                       {m.label}
                       {badge !== null && badge > 0 && (
                         <span className={styles.sideBadge}>{badge}</span>
@@ -526,27 +597,83 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
 
       {/* 상품 상세 모달 */}
       {detailProduct && (
-        <div className={styles.modalOverlay} onClick={() => setDetailProduct(null)}>
-          <div className={styles.modal} style={{ width: 400 }} onClick={e => e.stopPropagation()}>
-            <img src={detailProduct.image} alt={detailProduct.name} style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10, marginBottom: 16 }} />
-            <div className={styles.modalTitle}>{detailProduct.name}</div>
-            <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {[
-                { label: '유형', value: detailProduct.type },
-                { label: '카테고리', value: detailProduct.category },
-                { label: '판매자', value: detailProduct.seller },
-                { label: '가격', value: `₩${detailProduct.price.toLocaleString()}` },
-                { label: '상태', value: detailProduct.status },
-                { label: '등록일', value: detailProduct.registeredAt },
-              ].map(({ label, value }) => (
-                <div key={label} style={{ display: 'flex', gap: 8, fontSize: 13 }}>
-                  <span style={{ width: 70, color: '#8B8FA8', fontWeight: 600, flexShrink: 0 }}>{label}</span>
-                  <span style={{ color: '#1A1A2E', fontWeight: 500 }}>{value}</span>
-                </div>
-              ))}
+        <div className={styles.detailOverlay} onClick={() => setDetailProduct(null)}>
+          <div className={styles.detailSheet} onClick={e => e.stopPropagation()}>
+            {/* 헤더 */}
+            <div className={styles.detailHeader}>
+              <span className={styles.detailHeaderTitle}>상품 상세</span>
+              <button className={styles.detailCloseBtn} onClick={() => setDetailProduct(null)}>
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
             </div>
-            <div className={styles.modalBtns} style={{ marginTop: 20 }}>
-              <button className={styles.modalCancelBtn} onClick={() => setDetailProduct(null)}>닫기</button>
+
+            <div className={styles.detailScroll}>
+              {/* 이미지 */}
+              <img src={detailProduct.image} alt={detailProduct.name} className={styles.detailImg} />
+
+              {/* 판매자 */}
+              <div className={styles.detailSection}>
+                <div className={styles.detailSellerRow}>
+                  <div className={styles.detailSellerAvatar}>😊</div>
+                  <div className={styles.detailSellerInfo}>
+                    <p className={styles.detailSellerName}>{detailProduct.seller}</p>
+                    <div className={styles.detailSellerMeta}>
+                      <span className={styles.detailSellerSub}>📦 {detailProduct.type}</span>
+                      <span className={styles.detailSellerSub}>🗓 {detailProduct.registeredAt}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.detailDivider}/>
+
+              {/* 상품 정보 */}
+              <div className={styles.detailSection}>
+                <div className={styles.detailTagRow}>
+                  <span className={styles.detailCategoryTag}>{detailProduct.category}</span>
+                  <span className={styles.detailTypeTag}>{detailProduct.type}</span>
+                </div>
+                <h2 className={styles.detailName}>{detailProduct.name}</h2>
+                <p className={styles.detailMeta}>등록일 {detailProduct.registeredAt}</p>
+                <p className={styles.detailPrice}>₩ {detailProduct.price.toLocaleString()}</p>
+              </div>
+
+              <div className={styles.detailDivider}/>
+
+              {/* 거래 정보 */}
+              <div className={styles.detailSection}>
+                <p className={styles.detailSectionTitle}>거래 정보</p>
+                <div className={styles.detailInfoGrid}>
+                  <div className={styles.detailInfoItem}>
+                    <span className={styles.detailInfoLabel}>유형</span>
+                    <span className={styles.detailInfoValue}>{detailProduct.type === '중고거래' ? '경매예정' : detailProduct.type}</span>
+                  </div>
+                  <div className={styles.detailInfoItem}>
+                    <span className={styles.detailInfoLabel}>카테고리</span>
+                    <span className={styles.detailInfoValue}>{detailProduct.category}</span>
+                  </div>
+                  <div className={styles.detailInfoItem}>
+                    <span className={styles.detailInfoLabel}>판매자</span>
+                    <span className={styles.detailInfoValue}>{detailProduct.seller}</span>
+                  </div>
+                  <div className={styles.detailInfoItem}>
+                    <span className={styles.detailInfoLabel}>가격</span>
+                    <span className={styles.detailInfoValue}>₩ {detailProduct.price.toLocaleString()}</span>
+                  </div>
+                  <div className={styles.detailInfoItem}>
+                    <span className={styles.detailInfoLabel}>제품상태</span>
+                    <span className={styles.detailInfoValue}>{detailProduct.condition}</span>
+                  </div>
+                  <div className={styles.detailInfoItem}>
+                    <span className={styles.detailInfoLabel}>등록일</span>
+                    <span className={styles.detailInfoValue}>{detailProduct.registeredAt}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ height: 32 }}/>
             </div>
           </div>
         </div>
@@ -570,6 +697,33 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
       )}
 
       {/* 삭제 확인 모달 */}
+      {/* 승인/취소 확인 모달 */}
+      {approveTarget && (
+        <div className={styles.modalOverlay} onClick={() => setApproveTarget(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalIcon}>{approveTarget.action === 'approve' ? '✅' : '⛔'}</div>
+            <div className={styles.modalTitle}>
+              {approveTarget.action === 'approve' ? '경매를 승인하시겠어요?' : '경매를 취소하시겠어요?'}
+            </div>
+            <div className={styles.modalDesc}>
+              '{approveTarget.product.name}'<br />
+              {approveTarget.action === 'approve'
+                ? '승인 시 상태가 경매중으로 변경됩니다.'
+                : '취소 시 상태가 경매예정으로 되돌아갑니다.'}
+            </div>
+            <div className={styles.modalBtns}>
+              <button className={styles.modalCancelBtn} onClick={() => setApproveTarget(null)}>닫기</button>
+              <button
+                className={approveTarget.action === 'approve' ? styles.modalApproveBtn : styles.modalDeleteBtn}
+                onClick={handleApproveConfirm}
+              >
+                {approveTarget.action === 'approve' ? '승인하기' : '취소하기'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {deleteTarget && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>

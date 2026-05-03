@@ -147,6 +147,18 @@
   font-size: 28px; font-weight: 700;
   margin-bottom: 6px;
 }
+.immediatePriceRow {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 8px;
+}
+.immediatePriceLabel {
+  font-size: 12px; font-weight: 600;
+  color: #fff; background: #E24B4A;
+  padding: 3px 8px; border-radius: 5px;
+}
+.immediatePriceValue {
+  font-size: 15px; font-weight: 700; color: #E24B4A;
+}
 .meta {
   font-size: 13px; color: var(--muted);
   margin-bottom: 20px;

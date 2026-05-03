@@ -22,6 +22,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
   const [bidInput, setBidInput] = useState('');
   const [showBidHistory, setShowBidHistory] = useState(false);
   const [showBidModal, setShowBidModal] = useState(false);
+  const [showInstantModal, setShowInstantModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(item.timeLeft); // 초(seconds)
   const [activeImg, setActiveImg] = useState(0);
   const [show360, setShow360] = useState(false);
@@ -161,17 +162,35 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
                   <p className={styles.bidLabel}>입찰 횟수</p>
                 </div>
               </div>
+              {item.immediatePrice && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 0 4px', borderTop: '1px dashed #E8E8EF', marginTop: 8 }}>
+                  <span style={{ fontSize: 13, color: '#8B8FA8' }}>즉시입찰가</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: '#E24B4A' }}>₩ {item.immediatePrice.toLocaleString()}</span>
+                </div>
+              )}
 
-              <button
-                className={styles.inlineBidBtn}
-                onClick={() => {
-                  if (!isLoggedIn) { onRequireLogin?.(); return; }
-                  setShowBidModal(true);
-                }}
-                disabled={isEnded}
-              >
-                {isEnded ? '경매 종료' : '입찰하기'}
-              </button>
+              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                <button
+                  className={styles.inlineBidBtn}
+                  onClick={() => {
+                    if (!isLoggedIn) { onRequireLogin?.(); return; }
+                    setShowBidModal(true);
+                  }}
+                  disabled={isEnded}
+                >
+                  {isEnded ? '경매 종료' : '입찰하기'}
+                </button>
+                <button
+                  className={styles.inlineInstantBtn}
+                  onClick={() => {
+                    if (!isLoggedIn) { onRequireLogin?.(); return; }
+                    setShowInstantModal(true);
+                  }}
+                  disabled={isEnded || !item.immediatePrice}
+                >
+                  즉시낙찰
+                </button>
+              </div>
             </div>
 
             {/* 입찰 이력 */}
@@ -226,6 +245,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
             <div className={styles.section}>
               <p className={styles.sectionTitle}>거래 정보</p>
               <div className={styles.infoGrid}>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>상품번호</span><span className={styles.infoValue} style={{ fontFamily: 'monospace', fontSize: 12 }}>{`26${String(item.id).padStart(5, '0')}`}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>상태</span><span className={styles.infoValue}>{item.condition}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>지역</span><span className={styles.infoValue}>{item.location}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>카테고리</span><span className={styles.infoValue}>{item.category}</span></div>
@@ -274,6 +294,50 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
                   disabled={isInsufficient}
                   style={isInsufficient ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
                 >입찰 확정</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* 즉시낙찰 모달 */}
+      {showInstantModal && item.immediatePrice && (() => {
+        const isInsufficient = USER_BALANCE < item.immediatePrice;
+        return (
+          <div className={styles.modalOverlay} onClick={() => setShowInstantModal(false)}>
+            <div className={styles.modal} onClick={e => e.stopPropagation()}>
+              <p className={styles.modalTitle}>즉시낙찰</p>
+              <p className={styles.modalSub}>아래 금액으로 즉시 낙찰됩니다.</p>
+              <div className={styles.balanceRow}>
+                <span className={styles.balanceLabel}>보유 잔액</span>
+                <span className={`${styles.balanceValue} ${isInsufficient ? styles.balanceInsufficient : ''}`}>
+                  ₩{USER_BALANCE.toLocaleString()}
+                </span>
+              </div>
+              <input
+                className={`${styles.modalInput} ${isInsufficient ? styles.modalInputError : ''}`}
+                type="text"
+                value={`₩ ${item.immediatePrice.toLocaleString()}`}
+                readOnly
+              />
+              {isInsufficient && (
+                <p className={styles.insufficientMsg}>
+                  잔액이 부족해요. ₩{(item.immediatePrice - USER_BALANCE).toLocaleString()} 더 필요해요
+                </p>
+              )}
+              <div className={styles.modalBtns}>
+                <button className={styles.modalCancel} onClick={() => setShowInstantModal(false)}>취소</button>
+                <button
+                  className={styles.modalConfirm}
+                  onClick={() => {
+                    setCurrentPrice(item.immediatePrice!);
+                    setBidCount(p => p + 1);
+                    setShowInstantModal(false);
+                    showToast(`₩${item.immediatePrice!.toLocaleString()} 즉시낙찰 완료!`, 'success');
+                  }}
+                  disabled={isInsufficient}
+                  style={isInsufficient ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
+                >낙찰 확정</button>
               </div>
             </div>
           </div>

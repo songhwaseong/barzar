@@ -126,18 +126,14 @@ const MemberDetailPage: React.FC<Props> = ({ member, onBack, onUpdateStatus }) =
             </div>
             <div style={{ marginBottom: 12 }}>
               <label style={{ fontSize: 12, fontWeight: 600, color: '#8B8FA8', display: 'block', marginBottom: 6 }}>제재 종류</label>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {([
-                  { value: 'suspended', label: '기간 정지' },
-                  { value: 'permanent', label: '영구 정지' },
-                ] as { value: Member['status']; label: string }[]).map(t => (
-                  <button
-                    key={t.value}
-                    className={`${styles.filterBtn} ${sanctionType === t.value ? styles.filterActive : ''}`}
-                    onClick={() => setSanctionType(t.value)}
-                  >{t.label}</button>
-                ))}
-              </div>
+              <select
+                value={sanctionType}
+                onChange={e => setSanctionType(e.target.value as Member['status'])}
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', boxSizing: 'border-box' }}
+              >
+                <option value="suspended">기간 정지</option>
+                <option value="permanent">영구 정지</option>
+              </select>
             </div>
             {sanctionType === 'suspended' && (
               <div style={{ marginBottom: 12 }}>

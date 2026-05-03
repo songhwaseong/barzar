@@ -25,6 +25,7 @@ export interface AuctionDetail extends AuctionItem {
   sellerTemp: number;
   sellerSales: number;
   startPrice: number;
+  immediatePrice?: number;
   endDate: string;
   condition: 'S급' | 'A급' | 'B급' | 'C급';
   location: string;
@@ -55,6 +56,7 @@ export interface ProductDetail extends Product {
   seller: string;
   sellerTemp: number;
   sellerSales: number;
+  immediatePrice?: number;
 }
 
 export type ProductTag = 'new' | 'auction' | 'free' | 'good';

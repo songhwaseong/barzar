@@ -90,17 +90,17 @@ const MemberListPage: React.FC = () => {
           value={search}
           onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
         />
-        <div className={styles.filterRow} style={{ margin: 0 }}>
+        <select
+          value={statusFilter}
+          onChange={e => { setStatusFilter(e.target.value as StatusFilter); setCurrentPage(1); }}
+          style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 110 }}
+        >
           {(['all','active','suspended','permanent','withdrawn'] as StatusFilter[]).map(f => (
-            <button
-              key={f}
-              className={`${styles.filterBtn} ${statusFilter === f ? styles.filterActive : ''}`}
-              onClick={() => { setStatusFilter(f); setCurrentPage(1); }}
-            >
+            <option key={f} value={f}>
               {{ all:'전체', active:'정상', suspended:'정지', permanent:'영구정지', withdrawn:'탈퇴' }[f]}
-            </button>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
 
       <table className={styles.table} style={{ tableLayout: 'fixed' }}>

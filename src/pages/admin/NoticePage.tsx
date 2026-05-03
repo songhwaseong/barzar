@@ -115,11 +115,13 @@ const NoticePage: React.FC = () => {
 
       {/* 필터 + 작성 버튼 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {['전체', ...CATEGORIES].map(v => (
-            <button key={v} className={`${s.filterBtn} ${filterCategory === v ? s.filterActive : ''}`} onClick={() => setFilterCategory(v)}>{v}</button>
-          ))}
-        </div>
+        <select
+          value={filterCategory}
+          onChange={e => setFilterCategory(e.target.value)}
+          style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 130 }}
+        >
+          {['전체', ...CATEGORIES].map(v => <option key={v}>{v}</option>)}
+        </select>
         <button className={s.actionBtnPrimary} style={{ padding: '8px 18px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif' }} onClick={openNew}>+ 공지 작성</button>
       </div>
 

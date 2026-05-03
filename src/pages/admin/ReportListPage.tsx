@@ -70,16 +70,18 @@ const ReportListPage: React.FC = () => {
       </div>
 
       {/* 필터 */}
-      <div className={styles.filterRow}>
-        {(['all','pending','product','chat','review'] as Filter[]).map(f => (
-          <button
-            key={f}
-            className={`${styles.filterBtn} ${filter === f ? styles.filterActive : ''}`}
-            onClick={() => setFilter(f)}
-          >
-            {{ all:'전체', pending:`미처리 ${pending}`, product:'상품', chat:'채팅', review:'후기' }[f]}
-          </button>
-        ))}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 16, alignItems: 'center' }}>
+        <select
+          value={filter}
+          onChange={e => setFilter(e.target.value as Filter)}
+          style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 130 }}
+        >
+          <option value="all">전체</option>
+          <option value="pending">미처리 {pending}</option>
+          <option value="product">상품</option>
+          <option value="chat">채팅</option>
+          <option value="review">후기</option>
+        </select>
       </div>
 
       {/* 테이블 */}

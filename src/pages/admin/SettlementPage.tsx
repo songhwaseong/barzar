@@ -3,7 +3,8 @@ import s from './admin.module.css';
 
 interface Settlement {
   id: number;
-  seller: string;
+  sellerNo: string;
+  buyerNo: string;
   productName: string;
   type: '중고거래' | '경매';
   saleAmount: number;
@@ -24,14 +25,14 @@ interface FeeRule {
 }
 
 const INITIAL_SETTLEMENTS: Settlement[] = [
-  { id: 1,  seller: '임채원',   productName: '캐논 EOS R6',            type: '중고거래', saleAmount: 2650000, feeRate: 3.5, feeAmount: 92750,  netAmount: 2557250, status: '정산완료', transactionDate: '2026.04.22', settlementDate: '2026.04.24' },
-  { id: 2,  seller: '임채원',   productName: '로랜드 피아노',           type: '중고거래', saleAmount: 1650000, feeRate: 3.5, feeAmount: 57750,  netAmount: 1592250, status: '정산완료', transactionDate: '2026.04.18', settlementDate: '2026.04.20' },
-  { id: 3,  seller: '김철수',   productName: '나이키 조던 1',           type: '중고거래', saleAmount: 320000,  feeRate: 3.5, feeAmount: 11200,  netAmount: 308800,  status: '정산완료', transactionDate: '2026.04.20', settlementDate: '2026.04.22' },
-  { id: 4,  seller: '운동화마니아', productName: '나이키 x 오프화이트 에어포스1', type: '경매', saleAmount: 980000, feeRate: 5.0, feeAmount: 49000, netAmount: 931000, status: '정산대기', transactionDate: '2026.04.27' },
-  { id: 5,  seller: '워치컬렉터', productName: 'AP 로얄오크 41mm',      type: '경매', saleAmount: 35000000, feeRate: 5.0, feeAmount: 1750000, netAmount: 33250000, status: '정산대기', transactionDate: '2026.04.26' },
-  { id: 6,  seller: '코딩러버',  productName: '맥북 프로 M3 Pro 16인치', type: '경매', saleAmount: 2800000, feeRate: 5.0, feeAmount: 140000, netAmount: 2660000, status: '보류',    transactionDate: '2026.04.25' },
-  { id: 7,  seller: '패션킹',    productName: '구찌 GG 마몽 숄더백',    type: '중고거래', saleAmount: 1250000, feeRate: 3.5, feeAmount: 43750,  netAmount: 1206250, status: '정산완료', transactionDate: '2026.04.23', settlementDate: '2026.04.25' },
-  { id: 8,  seller: '뷰티러버',  productName: 'SK-II 파테르나 크림',    type: '중고거래', saleAmount: 320000,  feeRate: 3.5, feeAmount: 11200,  netAmount: 308800,  status: '정산대기', transactionDate: '2026.04.28' },
+  { id: 1,  sellerNo: '2024040100009', buyerNo: '2024031500001', productName: '캐논 EOS R6',                  type: '중고거래', saleAmount: 2650000,  feeRate: 3.5, feeAmount: 92750,   netAmount: 2557250,  status: '정산완료', transactionDate: '2026.04.22', settlementDate: '2026.04.24' },
+  { id: 2,  sellerNo: '2024040100009', buyerNo: '2024081200038', productName: '로랜드 피아노',                 type: '중고거래', saleAmount: 1650000,  feeRate: 3.5, feeAmount: 57750,   netAmount: 1592250,  status: '정산완료', transactionDate: '2026.04.18', settlementDate: '2026.04.20' },
+  { id: 3,  sellerNo: '2024062000022', buyerNo: '2024070100025', productName: '나이키 조던 1',                 type: '중고거래', saleAmount: 320000,   feeRate: 3.5, feeAmount: 11200,   netAmount: 308800,   status: '정산완료', transactionDate: '2026.04.20', settlementDate: '2026.04.22' },
+  { id: 4,  sellerNo: '2024031500001', buyerNo: '2024040100009', productName: '나이키 x 오프화이트 에어포스1', type: '경매',    saleAmount: 980000,   feeRate: 5.0, feeAmount: 49000,   netAmount: 931000,   status: '정산대기', transactionDate: '2026.04.27' },
+  { id: 5,  sellerNo: '2024070100025', buyerNo: '2024062000022', productName: 'AP 로얄오크 41mm',              type: '경매',    saleAmount: 35000000, feeRate: 5.0, feeAmount: 1750000, netAmount: 33250000, status: '정산대기', transactionDate: '2026.04.26' },
+  { id: 6,  sellerNo: '2024062000022', buyerNo: '2024031500001', productName: '맥북 프로 M3 Pro 16인치',       type: '경매',    saleAmount: 2800000,  feeRate: 5.0, feeAmount: 140000,  netAmount: 2660000,  status: '보류',    transactionDate: '2026.04.25' },
+  { id: 7,  sellerNo: '2024070100025', buyerNo: '2024081200038', productName: '구찌 GG 마몽 숄더백',           type: '중고거래', saleAmount: 1250000,  feeRate: 3.5, feeAmount: 43750,   netAmount: 1206250,  status: '정산완료', transactionDate: '2026.04.23', settlementDate: '2026.04.25' },
+  { id: 8,  sellerNo: '2024040100009', buyerNo: '2024062000022', productName: 'SK-II 파테르나 크림',           type: '중고거래', saleAmount: 320000,   feeRate: 3.5, feeAmount: 11200,   netAmount: 308800,   status: '정산대기', transactionDate: '2026.04.28' },
 ];
 
 const INITIAL_FEE_RULES: FeeRule[] = [
@@ -47,13 +48,20 @@ const SettlementPage: React.FC = () => {
   const [feeRules, setFeeRules] = useState<FeeRule[]>(INITIAL_FEE_RULES);
   const [filterStatus, setFilterStatus] = useState('전체');
   const [filterType, setFilterType] = useState('전체');
+  const [filterRole, setFilterRole] = useState('판매자');
+  const [searchNo, setSearchNo] = useState('');
   const [editFee, setEditFee] = useState<FeeRule | null>(null);
 
   const filtered = useMemo(() => settlements.filter(t => {
     if (filterStatus !== '전체' && t.status !== filterStatus) return false;
     if (filterType !== '전체' && t.type !== filterType) return false;
+    if (searchNo.trim()) {
+      const q = searchNo.trim();
+      if (filterRole === '판매자' && !t.sellerNo.includes(q)) return false;
+      if (filterRole === '구매자' && !t.buyerNo.includes(q)) return false;
+    }
     return true;
-  }), [settlements, filterStatus, filterType]);
+  }), [settlements, filterStatus, filterType, filterRole, searchNo]);
 
   const summary = useMemo(() => ({
     totalSale:    settlements.reduce((acc, t) => acc + t.saleAmount, 0),
@@ -118,20 +126,42 @@ const SettlementPage: React.FC = () => {
       {/* 정산 내역 탭 */}
       {tab === 'settlement' && (
         <>
-          <div className={s.filterRow}>
-            {['전체', '정산완료', '정산대기', '보류'].map(v => (
-              <button key={v} className={`${s.filterBtn} ${filterStatus === v ? s.filterActive : ''}`} onClick={() => setFilterStatus(v)}>{v}</button>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <select
+              value={filterRole}
+              onChange={e => setFilterRole(e.target.value)}
+              style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 110 }}
+            >
+              {['판매자', '구매자'].map(v => <option key={v}>{v}</option>)}
+            </select>
+            <select
+              value={filterStatus}
+              onChange={e => setFilterStatus(e.target.value)}
+              style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 110 }}
+            >
+              {['전체', '정산완료', '정산대기', '보류'].map(v => <option key={v}>{v}</option>)}
+            </select>
+            <input
+              value={searchNo}
+              onChange={e => setSearchNo(e.target.value)}
+              placeholder="회원번호 검색"
+              style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', width: 180 }}
+            />
             <span style={{ fontSize: 13, color: '#8B8FA8', marginLeft: 'auto' }}>총 {filtered.length}건</span>
           </div>
           <table className={s.table}>
             <thead>
-              <tr><th>판매자</th><th>상품</th><th>낙찰가</th><th>수수료</th><th>정산금액</th><th>상태</th><th>거래일</th><th>관리</th></tr>
+              <tr>
+                {filterRole !== '구매자' && <th>판매자 회원번호</th>}
+                {filterRole !== '판매자' && <th>구매자 회원번호</th>}
+                <th>상품</th><th>낙찰가</th><th>수수료</th><th>정산금액</th><th>상태</th><th>거래일</th><th>관리</th>
+              </tr>
             </thead>
             <tbody>
               {filtered.map(t => (
                 <tr key={t.id}>
-                  <td style={{ fontWeight: 600 }}>{t.seller}</td>
+                  {filterRole !== '구매자' && <td style={{ fontSize: 12, color: '#8B8FA8', fontFamily: 'monospace' }}>{t.sellerNo}</td>}
+                  {filterRole !== '판매자' && <td style={{ fontSize: 12, color: '#8B8FA8', fontFamily: 'monospace' }}>{t.buyerNo}</td>}
                   <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.productName}</td>
                   <td>₩{t.saleAmount.toLocaleString()}</td>
                   <td style={{ color: '#E65C00', fontWeight: 600 }}>₩{t.feeAmount.toLocaleString()}</td>

@@ -105,7 +105,7 @@
 
 /* 입찰 버튼 (오른쪽 컬럼 내 인라인) */
 .inlineBidBtn {
-  width: 100%; padding: 16px;
+  flex: 1; padding: 16px;
   background: var(--primary); color: #fff; border: none; border-radius: 14px;
   font-size: 16px; font-weight: 700; cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;
@@ -113,6 +113,16 @@
 }
 .inlineBidBtn:hover { opacity: 0.88; }
 .inlineBidBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.inlineInstantBtn {
+  flex: 1; padding: 16px;
+  background: #fff; color: var(--primary); border: 2px solid var(--primary); border-radius: 14px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: background 0.15s, color 0.15s;
+}
+.inlineInstantBtn:hover { background: var(--primary); color: #fff; }
+.inlineInstantBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* 입찰 이력 */
 .historyToggle {

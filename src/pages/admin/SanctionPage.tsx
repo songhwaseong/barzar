@@ -123,15 +123,13 @@ const SanctionPage: React.FC = () => {
             ))}
             <div style={{ marginBottom: 16 }}>
               <label style={{ fontSize: 12, fontWeight: 600, color: '#8B8FA8', display: 'block', marginBottom: 4 }}>제재 종류</label>
-              <div style={{ display: 'flex', gap: 8 }}>
-                {SANCTION_TYPES.map(t => (
-                  <button
-                    key={t.value}
-                    className={`${styles.filterBtn} ${form.type === t.value ? styles.filterActive : ''}`}
-                    onClick={() => setForm(p => ({ ...p, type: t.value }))}
-                  >{t.label}</button>
-                ))}
-              </div>
+              <select
+                value={form.type}
+                onChange={e => setForm(p => ({ ...p, type: e.target.value as typeof form.type }))}
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', boxSizing: 'border-box' }}
+              >
+                {SANCTION_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+              </select>
             </div>
             <div className={styles.modalActions}>
               <button className={styles.actionBtn} onClick={() => setShowAdd(false)}>취소</button>
