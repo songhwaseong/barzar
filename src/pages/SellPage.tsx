@@ -37,6 +37,7 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
   const [price, setPrice] = useState('');
   const [isAuction, setIsAuction] = useState(false);
   const [auctionStartPrice, setAuctionStartPrice] = useState('');
+  const [buyNowPrice, setBuyNowPrice] = useState('');
   const [minBidUnit, setMinBidUnit] = useState('');
   const [tradeMethod, setTradeMethod] = useState<TradeMethod | ''>('');
   const [description, setDescription] = useState('');
@@ -54,7 +55,7 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
 
   // 변경 여부 감지
   const isDirty = images.length > 0 || title !== '' || category !== '' || condition !== '' ||
-    price !== '' || auctionStartPrice !== '' || minBidUnit !== '' || tradeMethod !== '' ||
+    price !== '' || auctionStartPrice !== '' || buyNowPrice !== '' || minBidUnit !== '' || tradeMethod !== '' ||
     description !== '' || location !== '' || phone !== '';
 
   React.useEffect(() => { onDirtyChange?.(isDirty); }, [isDirty]);
@@ -168,6 +169,11 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
   const validateStep2 = () => {
     const e: Record<string, string> = {};
     if (!auctionStartPrice.trim()) e.auctionStartPrice = '경매 시작가를 입력해주세요';
+    if (buyNowPrice.trim() && auctionStartPrice.trim()) {
+      const start = Number(auctionStartPrice.replace(/,/g, ''));
+      const buyNow = Number(buyNowPrice.replace(/,/g, ''));
+      if (buyNow <= start) e.buyNowPrice = '즉시낙찰가는 경매 시작가보다 높게 입력해주세요';
+    }
     if (!minBidUnit.trim()) e.minBidUnit = '최소 호가 단위를 입력해주세요';
     if (!tradeMethod) e.tradeMethod = '거래 방식을 선택해주세요';
     if (!description.trim()) e.description = '상품 설명을 입력해주세요';
@@ -357,6 +363,23 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
               {errors.auctionStartPrice && <p className={styles.fieldError}>{errors.auctionStartPrice}</p>}
             </div>
 
+            {/* 즉시낙찰가 */}
+            <div className={styles.section}>
+              <label className={styles.sectionTitle}>즉시낙찰가</label>
+              <p className={styles.sectionDesc}>구매자가 바로 낙찰할 수 있는 가격이에요</p>
+              <div className={styles.priceWrap}>
+                <span className={styles.pricePrefix}>₩</span>
+                <input
+                  className={`${styles.input} ${styles.priceInput} ${errors.buyNowPrice ? styles.inputError : ''}`}
+                  placeholder="즉시낙찰가를 입력해주세요"
+                  value={buyNowPrice}
+                  onChange={e => { setBuyNowPrice(formatPrice(e.target.value)); setErrors(p => ({ ...p, buyNowPrice: '' })); }}
+                  inputMode="numeric"
+                />
+              </div>
+              {errors.buyNowPrice && <p className={styles.fieldError}>{errors.buyNowPrice}</p>}
+            </div>
+
             {/* 최소 호가 단위 */}
             <div className={styles.section}>
               <label className={styles.sectionTitle}>최소 호가 단위 <span className={styles.required}>*</span></label>
@@ -493,6 +516,8 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
                 <span className={styles.summaryValue}>{location}</span>
                 <span className={styles.summaryLabel}>경매시작가</span>
                 <span className={styles.summaryValue}>₩ {auctionStartPrice}</span>
+                <span className={styles.summaryLabel}>즉시낙찰가</span>
+                <span className={styles.summaryValue}>{buyNowPrice ? `₩ ${buyNowPrice}` : '-'}</span>
                 <span className={styles.summaryLabel}>최소호가단위</span>
                 <span className={styles.summaryValue}>₩ {minBidUnit}</span>
               </div>
@@ -522,7 +547,7 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
 
     {showPreview && (
       <ProductPreviewModal
-        data={{ images, mainImageIndex, title, category, condition, auctionStartPrice, minBidUnit, tradeMethod, description, location }}
+        data={{ images, mainImageIndex, title, category, condition, auctionStartPrice, buyNowPrice, minBidUnit, tradeMethod, description, location }}
         onClose={() => setShowPreview(false)}
       />
     )}

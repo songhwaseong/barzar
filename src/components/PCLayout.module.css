@@ -71,27 +71,49 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 10px;
   flex-shrink: 0;
+}
+.headerNavGroup,
+.headerActionGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.headerNavGroup {
+  padding: 3px;
+  background: #F6F7FA;
+  border: 1px solid #ECEEF3;
+  border-radius: 12px;
+}
+.headerActionGroup {
+  padding-left: 10px;
+  border-left: 1px solid #ECEEF3;
 }
 
 .iconBtn {
+  height: 34px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 0 10px;
+  border-radius: 9px;
   color: var(--muted);
   font-family: 'Noto Sans KR', sans-serif;
-  font-size: 11px;
-  transition: background 0.15s, color 0.15s;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
 }
-.iconBtn:hover { background: var(--bg); color: var(--text); }
-.iconBtnActive { color: var(--primary) !important; }
+.iconBtn:hover { background: #fff; color: var(--text); }
+.iconBtnActive {
+  color: var(--primary) !important;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(26,26,46,0.08);
+}
 
 .iconWrap { position: relative; display: flex; align-items: center; }
 .badge {
@@ -105,36 +127,63 @@
 
 /* 판매하기 버튼 */
 .sellBtn {
+  height: 36px;
   display: flex; align-items: center; gap: 6px;
-  padding: 8px 16px;
+  padding: 0 15px;
   background: var(--primary); color: #fff;
   border: none; border-radius: 10px;
   font-size: 13px; font-weight: 700;
   font-family: 'Noto Sans KR', sans-serif;
   cursor: pointer; flex-shrink: 0;
-  margin-left: 8px;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
 }
-.sellBtn:hover { opacity: 0.88; }
+.sellBtn:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(226,75,74,0.20);
+}
 
 /* 관리 버튼 */
 .adminBtn {
-  display: flex; align-items: center;
-  padding: 7px 14px;
-  background: #C8E0F7; color: #1A1A2E;
-  border: none; border-radius: 10px;
-  font-size: 13px; font-weight: 700;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #1A1A2E;
+  color: #fff;
+  border: 1px solid #1A1A2E;
+  border-radius: 10px;
   font-family: 'Noto Sans KR', sans-serif;
   cursor: pointer; flex-shrink: 0;
-  margin-left: 8px;
-  transition: opacity 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s;
 }
-.adminBtn:hover { opacity: 0.82; }
+.adminBtn:hover {
+  background: #E24B4A;
+  border-color: #E24B4A;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(226,75,74,0.22);
+}
+.adminBtn:focus-visible {
+  outline: 2px solid rgba(226,75,74,0.35);
+  outline-offset: 2px;
+}
+.adminIcon {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 /* 로그인/로그아웃 버튼 */
 .authBtn {
+  height: 36px;
   display: flex; align-items: center; gap: 5px;
-  padding: 8px 14px;
+  padding: 0 14px;
   border-radius: 10px;
   font-size: 13px; font-weight: 600;
   font-family: 'Noto Sans KR', sans-serif;
@@ -204,15 +253,20 @@
 .userDropdownWrap {
   position: relative;
   flex-shrink: 0;
+  padding-left: 10px;
+  border-left: 1px solid #ECEEF3;
 }
 
 .authBtnUser {
+  min-width: 42px;
+  height: 36px;
   background: #E6F1FB;
   color: #185FA5;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 12px;
+  padding: 0 12px;
   border-radius: 10px;
   font-size: 13px;
   font-weight: 600;

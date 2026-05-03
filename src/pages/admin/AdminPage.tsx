@@ -17,8 +17,8 @@ import type { IdleMinutes } from './AdminSettingsPage';
 import styles from './AdminPage.module.css';
 
 // ─── 관리자용 통합 상품 타입 ───────────────────────────────────────────
-type TradeStatus   = '경매예정' | '낙찰' | '숨김';
-type AuctionStatus = '경매중' | '낙찰'    | '유찰' | '숨김';
+type TradeStatus = '경매예정' | '낙찰' | '숨김';
+type AuctionStatus = '경매중' | '낙찰' | '유찰' | '숨김';
 type ProductStatus = TradeStatus | AuctionStatus;
 
 interface AdminProduct {
@@ -92,46 +92,46 @@ type MenuKey =
 
 const SIDE_SECTIONS = [
   {
-    label: '개요',
-    items: [{ key: '대시보드' as MenuKey, icon: '📊', label: '대시보드' }],
+    label: 'Overview',
+    items: [{ key: '대시보드' as MenuKey, icon: '📊', label: 'Dashboard' }],
   },
   {
-    label: '상품',
-    items: [{ key: '상품 관리' as MenuKey, icon: '📦', label: '상품 관리' }],
+    label: 'Products',
+    items: [{ key: '상품 관리' as MenuKey, icon: '📦', label: 'Product Management' }],
   },
   {
-    label: '신고/제재',
+    label: 'Reports & Sanctions',
     items: [
-      { key: '허위입찰' as MenuKey, icon: '⚠️', label: '허위입찰' },
-      { key: '제재 내역' as MenuKey, icon: '🔒', label: '제재 내역' },
-      { key: '채팅 로그' as MenuKey, icon: '💬', label: '채팅 로그(보류)' },
+      { key: '허위입찰' as MenuKey, icon: '⚠️', label: 'False Bids' },
+      { key: '제재 내역' as MenuKey, icon: '🔒', label: 'Sanction History' },
+      { key: '채팅 로그' as MenuKey, icon: '💬', label: 'Chat Logs (On Hold)' },
     ],
   },
   {
-    label: '회원 관리',
+    label: 'Members',
     items: [
-      { key: '회원 목록' as MenuKey, icon: '👥', label: '회원 목록' },
-      { key: '탈퇴 회원' as MenuKey, icon: '🗃️', label: '탈퇴 회원' },
+      { key: '회원 목록' as MenuKey, icon: '👥', label: 'Member List' },
+      { key: '탈퇴 회원' as MenuKey, icon: '🗃️', label: 'Withdrawn Members' },
     ],
   },
   {
-    label: '콘텐츠',
+    label: 'Content',
     items: [
-      { key: '공지사항'    as MenuKey, icon: '📢', label: '공지사항' },
-      { key: '카테고리/배너' as MenuKey, icon: '🖼️', label: '카테고리' },
+      { key: '공지사항' as MenuKey, icon: '📢', label: 'Notices' },
+      { key: '카테고리/배너' as MenuKey, icon: '🖼️', label: 'Categories' },
     ],
   },
   {
-    label: '운영',
+    label: 'Operations',
     items: [
-      { key: '정산/수수료'   as MenuKey, icon: '💰', label: '정산/수수료' },
-      { key: '고객문의/FAQ'  as MenuKey, icon: '💬', label: '고객문의/FAQ' },
+      { key: '정산/수수료' as MenuKey, icon: '💰', label: 'Settlements & Fees' },
+      { key: '고객문의/FAQ' as MenuKey, icon: '💬', label: 'Inquiries & FAQ' },
     ],
   },
   {
-    label: '시스템',
+    label: 'System',
     items: [
-      { key: '설정' as MenuKey, icon: '⚙️', label: '설정' },
+      { key: '설정' as MenuKey, icon: '⚙️', label: 'Settings' },
     ],
   },
 ];
@@ -144,7 +144,7 @@ interface Props { onLogout: () => void; onSwitchToNormal: () => void; }
 
 const WARN_COUNTDOWN_S = 30; // 경고 후 30초 뒤 자동 로그아웃
 const IDLE_STORAGE_KEY = 'bazar_admin_idle_minutes';
-const IDLE_WARNED_KEY  = 'bazar_admin_idle_warned';
+const IDLE_WARNED_KEY = 'bazar_admin_idle_warned';
 
 const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   const [activeMenu, setActiveMenu] = useState<MenuKey>('대시보드');
@@ -160,8 +160,8 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   });
   const [showIdleModal, setShowIdleModal] = useState(false);
   const [countdown, setCountdown] = useState(WARN_COUNTDOWN_S);
-  const idleTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const countdownRef   = useRef<ReturnType<typeof setInterval> | null>(null);
+  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const idleMinutesRef = useRef(idleMinutes);
 
   useEffect(() => { idleMinutesRef.current = idleMinutes; }, [idleMinutes]);
@@ -185,7 +185,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
     if (!raw) return '';
     const d = new Date(raw);
     const pad = (n: number) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
   })();
 
   const clearCountdown = () => {
@@ -263,14 +263,14 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
 
   // ─── 상품 통계 (검색 결과 기준) ──────────────────────────────────
   const stats = useMemo(() => ({
-    total:    baseFiltered.length,
-    trade:    baseFiltered.filter(p => p.type === '중고거래').length,
-    auction:  baseFiltered.filter(p => p.type === '경매').length,
-    selling:  baseFiltered.filter(p => p.status === '경매예정').length,
-    inBid:    baseFiltered.filter(p => p.status === '경매중').length,
-    won:      baseFiltered.filter(p => p.status === '낙찰').length,
-    failed:   baseFiltered.filter(p => p.status === '유찰').length,
-    hidden:   baseFiltered.filter(p => p.status === '숨김').length,
+    total: baseFiltered.length,
+    trade: baseFiltered.filter(p => p.type === '중고거래').length,
+    auction: baseFiltered.filter(p => p.type === '경매').length,
+    selling: baseFiltered.filter(p => p.status === '경매예정').length,
+    inBid: baseFiltered.filter(p => p.status === '경매중').length,
+    won: baseFiltered.filter(p => p.status === '낙찰').length,
+    failed: baseFiltered.filter(p => p.status === '유찰').length,
+    hidden: baseFiltered.filter(p => p.status === '숨김').length,
   }), [baseFiltered]);
 
   // ─── 필터링된 상품 목록 (statFilter 추가 적용) ───────────────────
@@ -311,12 +311,12 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
 
       <div className={styles.statsRow}>
         {[
-          { key: null,       label: '전체 상품', value: stats.total },
-          { key: '경매예정', label: '경매예정',   value: stats.selling },
-          { key: '경매중',   label: '경매중',     value: stats.inBid },
-          { key: '낙찰',     label: '낙찰',       value: stats.won },
-          { key: '유찰',     label: '유찰',       value: stats.failed },
-          { key: '숨김',     label: '숨김',       value: stats.hidden },
+          { key: null, label: '전체 상품', value: stats.total },
+          { key: '경매예정', label: '경매예정', value: stats.selling },
+          { key: '경매중', label: '경매중', value: stats.inBid },
+          { key: '낙찰', label: '낙찰', value: stats.won },
+          { key: '유찰', label: '유찰', value: stats.failed },
+          { key: '숨김', label: '숨김', value: stats.hidden },
         ].map(s => (
           <div
             key={s.label}
@@ -383,13 +383,12 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                   <td>{p.seller}</td>
                   <td>₩{p.price.toLocaleString()}</td>
                   <td>
-                    <span className={`${styles.statusBadge} ${
-                      p.status === '경매예정' ? styles.statusOn     :
-                      p.status === '경매중'   ? styles.statusBid    :
-                      p.status === '낙찰'     ? styles.statusWon    :
-                      p.status === '유찰'     ? styles.statusFailed :
-                      styles.statusHidden
-                    }`}>{p.status}</span>
+                    <span className={`${styles.statusBadge} ${p.status === '경매예정' ? styles.statusOn :
+                        p.status === '경매중' ? styles.statusBid :
+                          p.status === '낙찰' ? styles.statusWon :
+                            p.status === '유찰' ? styles.statusFailed :
+                              styles.statusHidden
+                      }`}>{p.status}</span>
                   </td>
                   <td>{p.registeredAt}</td>
                   <td>
@@ -443,16 +442,16 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   // ─── 메뉴별 컨텐츠 렌더 ─────────────────────────────────────────
   const renderContent = () => {
     switch (activeMenu) {
-      case '대시보드':   return <DashboardPage totalProducts={products.length} />;
-      case '상품 관리':  return renderProducts();
-      case '허위입찰':   return <FalseBidPage />;
-      case '제재 내역':  return <SanctionPage />;
-      case '채팅 로그':  return <ChatLogPage />;
-      case '회원 목록':    return <MemberListPage />;
-      case '탈퇴 회원':    return <WithdrawnMemberPage />;
-      case '공지사항':     return <NoticePage />;
+      case '대시보드': return <DashboardPage totalProducts={products.length} />;
+      case '상품 관리': return renderProducts();
+      case '허위입찰': return <FalseBidPage />;
+      case '제재 내역': return <SanctionPage />;
+      case '채팅 로그': return <ChatLogPage />;
+      case '회원 목록': return <MemberListPage />;
+      case '탈퇴 회원': return <WithdrawnMemberPage />;
+      case '공지사항': return <NoticePage />;
       case '카테고리/배너': return <BannerPage />;
-      case '정산/수수료':  return <SettlementPage />;
+      case '정산/수수료': return <SettlementPage />;
       case '고객문의/FAQ': return <InquiryPage />;
       case '설정': return (
         <AdminSettingsPage
@@ -474,8 +473,13 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
         </div>
         <div className={styles.headerRight}>
           <span className={styles.headerAdmin}><strong>관리자</strong>로 로그인 중</span>
-          {loginAt && <span className={styles.headerClock}>접속 : {loginAt}</span>}
-          <button className={styles.normalBtn} onClick={onSwitchToNormal} title="일반 화면">🏠</button>
+          <button className={styles.normalBtn} onClick={onSwitchToNormal} title="일반 화면" aria-label="일반 화면으로 이동">
+            <svg className={styles.normalIcon} viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 11.5 12 4l9 7.5" />
+              <path d="M5.5 10.5V20h13v-9.5" />
+              <path d="M9.5 20v-5.5h5V20" />
+            </svg>
+          </button>
           <button className={styles.logoutBtn} onClick={onLogout}>로그아웃</button>
         </div>
       </header>
@@ -483,27 +487,35 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
       <div className={styles.body}>
         {/* 사이드바 */}
         <nav className={styles.sidebar}>
-          {SIDE_SECTIONS.map(section => (
-            <div key={section.label}>
-              <div className={styles.sideSection}>{section.label}</div>
-              {section.items.map(m => {
-                const badge = getBadge(m.key);
-                return (
-                  <button
-                    key={m.key}
-                    className={`${styles.sideItem} ${activeMenu === m.key ? styles.sideItemActive : ''}`}
-                    onClick={() => setActiveMenu(m.key)}
-                  >
-                    <span className={styles.sideIcon}>{m.icon}</span>
-                    {m.label}
-                    {badge !== null && badge > 0 && (
-                      <span className={styles.sideBadge}>{badge}</span>
-                    )}
-                  </button>
-                );
-              })}
+          <div className={styles.sidebarMenu}>
+            {SIDE_SECTIONS.map(section => (
+              <div key={section.label}>
+                <div className={styles.sideSection}>{section.label}</div>
+                {section.items.map(m => {
+                  const badge = getBadge(m.key);
+                  return (
+                    <button
+                      key={m.key}
+                      className={`${styles.sideItem} ${activeMenu === m.key ? styles.sideItemActive : ''}`}
+                      onClick={() => setActiveMenu(m.key)}
+                    >
+                      <span className={styles.sideIcon}>{m.icon}</span>
+                      {m.label}
+                      {badge !== null && badge > 0 && (
+                        <span className={styles.sideBadge}>{badge}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+          <div className={styles.sidebarFooter}>
+            <div className={styles.adminStatus}>
+              <span className={styles.adminStatusLabel}>접속</span>
+              <span className={styles.headerClock}>{loginAt || '-'}</span>
             </div>
-          ))}
+          </div>
         </nav>
 
         {/* 메인 컨텐츠 */}
@@ -520,12 +532,12 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
             <div className={styles.modalTitle}>{detailProduct.name}</div>
             <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[
-                { label: '유형',    value: detailProduct.type },
+                { label: '유형', value: detailProduct.type },
                 { label: '카테고리', value: detailProduct.category },
-                { label: '판매자',  value: detailProduct.seller },
-                { label: '가격',    value: `₩${detailProduct.price.toLocaleString()}` },
-                { label: '상태',    value: detailProduct.status },
-                { label: '등록일',  value: detailProduct.registeredAt },
+                { label: '판매자', value: detailProduct.seller },
+                { label: '가격', value: `₩${detailProduct.price.toLocaleString()}` },
+                { label: '상태', value: detailProduct.status },
+                { label: '등록일', value: detailProduct.registeredAt },
               ].map(({ label, value }) => (
                 <div key={label} style={{ display: 'flex', gap: 8, fontSize: 13 }}>
                   <span style={{ width: 70, color: '#8B8FA8', fontWeight: 600, flexShrink: 0 }}>{label}</span>

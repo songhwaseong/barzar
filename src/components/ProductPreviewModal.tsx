@@ -8,6 +8,7 @@ interface PreviewData {
   category: string;
   condition: string;
   auctionStartPrice: string;
+  buyNowPrice?: string;
   minBidUnit?: string;
   tradeMethod: string;
   description: string;
@@ -240,6 +241,12 @@ const ProductPreviewModal: React.FC<Props> = ({ data, onClose }) => {
                 <span className={styles.infoLabel}>경매 시작가</span>
                 <span className={styles.infoValue}>₩ {data.auctionStartPrice || '-'}</span>
               </div>
+              {data.buyNowPrice && (
+                <div className={styles.infoItem}>
+                  <span className={styles.infoLabel}>즉시낙찰가</span>
+                  <span className={styles.infoValue}>₩ {data.buyNowPrice}</span>
+                </div>
+              )}
               {data.minBidUnit && (
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>최소 호가</span>

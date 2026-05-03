@@ -90,32 +90,44 @@ const PCLayout: React.FC<Props> = ({
             {query && <button className={styles.clearBtn} onClick={() => setQuery('')}>✕</button>}
           </div>
           <div className={styles.headerRight}>
-            <button
-              className={`${styles.iconBtn} ${isNavActive('notification') ? styles.iconBtnActive : ''}`}
-              onClick={() => onNavTabChange('notification')}
-            >
-              <div className={styles.iconWrap}>
-                <BellIcon active={isNavActive('notification')} />
-                {notificationCount > 0 && <span className={styles.badge}>{notificationCount}</span>}
-              </div>
-              <span>알림</span>
-            </button>
-            <button
-              className={`${styles.iconBtn} ${isNavActive('my') ? styles.iconBtnActive : ''}`}
-              onClick={() => onNavTabChange('my')}
-            >
-              <UserIcon active={isNavActive('my')} />
-              <span>마이</span>
-            </button>
-            <button className={styles.sellBtn} onClick={onSellClick}>
-              <svg width="13" height="13" fill="none" stroke="#fff" strokeWidth="2.5" viewBox="0 0 24 24">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-              등록
-            </button>
-            {isAdmin && (
-              <button className={styles.adminBtn} onClick={onSwitchToAdmin} title="관리자 화면">🖥️</button>
-            )}
+            <div className={styles.headerNavGroup}>
+              <button
+                className={`${styles.iconBtn} ${isNavActive('notification') ? styles.iconBtnActive : ''}`}
+                onClick={() => onNavTabChange('notification')}
+              >
+                <div className={styles.iconWrap}>
+                  <BellIcon active={isNavActive('notification')} />
+                  {notificationCount > 0 && <span className={styles.badge}>{notificationCount}</span>}
+                </div>
+                <span>알림</span>
+              </button>
+              <button
+                className={`${styles.iconBtn} ${isNavActive('my') ? styles.iconBtnActive : ''}`}
+                onClick={() => onNavTabChange('my')}
+              >
+                <UserIcon active={isNavActive('my')} />
+                <span>마이</span>
+              </button>
+            </div>
+            <div className={styles.headerActionGroup}>
+              <button className={styles.sellBtn} onClick={onSellClick}>
+                <svg width="13" height="13" fill="none" stroke="#fff" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+                등록
+              </button>
+              {isAdmin && (
+                <button className={styles.adminBtn} onClick={onSwitchToAdmin} title="관리자 화면" aria-label="관리자 화면으로 이동">
+                  <svg className={styles.adminIcon} viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="5" width="16" height="11" rx="2" />
+                    <path d="M9 20h6" />
+                    <path d="M12 16v4" />
+                    <path d="M8 9h8" />
+                    <path d="M8 12h5" />
+                  </svg>
+                </button>
+              )}
+            </div>
             {isLoggedIn ? (
               <div className={styles.userDropdownWrap} ref={dropdownRef}>
                 <button
