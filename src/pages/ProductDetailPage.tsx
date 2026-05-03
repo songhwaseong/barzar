@@ -70,7 +70,7 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
             <div className={styles.breadcrumb}>
               <span>홈</span>
               <span>›</span>
-              <span>중고거래</span>
+              <span>경매예정</span>
               <span>›</span>
               <strong>{item.category ?? '전자기기'}</strong>
             </div>

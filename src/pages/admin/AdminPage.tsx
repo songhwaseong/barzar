@@ -279,6 +279,9 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 10;
 
+  // 안내 알림 모달
+  const [alertModal, setAlertModal] = useState<string | null>(null);
+
   // 삭제 확인 모달
   const [deleteTarget, setDeleteTarget] = useState<AdminProduct | null>(null);
 
@@ -296,17 +299,12 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   const [detailProduct, setDetailProduct] = useState<AdminProduct | null>(null);
 
   // ─── 배지 카운트 (사이드바용) ──────────────────────────────────────
-  const suspendedMembers = MEMBERS.filter(m => m.status === 'suspended' || m.status === 'permanent').length;
-
-  const getBadge = (key: MenuKey): number | null => {
-    if (key === '회원 목록') return suspendedMembers;
-    return null;
-  };
+  const getBadge = (_key: MenuKey): number | null => null;
 
   // ─── 검색/드롭다운 필터만 적용 (statFilter 제외) ────────────────
   const baseFiltered = useMemo(() => {
     return products.filter(p => {
-      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.seller.toLowerCase().includes(search.toLowerCase())) return false;
+      if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && !p.seller.toLowerCase().includes(search.toLowerCase()) && !p.productNo.includes(search)) return false;
       if (categoryFilter !== '전체' && p.category !== categoryFilter) return false;
       if (statusFilter !== '전체' && p.status !== statusFilter) return false;
       return true;
@@ -390,10 +388,9 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
 
       <div className={styles.filterBar}>
         <div className={styles.searchWrap}>
-          <span className={styles.searchIcon}>🔍</span>
           <input
             className={styles.searchInput}
-            placeholder="상품명 또는 판매자 검색"
+            placeholder="상품명, 상품번호 또는 판매자 검색"
             value={search}
             onChange={e => { setSearch(e.target.value); setStatFilter(null); setCurrentPage(1); }}
           />
@@ -450,7 +447,13 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                       <select
                         className={styles.statusSelect}
                         value={p.status}
-                        onChange={e => handleStatusChange(p.id, e.target.value as ProductStatus)}
+                        onChange={e => {
+                          if (p.status === '경매예정' && e.target.value === '경매중') {
+                            setAlertModal('경매예정 → 경매중 변경은\n승인 버튼을 통해서만 가능합니다.');
+                            return;
+                          }
+                          handleStatusChange(p.id, e.target.value as ProductStatus);
+                        }}
                       >
                         <>
                           <option value="경매예정">경매예정</option>
@@ -674,6 +677,22 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
               </div>
 
               <div style={{ height: 32 }}/>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 안내 알림 모달 */}
+      {alertModal && (
+        <div className={styles.modalOverlay} onClick={() => setAlertModal(null)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalIcon}>⚠️</div>
+            <div className={styles.modalTitle}>변경 불가</div>
+            <div className={styles.modalDesc}>
+              {alertModal.split('\n').map((line, i) => <span key={i}>{line}<br /></span>)}
+            </div>
+            <div className={styles.modalBtns}>
+              <button className={styles.modalApproveBtn} onClick={() => setAlertModal(null)}>확인</button>
             </div>
           </div>
         </div>

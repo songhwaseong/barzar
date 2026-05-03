@@ -13,6 +13,13 @@ const PurchaseHistoryPage: React.FC<Props> = ({ onBack }) => {
   const [tab, setTab] = useState('구매완료');
   const items = tab === '구매완료' ? PRODUCTS.slice(0, 3) : PRODUCTS.slice(3);
 
+  const ThumbUp = ({ filled }: { filled: boolean }) => (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8">
+      <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
+      <path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+    </svg>
+  );
+
   const [reviewedIds, setReviewedIds] = useState<number[]>([]);
   const [modalProduct, setModalProduct] = useState<{ id: number; name: string } | null>(null);
   const [stars, setStars] = useState(0);
@@ -27,7 +34,7 @@ const PurchaseHistoryPage: React.FC<Props> = ({ onBack }) => {
   const closeModal = () => setModalProduct(null);
 
   const handleSubmit = () => {
-    if (stars === 0) { showToast('별점을 선택해주세요', 'warning'); return; }
+    if (stars === 0) { showToast('평가를 선택해주세요', 'warning'); return; }
     if (reviewText.trim().length < 10) { showToast('후기를 10자 이상 입력해주세요', 'warning'); return; }
     const today = new Date();
     const date = `${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
@@ -87,15 +94,15 @@ const PurchaseHistoryPage: React.FC<Props> = ({ onBack }) => {
                 <p className={modalStyles.productName}>📦 {modalProduct.name}</p>
                 <div className={modalStyles.starsRow}>
                   {[1,2,3,4,5].map(n => (
-                    <button key={n} className={modalStyles.starBtn}
+                    <button key={n} className={`${modalStyles.starBtn} ${(hoverStar||stars)>=n ? modalStyles.starOn : modalStyles.starOff}`}
                       onMouseEnter={()=>setHoverStar(n)} onMouseLeave={()=>setHoverStar(0)}
                       onClick={()=>setStars(n)}>
-                      <span className={(hoverStar||stars)>=n ? modalStyles.starOn : modalStyles.starOff}>★</span>
+                      <ThumbUp filled={(hoverStar||stars)>=n} />
                     </button>
                   ))}
                 </div>
                 <p className={modalStyles.starLabel}>
-                  {[,'별로예요','그저 그래요','보통이에요','좋아요','최고예요! 🎉'][(hoverStar||stars)] ?? '별점을 선택해주세요'}
+                  {[,'별로예요','그저 그래요','보통이에요','좋아요','최고예요! 🎉'][(hoverStar||stars)] ?? '평가를 선택해주세요'}
                 </p>
                 <textarea
                   className={modalStyles.textarea}

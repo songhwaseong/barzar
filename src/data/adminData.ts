@@ -115,6 +115,66 @@ export const SANCTIONS: Sanction[] = [
     adminNote: '1차 경고 처리. 재발 시 계정 정지.',
     createdAt: '2026.04.20 10:00',
   },
+  {
+    id: 4, memberNo: '2024031500002', memberName: '이영희',
+    type: 'warning', reason: '허위 후기 작성 신고 접수',
+    adminNote: '경고 1회 부여. 추가 위반 시 정지 예정.',
+    createdAt: '2026.04.15 11:20',
+  },
+  {
+    id: 5, memberNo: '2025011500234', memberName: '김민준',
+    type: 'suspend_7', reason: '반복 입찰 취소 (3회 이상)',
+    adminNote: '7일 정지. 추가 시 30일 정지.',
+    createdAt: '2026.04.28 16:00', expiresAt: '2026.05.05',
+  },
+  {
+    id: 6, memberNo: '2024112800778', memberName: '정도윤',
+    type: 'warning', reason: '허위 계정 의심 입찰 행위',
+    adminNote: '경고 조치. 계정 모니터링 강화.',
+    createdAt: '2026.04.24 09:30',
+  },
+  {
+    id: 7, memberNo: '2024070100027', memberName: '오준혁',
+    type: 'suspend_7', reason: '욕설 및 협박 채팅',
+    adminNote: '신고 내용 확인 후 7일 정지 조치.',
+    createdAt: '2026.04.25 17:00', expiresAt: '2026.05.02',
+  },
+  {
+    id: 8, memberNo: '2024050100013', memberName: '강동원',
+    type: 'warning', reason: '타인 개인정보 무단 공개',
+    adminNote: '후기에 전화번호 공개. 경고 및 게시물 삭제.',
+    createdAt: '2026.04.10 14:00',
+  },
+  {
+    id: 9, memberNo: '2024082000032', memberName: '청소러버2',
+    type: 'permanent', reason: '다중 거래 미발송 사기 (피해액 180만원)',
+    adminNote: '피해자 3인 신고. 조사 완료 후 영구 정지.',
+    createdAt: '2026.04.26 12:00',
+  },
+  {
+    id: 10, memberNo: '2024100100041', memberName: '스니커즈1',
+    type: 'suspend_7', reason: '제재 계정 재가입 시도',
+    adminNote: '기기 핑거프린트 동일 확인. 7일 정지.',
+    createdAt: '2026.04.28 23:59', expiresAt: '2026.05.05',
+  },
+  {
+    id: 11, memberNo: '2025030601102', memberName: '박지훈',
+    type: 'suspend_30', reason: '낙찰 후 결제 미이행 3회',
+    adminNote: '3회 누적 미이행. 30일 정지 조치.',
+    createdAt: '2026.04.26 18:00', expiresAt: '2026.05.26',
+  },
+  {
+    id: 12, memberNo: '2024071200456', memberName: '최수아',
+    type: 'warning', reason: '단시간 연속 입찰 (비정상 패턴)',
+    adminNote: '1차 경고. 이상 행동 지속 시 정지 예정.',
+    createdAt: '2026.04.25 11:30',
+  },
+  {
+    id: 13, memberNo: '2024080100030', memberName: '류지호',
+    type: 'warning', reason: '가품 의심 상품 등록',
+    adminNote: '경고 조치 후 해당 상품 숨김 처리.',
+    createdAt: '2026.04.01 10:00',
+  },
 ];
 
 export const SUSPICIOUS_CASES: SuspiciousCase[] = [

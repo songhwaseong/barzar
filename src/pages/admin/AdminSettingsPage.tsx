@@ -21,7 +21,6 @@ const AdminSettingsPage: React.FC<Props> = ({ idleMinutes, onChangeIdleMinutes }
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <span className={styles.sectionIcon}>⏱️</span>
           <div>
             <div className={styles.sectionTitle}>자동 로그아웃 시간</div>
             <div className={styles.sectionDesc}>지정한 시간 동안 입력이 없으면 자동으로 로그아웃됩니다.</div>

@@ -26,17 +26,17 @@
   margin-bottom: 20px; font-weight: 500;
 }
 
-/* 별점 */
+/* 엄지 평가 */
 .starsRow {
   display: flex; justify-content: center; gap: 8px; margin-bottom: 8px;
 }
 .starBtn {
-  background: none; border: none; cursor: pointer; padding: 4px; line-height: 1;
+  background: none; border: none; cursor: pointer; padding: 6px;
+  transition: transform 0.1s;
 }
-.starOn  { font-size: 36px; color: #FFBB00; display: block; transition: transform 0.1s; }
-.starOff { font-size: 36px; color: #E0E0E0; display: block; transition: transform 0.1s; }
-.starBtn:hover .starOn,
-.starBtn:hover .starOff { transform: scale(1.2); }
+.starOn  { color: #E24B4A; }
+.starOff { color: #E0E0E0; }
+.starBtn:hover { transform: scale(1.2); }
 
 .starLabel {
   text-align: center; font-size: 13px; font-weight: 600;

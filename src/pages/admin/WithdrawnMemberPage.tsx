@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import { MEMBERS } from '../../data/memberData';
 import styles from './admin.module.css';
 
+const PAGE_SIZE = 5;
+
 const WithdrawnMemberPage: React.FC = () => {
   const withdrawn = MEMBERS.filter(m => m.status === 'withdrawn');
   const [selected, setSelected] = useState<typeof withdrawn[0] | null>(null);
   const [purgeConfirm, setPurgeConfirm] = useState(false);
   const [purged, setPurged] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(withdrawn.length / PAGE_SIZE);
+  const paged = withdrawn.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handlePurge = (memberNo: string) => {
     setPurged(prev => new Set([...prev, memberNo]));
@@ -56,7 +62,7 @@ const WithdrawnMemberPage: React.FC = () => {
           {withdrawn.length === 0 && (
             <tr><td colSpan={7} className={styles.emptyText}>탈퇴 회원이 없습니다</td></tr>
           )}
-          {withdrawn.map(m => {
+          {paged.map(m => {
             const isPurged = purged.has(m.memberNo);
             return (
               <tr key={m.memberNo}>
@@ -93,6 +99,16 @@ const WithdrawnMemberPage: React.FC = () => {
           })}
         </tbody>
       </table>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginTop: 16 }}>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === 1 ? '#F5F5F5' : '#fff', color: page === 1 ? '#ccc' : '#4A4A6A', cursor: page === 1 ? 'default' : 'pointer', fontSize: 13 }}>이전</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+            <button key={n} onClick={() => setPage(n)} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === n ? '#E24B4A' : '#fff', color: page === n ? '#fff' : '#4A4A6A', fontWeight: page === n ? 700 : 400, cursor: 'pointer', fontSize: 13 }}>{n}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === totalPages ? '#F5F5F5' : '#fff', color: page === totalPages ? '#ccc' : '#4A4A6A', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 13 }}>다음</button>
+        </div>
+      )}
 
       {purgeConfirm && selected && (
         <div className={styles.overlay} onClick={() => { setPurgeConfirm(false); setSelected(null); }}>

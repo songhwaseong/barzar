@@ -20,10 +20,16 @@ const SANCTION_TYPES: { value: Sanction['type']; label: string }[] = [
   { value: 'permanent', label: '영구 정지' },
 ];
 
+const PAGE_SIZE = 5;
+
 const SanctionPage: React.FC = () => {
   const [list, setList] = useState<Sanction[]>(SANCTIONS);
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ memberNo: '', memberName: '', type: 'warning' as Sanction['type'], reason: '', adminNote: '' });
+  const [page, setPage] = useState(1);
+
+  const totalPages = Math.ceil(list.length / PAGE_SIZE);
+  const paged = list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const handleAdd = () => {
     if (!form.memberNo || !form.reason) { alert('회원번호와 사유를 입력해주세요'); return; }
@@ -83,7 +89,7 @@ const SanctionPage: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {list.map(s => (
+          {paged.map(s => (
             <tr key={s.id}>
               <td style={{ fontSize: 12 }}>{s.memberNo}</td>
               <td style={{ fontWeight: 500 }}>{s.memberName}</td>
@@ -96,6 +102,16 @@ const SanctionPage: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginTop: 16 }}>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === 1 ? '#F5F5F5' : '#fff', color: page === 1 ? '#ccc' : '#4A4A6A', cursor: page === 1 ? 'default' : 'pointer', fontSize: 13 }}>이전</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+            <button key={n} onClick={() => setPage(n)} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === n ? '#E24B4A' : '#fff', color: page === n ? '#fff' : '#4A4A6A', fontWeight: page === n ? 700 : 400, cursor: 'pointer', fontSize: 13 }}>{n}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === totalPages ? '#F5F5F5' : '#fff', color: page === totalPages ? '#ccc' : '#4A4A6A', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 13 }}>다음</button>
+        </div>
+      )}
 
       {/* 제재 추가 모달 */}
       {showAdd && (

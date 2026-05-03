@@ -9,6 +9,13 @@ const ReceivedReviewsPage: React.FC<Props> = ({ onBack }) => {
   const [, forceUpdate] = useState(0);
   const reviews = reviewStore;
 
+  const ThumbUp = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
+      <path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+    </svg>
+  );
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
@@ -23,7 +30,7 @@ const ReceivedReviewsPage: React.FC<Props> = ({ onBack }) => {
       <div className={styles.list}>
         {reviews.length === 0 ? (
           <div className={styles.empty}>
-            <p style={{fontSize:40}}>⭐</p>
+            <p style={{ fontSize: 40, color: '#E24B4A' }}>👍</p>
             <p className={styles.emptyText}>아직 받은 후기가 없어요</p>
           </div>
         ) : reviews.map(r => (
@@ -32,7 +39,9 @@ const ReceivedReviewsPage: React.FC<Props> = ({ onBack }) => {
               <span className={styles.reviewUser}>{r.user}</span>
               <span className={styles.reviewDate}>{r.date}</span>
             </div>
-            <div className={styles.stars}>{'⭐'.repeat(r.stars)}</div>
+            <div className={styles.stars} style={{ display: 'flex', gap: 3, color: '#E24B4A' }}>
+              {Array.from({ length: r.stars }).map((_, i) => <ThumbUp key={i} />)}
+            </div>
             <p className={styles.reviewText}>{r.text}</p>
             <p className={styles.reviewProduct}>📦 {r.product}</p>
           </div>

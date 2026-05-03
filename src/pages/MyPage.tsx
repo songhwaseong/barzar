@@ -3,34 +3,51 @@ import styles from './MyPage.module.css';
 
 type MenuKey = '판매 내역'|'구매 내역'|'입찰 내역'|'관심 목록'|'내 계좌'|'받은 후기'|'내 주소 관리'|'알림 설정'|'자주 묻는 질문'|'고객센터'|'이용약관'|'배송 조회'|'이용 가이드'|'내 등록 상품';
 
-const MENU_GROUPS: { title: string; items: { emoji: string; label: MenuKey }[] }[] = [
+const MENU_ICONS: Record<MenuKey, React.ReactNode> = {
+  '내 등록 상품': <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+  '판매 내역':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M20 7H4a1 1 0 00-1 1v10a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>,
+  '구매 내역':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>,
+  '입찰 내역':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M14.5 2.5l7 7-10 10-3.5-3.5"/><path d="M5 17l-3 3"/><path d="M17.5 6.5l-11 11"/></svg>,
+  '관심 목록':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+  '배송 조회':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>,
+  '내 계좌':      <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
+  '받은 후기':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>,
+  '내 주소 관리': <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+  '알림 설정':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>,
+  '이용 가이드':  <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+  '자주 묻는 질문':<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+  '고객센터':     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.9 10.81 19.79 19.79 0 01.86 2.18 2 2 0 012.83 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 7.91a16 16 0 006 6l.98-.98a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.18v1.74z"/></svg>,
+  '이용약관':     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
+};
+
+const MENU_GROUPS: { title: string; items: { label: MenuKey }[] }[] = [
   {
     title: '나의 거래',
     items: [
-      { emoji: '🏷️', label: '내 등록 상품' },
-      { emoji: '📦', label: '판매 내역' },
-      { emoji: '🛒', label: '구매 내역' },
-      { emoji: '🔨', label: '입찰 내역' },
-      { emoji: '❤️', label: '관심 목록' },
-      { emoji: '🚚', label: '배송 조회' },
+      { label: '내 등록 상품' },
+      { label: '판매 내역' },
+      { label: '구매 내역' },
+      { label: '입찰 내역' },
+      { label: '관심 목록' },
+      { label: '배송 조회' },
     ],
   },
   {
     title: '나의 계정',
     items: [
-      { emoji: '💰', label: '내 계좌' },
-      { emoji: '⭐', label: '받은 후기' },
-      { emoji: '📍', label: '내 주소 관리' },
-      { emoji: '🔔', label: '알림 설정' },
+      { label: '내 계좌' },
+      { label: '받은 후기' },
+      { label: '내 주소 관리' },
+      { label: '알림 설정' },
     ],
   },
   {
     title: '고객지원',
     items: [
-      { emoji: '📖', label: '이용 가이드' },
-      { emoji: '❓', label: '자주 묻는 질문' },
-      { emoji: '📞', label: '고객센터' },
-      { emoji: '📄', label: '이용약관' },
+      { label: '이용 가이드' },
+      { label: '자주 묻는 질문' },
+      { label: '고객센터' },
+      { label: '이용약관' },
     ],
   },
 ];
@@ -83,7 +100,7 @@ const MyPage: React.FC<Props> = ({ onLogout, onMenuClick, onEditProfile }) => {
           <p className={styles.groupTitle}>{group.title}</p>
           {group.items.map((item) => (
             <button key={item.label} className={styles.menuItem} onClick={() => onMenuClick?.(item.label)}>
-              <span className={styles.menuEmoji}>{item.emoji}</span>
+              <span className={styles.menuIcon}>{MENU_ICONS[item.label]}</span>
               <span className={styles.menuLabel}>{item.label}</span>
               <svg width="16" height="16" fill="none" stroke="#B4B2A9" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M9 18l6-6-6-6"/>

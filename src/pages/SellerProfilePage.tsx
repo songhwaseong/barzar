@@ -45,6 +45,12 @@ const SellerProfilePage: React.FC<Props> = ({ seller, onBack, onProductClick }) 
   const displayProducts = sellerProducts.length > 0 ? sellerProducts : PRODUCTS.slice(0, 2);
 
   const avgStars = (REVIEWS.reduce((sum, r) => sum + r.stars, 0) / REVIEWS.length).toFixed(1);
+  const ThumbUp = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ display: 'inline', verticalAlign: 'middle' }}>
+      <path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/>
+      <path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/>
+    </svg>
+  );
 
   return (
     <div className={styles.page}>
@@ -150,7 +156,9 @@ const SellerProfilePage: React.FC<Props> = ({ seller, onBack, onProductClick }) 
                   </div>
                   <span className={styles.reviewDate}>{r.date}</span>
                 </div>
-                <div className={styles.stars}>{'⭐'.repeat(r.stars)}</div>
+                <div className={styles.stars} style={{ display: 'flex', gap: 3, color: '#E24B4A' }}>
+                  {Array.from({ length: r.stars }).map((_, i) => <ThumbUp key={i} />)}
+                </div>
                 <p className={styles.reviewText}>{r.text}</p>
               </div>
             ))}
@@ -158,12 +166,6 @@ const SellerProfilePage: React.FC<Props> = ({ seller, onBack, onProductClick }) 
         )}
       </div>
 
-      {/* 하단 버튼 */}
-      <div className={styles.actionBar}>
-        <button className={styles.chatBtn}>
-          💬 채팅하기
-        </button>
-      </div>
     </div>
   );
 };

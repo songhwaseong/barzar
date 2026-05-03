@@ -13,12 +13,22 @@ interface Notice {
 }
 
 const INITIAL_NOTICES: Notice[] = [
-  { id: 1, title: '5월 황금연휴 고객센터 운영 안내', category: '서비스', status: '게시중', isPinned: true,  author: 'admin', createdAt: '2026.04.28', content: '5월 1일~5일 황금연휴 기간 고객센터는 이메일 접수만 운영됩니다. 답변은 5월 6일(수)부터 순차 처리됩니다.' },
-  { id: 2, title: '[이벤트] 봄맞이 경매 수수료 50% 할인', category: '이벤트', status: '게시중', isPinned: true,  author: 'manager', createdAt: '2026.04.25', content: '4월 25일~5월 10일까지 경매 낙찰 수수료를 50% 할인합니다. 이 기간 낙찰된 모든 경매에 자동 적용됩니다.' },
-  { id: 3, title: '서버 정기점검 안내 (4/30 02:00~04:00)', category: '점검', status: '게시중', isPinned: false, author: 'admin', createdAt: '2026.04.23', content: '4월 30일 새벽 2시~4시 서버 정기점검이 진행됩니다. 해당 시간 중 서비스 이용이 불가합니다.' },
-  { id: 4, title: '개인정보처리방침 개정 안내 (시행일: 5/1)', category: '정책', status: '게시중', isPinned: false, author: 'admin', createdAt: '2026.04.20', content: '개인정보처리방침이 일부 개정됩니다. 주요 변경사항은 마케팅 정보 수신 동의 항목 세분화입니다.' },
-  { id: 5, title: '[예정] 6월 앱 업데이트 주요 변경사항', category: '서비스', status: '예약',  isPinned: false, author: 'manager', createdAt: '2026.04.18', content: '6월 업데이트에서는 실시간 경매 알림 기능과 판매자 등급 시스템이 도입될 예정입니다.' },
-  { id: 6, title: '가품 판매 근절 정책 강화 안내',            category: '정책', status: '숨김',  isPinned: false, author: 'admin', createdAt: '2026.04.10', content: '가품 신고 1회 확인 시 즉시 30일 정지, 2회 시 영구정지로 정책이 강화됩니다.' },
+  { id: 1,  title: '5월 황금연휴 고객센터 운영 안내',             category: '서비스', status: '게시중', isPinned: true,  author: 'admin',   createdAt: '2026.04.28', content: '5월 1일~5일 황금연휴 기간 고객센터는 이메일 접수만 운영됩니다. 답변은 5월 6일(수)부터 순차 처리됩니다.' },
+  { id: 2,  title: '[이벤트] 봄맞이 경매 수수료 50% 할인',        category: '이벤트', status: '게시중', isPinned: true,  author: 'manager', createdAt: '2026.04.25', content: '4월 25일~5월 10일까지 경매 낙찰 수수료를 50% 할인합니다. 이 기간 낙찰된 모든 경매에 자동 적용됩니다.' },
+  { id: 3,  title: '서버 정기점검 안내 (4/30 02:00~04:00)',      category: '점검',   status: '게시중', isPinned: false, author: 'admin',   createdAt: '2026.04.23', content: '4월 30일 새벽 2시~4시 서버 정기점검이 진행됩니다. 해당 시간 중 서비스 이용이 불가합니다.' },
+  { id: 4,  title: '개인정보처리방침 개정 안내 (시행일: 5/1)',    category: '정책',   status: '게시중', isPinned: false, author: 'admin',   createdAt: '2026.04.20', content: '개인정보처리방침이 일부 개정됩니다. 주요 변경사항은 마케팅 정보 수신 동의 항목 세분화입니다.' },
+  { id: 5,  title: '[예정] 6월 앱 업데이트 주요 변경사항',        category: '서비스', status: '예약',   isPinned: false, author: 'manager', createdAt: '2026.04.18', content: '6월 업데이트에서는 실시간 경매 알림 기능과 판매자 등급 시스템이 도입될 예정입니다.' },
+  { id: 6,  title: '가품 판매 근절 정책 강화 안내',               category: '정책',   status: '숨김',   isPinned: false, author: 'admin',   createdAt: '2026.04.10', content: '가품 신고 1회 확인 시 즉시 30일 정지, 2회 시 영구정지로 정책이 강화됩니다.' },
+  { id: 7,  title: '입찰 취소 페널티 정책 안내',                  category: '정책',   status: '게시중', isPinned: false, author: 'admin',   createdAt: '2026.04.08', content: '낙찰 후 24시간 내 미결제 시 1회 경고, 3회 누적 시 30일 입찰 제한이 부과됩니다.' },
+  { id: 8,  title: '[이벤트] 첫 경매 낙찰 시 포인트 5,000점 지급', category: '이벤트', status: '게시중', isPinned: false, author: 'manager', createdAt: '2026.04.05', content: '5월 31일까지 첫 경매 낙찰에 성공한 회원에게 포인트 5,000점을 지급합니다. 자동 적용됩니다.' },
+  { id: 9,  title: '5월 서버 점검 일정 사전 공지',               category: '점검',   status: '예약',   isPinned: false, author: 'admin',   createdAt: '2026.04.03', content: '5월 중 정기 점검 2회가 예정되어 있습니다. 일정 확정 시 개별 공지 예정입니다.' },
+  { id: 10, title: '판매자 등급 시스템 도입 예고',                category: '서비스', status: '예약',   isPinned: false, author: 'manager', createdAt: '2026.03.30', content: '6월 업데이트부터 거래 완료 건수와 매너 온도를 기반으로 한 판매자 등급제가 시행됩니다.' },
+  { id: 11, title: '회원 이용약관 일부 개정 안내',                category: '정책',   status: '게시중', isPinned: false, author: 'admin',   createdAt: '2026.03.25', content: '분쟁 해결 및 환불 정책 관련 약관 조항이 일부 개정됩니다. 시행일은 2026년 5월 1일입니다.' },
+  { id: 12, title: '[점검] 4/15 새벽 DB 최적화 작업',            category: '점검',   status: '숨김',   isPinned: false, author: 'admin',   createdAt: '2026.03.20', content: '4월 15일 새벽 1시~3시 DB 최적화 작업이 진행됩니다. 일부 조회 기능이 느릴 수 있습니다.' },
+  { id: 13, title: '[이벤트] 친구 초대 시 포인트 지급',           category: '이벤트', status: '게시중', isPinned: false, author: 'manager', createdAt: '2026.03.15', content: '친구 초대 링크로 가입한 신규 회원과 초대한 회원 모두에게 포인트 3,000점을 지급합니다.' },
+  { id: 14, title: '경매 즉시낙찰가 제도 안내',                   category: '서비스', status: '게시중', isPinned: false, author: 'admin',   createdAt: '2026.03.10', content: '판매자가 설정한 즉시낙찰가로 입찰 시 경매가 즉시 종료됩니다. 상품 상세 페이지에서 확인하세요.' },
+  { id: 15, title: '개인정보 보호 강화 조치 안내',                category: '정책',   status: '숨김',   isPinned: false, author: 'admin',   createdAt: '2026.03.05', content: '회원 개인정보 보호를 위해 비활성 계정의 개인정보 처리 방식이 변경됩니다.' },
+  { id: 16, title: '[서비스] 실시간 채팅 기능 업데이트',           category: '서비스', status: '게시중', isPinned: false, author: 'manager', createdAt: '2026.03.01', content: '채팅 내 이미지 첨부 기능과 읽음 확인 기능이 추가되었습니다. 최신 앱 버전으로 업데이트해주세요.' },
 ];
 
 const CATEGORIES = ['서비스', '이벤트', '점검', '정책'] as const;
@@ -48,6 +58,8 @@ const statusBg: Record<Notice['status'], string> = {
   '숨김':   '#F0F1F4',
 };
 
+const PAGE_SIZE = 5;
+
 const NoticePage: React.FC = () => {
   const [notices, setNotices] = useState<Notice[]>(INITIAL_NOTICES);
   const [filterStatus, setFilterStatus] = useState<string>('전체');
@@ -56,12 +68,16 @@ const NoticePage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<Partial<Notice>>({});
   const [deleteTarget, setDeleteTarget] = useState<Notice | null>(null);
+  const [page, setPage] = useState(1);
 
   const filtered = notices.filter(n => {
     if (filterStatus !== '전체' && n.status !== filterStatus) return false;
     if (filterCategory !== '전체' && n.category !== filterCategory) return false;
     return true;
   });
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const openNew = () => {
     setEditForm({ title: '', category: '서비스', status: '게시중', isPinned: false, content: '', author: 'admin' });
@@ -117,7 +133,7 @@ const NoticePage: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, flexWrap: 'wrap', gap: 8 }}>
         <select
           value={filterCategory}
-          onChange={e => setFilterCategory(e.target.value)}
+          onChange={e => { setFilterCategory(e.target.value); setPage(1); }}
           style={{ padding: '8px 12px', border: '1px solid #E0E0E0', borderRadius: 8, fontSize: 13, color: '#4A4A6A', background: '#fff', cursor: 'pointer', fontFamily: 'Noto Sans KR, sans-serif', outline: 'none', minWidth: 130 }}
         >
           {['전체', ...CATEGORIES].map(v => <option key={v}>{v}</option>)}
@@ -134,7 +150,7 @@ const NoticePage: React.FC = () => {
         <tbody>
           {filtered.length === 0 ? (
             <tr><td colSpan={6} className={s.emptyText}>공지사항이 없습니다.</td></tr>
-          ) : filtered.map(n => (
+          ) : paged.map(n => (
             <tr key={n.id}>
               <td>
                 <span style={{ fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 6, background: categoryBg[n.category], color: categoryColor[n.category] }}>{n.category}</span>
@@ -158,6 +174,16 @@ const NoticePage: React.FC = () => {
           ))}
         </tbody>
       </table>
+
+      {totalPages > 1 && (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, marginTop: 16 }}>
+          <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === 1 ? '#F5F5F5' : '#fff', color: page === 1 ? '#ccc' : '#4A4A6A', cursor: page === 1 ? 'default' : 'pointer', fontSize: 13 }}>이전</button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(n => (
+            <button key={n} onClick={() => setPage(n)} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === n ? '#E24B4A' : '#fff', color: page === n ? '#fff' : '#4A4A6A', fontWeight: page === n ? 700 : 400, cursor: 'pointer', fontSize: 13 }}>{n}</button>
+          ))}
+          <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={{ padding: '6px 12px', borderRadius: 6, border: '1px solid #E0E0E0', background: page === totalPages ? '#F5F5F5' : '#fff', color: page === totalPages ? '#ccc' : '#4A4A6A', cursor: page === totalPages ? 'default' : 'pointer', fontSize: 13 }}>다음</button>
+        </div>
+      )}
 
       {/* 상세 보기 모달 */}
       {selected && !isEditing && (

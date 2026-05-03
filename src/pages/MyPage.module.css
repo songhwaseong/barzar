@@ -120,7 +120,12 @@
 .menuItem:last-child { border-bottom: none; }
 .menuItem:active { background: #F4F5F7; }
 
-.menuEmoji { font-size: 18px; width: 24px; text-align: center; }
+.menuIcon {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: #F4F5F7; border-radius: 8px;
+  color: #555; flex-shrink: 0;
+}
 .menuLabel { flex: 1; font-size: 14px; color: var(--text); font-weight: 400; }
 
 .logoutBtn {
