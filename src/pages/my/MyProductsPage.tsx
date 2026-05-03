@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { myProductStore, deleteMyProduct } from '../../data/myProductStore';
+import { myProductStore, deleteMyProduct, updateMyProduct } from '../../data/myProductStore';
 import type { MyProduct } from '../../data/myProductStore';
 import styles from './MySubPage.module.css';
 import editStyles from './MyProductsPage.module.css';
 import LeaveConfirmModal from '../../components/LeaveConfirmModal';
+import { useToast } from '../../components/Toast';
 
-const TABS = ['전체', '경매예정', '낙찰', '숨김'];
+const TABS = ['전체', '경매예정', '승인요청중', '경매중', '낙찰', '유찰', '숨김'];
 
 interface Props {
   onBack: () => void;
@@ -13,22 +14,49 @@ interface Props {
 }
 
 const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
+  const { showToast } = useToast();
   const [tab, setTab] = useState('전체');
   const [, forceUpdate] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState<MyProduct | null>(null);
+  const [hideTarget, setHideTarget] = useState<MyProduct | null>(null);
+  const [approveTarget, setApproveTarget] = useState<MyProduct | null>(null);
 
   const items = tab === '전체'
     ? myProductStore
     : myProductStore.filter(p => p.status === tab);
 
-  const statusColor = (s: MyProduct['status']) =>
-    s === '경매예정' ? styles.statusOn : s === '낙찰' ? styles.statusDone : styles.statusHidden;
+  const statusColor = (s: MyProduct['status']) => {
+    if (s === '경매예정') return styles.statusOn;
+    if (s === '승인요청중') return styles.statusApproving;
+    if (s === '경매중') return styles.statusAuctioning;
+    if (s === '낙찰') return styles.statusDone;
+    if (s === '유찰') return styles.statusFailed;
+    return styles.statusHidden;
+  };
+
+  const refresh = () => forceUpdate(n => n + 1);
 
   const handleDelete = () => {
     if (!deleteTarget) return;
     deleteMyProduct(deleteTarget.id);
     setDeleteTarget(null);
-    forceUpdate(n => n + 1);
+    refresh();
+  };
+
+  const handleHide = () => {
+    if (!hideTarget) return;
+    updateMyProduct({ ...hideTarget, status: '숨김' });
+    setHideTarget(null);
+    refresh();
+    showToast('상품이 숨김 처리됐어요.', 'info');
+  };
+
+  const handleApprove = () => {
+    if (!approveTarget) return;
+    updateMyProduct({ ...approveTarget, status: '승인요청중' });
+    setApproveTarget(null);
+    refresh();
+    showToast('승인 요청이 완료됐어요. 검토 후 경매가 시작돼요.', 'success');
   };
 
   return (
@@ -61,8 +89,16 @@ const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
             <div className={styles.tradeActions}>
               <span className={`${styles.statusBadge} ${statusColor(p.status)}`}>{p.status}</span>
               <div className={editStyles.btnRow}>
-                <button className={editStyles.editBtn} onClick={() => onEdit(p)}>수정</button>
+                {(p.status === '숨김' || p.status === '유찰') && (
+                  <button className={editStyles.editBtn} onClick={() => onEdit(p)}>수정</button>
+                )}
                 {p.status === '경매예정' && (
+                  <>
+                    <button className={editStyles.hideBtn} onClick={() => setHideTarget(p)}>숨김</button>
+                    <button className={editStyles.approveBtn} onClick={() => setApproveTarget(p)}>승인요청</button>
+                  </>
+                )}
+                {p.status === '유찰' && (
                   <button className={editStyles.deleteBtn} onClick={() => setDeleteTarget(p)}>삭제</button>
                 )}
               </div>
@@ -76,7 +112,6 @@ const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
         )}
       </div>
 
-      {/* 삭제 확인 모달 */}
       {deleteTarget && (
         <LeaveConfirmModal
           message={`'${deleteTarget.title}'\n상품을 삭제하시겠어요?`}
@@ -84,6 +119,26 @@ const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
           cancelLabel="취소"
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
+        />
+      )}
+
+      {hideTarget && (
+        <LeaveConfirmModal
+          message={`'${hideTarget.title}'\n상품을 숨김 처리하시겠어요?`}
+          confirmLabel="숨김 처리"
+          cancelLabel="취소"
+          onConfirm={handleHide}
+          onCancel={() => setHideTarget(null)}
+        />
+      )}
+
+      {approveTarget && (
+        <LeaveConfirmModal
+          message={`'${approveTarget.title}'\n경매 승인을 요청하시겠어요?\n검토 후 경매가 시작돼요.`}
+          confirmLabel="승인 요청"
+          cancelLabel="취소"
+          onConfirm={handleApprove}
+          onCancel={() => setApproveTarget(null)}
         />
       )}
     </div>

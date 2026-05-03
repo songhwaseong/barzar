@@ -17,7 +17,7 @@ import type { IdleMinutes } from './AdminSettingsPage';
 import styles from './AdminPage.module.css';
 
 // ─── 관리자용 통합 상품 타입 ───────────────────────────────────────────
-type TradeStatus = '경매예정' | '낙찰' | '숨김';
+type TradeStatus = '경매예정' | '승인요청중' | '낙찰' | '숨김';
 type AuctionStatus = '경매중' | '낙찰' | '유찰' | '숨김';
 type ProductStatus = TradeStatus | AuctionStatus;
 
@@ -298,6 +298,21 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   // 상품 상세 모달
   const [detailProduct, setDetailProduct] = useState<AdminProduct | null>(null);
 
+  // 입찰 이력 모달
+  const [bidHistoryTarget, setBidHistoryTarget] = useState<AdminProduct | null>(null);
+
+  const BIDDERS = ['운동화마니아', '코딩러버', '사진작가K', '기타리스트', '워치컬렉터', '뷰티러버', '패션킹', '게이머Z', '오디오파일', '홈퍼니싱'];
+  const getMockBids = (product: AdminProduct) => {
+    const seed = product.price;
+    const count = 3 + (seed % 5);
+    return Array.from({ length: count }, (_, i) => ({
+      rank: i + 1,
+      bidder: BIDDERS[(seed + i * 3) % BIDDERS.length],
+      amount: product.price - i * Math.round(product.price * 0.03),
+      time: `2026.05.${String(3 - Math.floor(i / 3)).padStart(2, '0')} ${String(14 - i).padStart(2, '0')}:${String((seed + i * 7) % 60).padStart(2, '0')}`,
+    }));
+  };
+
   // ─── 배지 카운트 (사이드바용) ──────────────────────────────────────
   const getBadge = (_key: MenuKey): number | null => null;
 
@@ -317,6 +332,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
     trade: baseFiltered.filter(p => p.type === '중고거래').length,
     auction: baseFiltered.filter(p => p.type === '경매').length,
     selling: baseFiltered.filter(p => p.status === '경매예정').length,
+    approving: baseFiltered.filter(p => p.status === '승인요청중').length,
     inBid: baseFiltered.filter(p => p.status === '경매중').length,
     won: baseFiltered.filter(p => p.status === '낙찰').length,
     failed: baseFiltered.filter(p => p.status === '유찰').length,
@@ -326,11 +342,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   // ─── 필터링된 상품 목록 (statFilter 추가 적용) ───────────────────
   const filtered = useMemo(() => {
     return baseFiltered.filter(p => {
-      if (statFilter === '경매예정' && p.status !== '경매예정') return false;
-      if (statFilter === '경매중' && p.status !== '경매중') return false;
-      if (statFilter === '낙찰' && p.status !== '낙찰') return false;
-      if (statFilter === '유찰' && p.status !== '유찰') return false;
-      if (statFilter === '숨김' && p.status !== '숨김') return false;
+      if (statFilter && p.status !== statFilter) return false;
       return true;
     });
   }, [baseFiltered, statFilter]);
@@ -363,6 +375,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
         {[
           { key: null, label: '전체 상품', value: stats.total },
           { key: '경매예정', label: '경매예정', value: stats.selling },
+          { key: '승인요청중', label: '승인요청', value: stats.approving },
           { key: '경매중', label: '경매중', value: stats.inBid },
           { key: '낙찰', label: '낙찰', value: stats.won },
           { key: '유찰', label: '유찰', value: stats.failed },
@@ -399,7 +412,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
           {CATEGORY_OPTIONS.map(c => <option key={c}>{c}</option>)}
         </select>
         <select className={styles.filterSelect} value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setStatFilter(null); setCurrentPage(1); }}>
-          {['전체', '경매예정', '경매중', '낙찰', '유찰', '숨김'].map(s => <option key={s}>{s}</option>)}
+          {['전체', '경매예정', '승인요청중', '경매중', '낙찰', '유찰', '숨김'].map(s => <option key={s}>{s}</option>)}
         </select>
         <span className={styles.filterCount}>총 {filtered.length}건</span>
       </div>
@@ -419,11 +432,12 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
               <col style={{ width: 110 }} />
               <col style={{ width: 110 }} />
               <col style={{ width: 130 }} />
+              <col style={{ width: 90 }} />
               <col style={{ width: 80 }} />
             </colgroup>
             <thead>
               <tr>
-                <th style={{ textAlign: 'center' }}>상품번호</th><th style={{ textAlign: 'center' }}>상품</th><th>판매자</th><th>가격</th><th>등록일</th><th>관리</th><th>승인</th>
+                <th style={{ textAlign: 'center' }}>상품번호</th><th style={{ textAlign: 'center' }}>상품</th><th>판매자</th><th>가격</th><th>등록일</th><th>관리</th><th>입찰이력</th><th>승인</th>
               </tr>
             </thead>
             <tbody>
@@ -448,8 +462,8 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                         className={styles.statusSelect}
                         value={p.status}
                         onChange={e => {
-                          if (p.status === '경매예정' && e.target.value === '경매중') {
-                            setAlertModal('경매예정 → 경매중 변경은\n승인 버튼을 통해서만 가능합니다.');
+                          if ((p.status === '경매예정' || p.status === '승인요청중') && e.target.value === '경매중') {
+                            setAlertModal('경매중 변경은\n승인 버튼을 통해서만 가능합니다.');
                             return;
                           }
                           handleStatusChange(p.id, e.target.value as ProductStatus);
@@ -457,6 +471,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                       >
                         <>
                           <option value="경매예정">경매예정</option>
+                          <option value="승인요청중">승인요청중</option>
                           <option value="경매중">경매중</option>
                           <option value="낙찰">낙찰</option>
                           <option value="유찰">유찰</option>
@@ -466,7 +481,12 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                     </div>
                   </td>
                   <td>
-                    {p.status === '경매예정' && (
+                    {p.status === '경매중' && (
+                      <button className={styles.bidBtn} onClick={() => setBidHistoryTarget(p)}>입찰이력</button>
+                    )}
+                  </td>
+                  <td>
+                    {p.status === '승인요청중' && (
                       <button
                         className={styles.approveBtn}
                         onClick={() => setApproveTarget({ product: p, action: 'approve' })}
@@ -677,6 +697,56 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
               </div>
 
               <div style={{ height: 32 }}/>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 입찰 이력 모달 */}
+      {bidHistoryTarget && (
+        <div className={styles.detailOverlay} onClick={() => setBidHistoryTarget(null)}>
+          <div className={styles.detailSheet} onClick={e => e.stopPropagation()}>
+            <div className={styles.detailHeader}>
+              <span className={styles.detailHeaderTitle}>입찰 이력</span>
+              <button className={styles.detailCloseBtn} onClick={() => setBidHistoryTarget(null)}>
+                <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+            <div className={styles.detailScroll}>
+              <div className={styles.detailSection}>
+                <p className={styles.detailName} style={{ fontSize: 15 }}>{bidHistoryTarget.name}</p>
+                <p className={styles.detailMeta}>경매 시작가 ₩{bidHistoryTarget.price.toLocaleString()}</p>
+              </div>
+              <div className={styles.detailDivider}/>
+              <div className={styles.detailSection}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #E8E8E8' }}>
+                      <th style={{ padding: '8px 6px', textAlign: 'center', color: '#8B8FA8', fontWeight: 600, width: 40 }}>순위</th>
+                      <th style={{ padding: '8px 6px', textAlign: 'left', color: '#8B8FA8', fontWeight: 600 }}>입찰자</th>
+                      <th style={{ padding: '8px 6px', textAlign: 'right', color: '#8B8FA8', fontWeight: 600 }}>입찰가</th>
+                      <th style={{ padding: '8px 6px', textAlign: 'right', color: '#8B8FA8', fontWeight: 600 }}>입찰 시각</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {getMockBids(bidHistoryTarget).map(bid => (
+                      <tr key={bid.rank} style={{ borderBottom: '1px solid #F3F3F3' }}>
+                        <td style={{ padding: '10px 6px', textAlign: 'center', fontWeight: 700, color: bid.rank === 1 ? '#E24B4A' : '#8B8FA8' }}>
+                          {bid.rank === 1 ? '🥇' : bid.rank}
+                        </td>
+                        <td style={{ padding: '10px 6px', fontWeight: bid.rank === 1 ? 600 : 400 }}>{bid.bidder}</td>
+                        <td style={{ padding: '10px 6px', textAlign: 'right', fontWeight: 700, color: bid.rank === 1 ? '#E24B4A' : '#333' }}>
+                          ₩{bid.amount.toLocaleString()}
+                        </td>
+                        <td style={{ padding: '10px 6px', textAlign: 'right', color: '#8B8FA8' }}>{bid.time}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ height: 24 }}/>
             </div>
           </div>
         </div>

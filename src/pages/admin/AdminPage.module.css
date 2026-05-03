@@ -417,6 +417,19 @@
 }
 .deleteBtn:hover { background: #FFE5E5; }
 
+.bidBtn {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.bidBtn:hover { background: #E0E7FF; }
+
 .approveBtn {
   font-size: 12px;
   font-weight: 700;
