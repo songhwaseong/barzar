@@ -163,6 +163,20 @@
   font-size: 13px; color: var(--muted);
   margin-bottom: 20px;
 }
+.timeGlow {
+  font-weight: 600;
+  display: inline-block;
+  background: linear-gradient(90deg, #E24B4A 0%, #ff9a9a 45%, #E24B4A 55%, #E24B4A 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
 
 /* 태그 */
 .tagRow {

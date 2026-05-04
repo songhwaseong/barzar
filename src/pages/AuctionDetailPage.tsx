@@ -147,7 +147,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
 
             {/* 상품명 */}
             <h1 className={styles.name}>{item.name}</h1>
-            <p className={styles.location}>📍 {item.location} · {item.endDate} 마감</p>
+            <p className={styles.location}>📍 {item.location} · <span className={styles.timeGlow}>{item.endDate} 마감</span></p>
 
             {/* 가격 + 입찰 박스 */}
             <div className={styles.priceBox}>

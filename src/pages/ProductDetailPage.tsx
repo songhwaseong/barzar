@@ -92,7 +92,7 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
                 <span className={styles.immediatePriceValue}> {item.immediatePrice.toLocaleString()}</span>
               </div>
             )}
-            <p className={styles.meta}>{item.location} · {item.timeAgo}</p>
+            <p className={styles.meta}>{item.location} · <span className={styles.timeGlow}>{item.timeAgo}</span></p>
 
             {/* 태그 */}
             <div className={styles.tagRow}>
