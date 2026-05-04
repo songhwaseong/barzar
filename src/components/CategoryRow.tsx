@@ -82,25 +82,26 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ categories, selectedLabel, on
   return (
     <div className={styles.wrapper}>
       <div className={styles.row}>
-        {categories.map((cat) => {
+        {categories.map((cat, idx) => {
           const isSelected = selectedLabel === cat.label;
           return (
-            <button
-              key={cat.id}
-              className={`${styles.chip} ${isSelected ? styles.chipSelected : ''}`}
-              onClick={() => onSelect?.(cat)}
-              aria-label={cat.label}
-              aria-pressed={isSelected}
-            >
-              <div className={`${styles.icon} ${isSelected ? styles.iconSelected : ''}`}>
-                {CATEGORY_ICONS[cat.label] ?? (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="12" r="9"/></svg>
-                )}
-              </div>
-              <span className={`${styles.label} ${isSelected ? styles.labelSelected : ''}`}>
-                {cat.label}
-              </span>
-            </button>
+            <React.Fragment key={cat.id}>
+              <button
+                className={`${styles.chip} ${isSelected ? styles.chipSelected : ''}`}
+                onClick={() => onSelect?.(cat)}
+                aria-label={cat.label}
+                aria-pressed={isSelected}
+              >
+                <div className={`${styles.icon} ${isSelected ? styles.iconSelected : ''}`}>
+                  {CATEGORY_ICONS[cat.label] ?? (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="12" r="9"/></svg>
+                  )}
+                </div>
+                <span className={`${styles.label} ${isSelected ? styles.labelSelected : ''}`}>
+                  {cat.label}
+                </span>
+              </button>
+            </React.Fragment>
           );
         })}
       </div>

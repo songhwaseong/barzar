@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styles from './MySubPage.module.css';
 
 const TABS = ['이용약관', '개인정보처리방침'];
-interface Props { onBack: () => void; }
+interface Props { onBack: () => void; initialTab?: string; }
 
-const TermsPage: React.FC<Props> = ({ onBack }) => {
-  const [tab, setTab] = useState('이용약관');
+const TermsPage: React.FC<Props> = ({ onBack, initialTab = '이용약관' }) => {
+  const [tab, setTab] = useState(initialTab);
   return (
     <div className={styles.page}>
       <div className={styles.header}>

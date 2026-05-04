@@ -3,10 +3,12 @@ import ProductCard from '../components/ProductCard';
 import { PRODUCTS, AUCTION_ITEMS } from '../data/mockData';
 import type { AuctionItem, Product } from '../types';
 import styles from './WishlistPage.module.css';
+import subStyles from './my/MySubPage.module.css';
 
 interface Props {
   onProductClick?: (product: Product) => void;
   onAuctionClick?: (item: AuctionItem) => void;
+  onBack?: () => void;
 }
 
 const formatTime = (sec: number) => {
@@ -17,12 +19,7 @@ const formatTime = (sec: number) => {
   return `${m}:${String(s).padStart(2, '0')}`;
 };
 
-interface Props {
-  onProductClick?: (product: Product) => void;
-  onAuctionClick?: (item: AuctionItem) => void;
-}
-
-const WishlistPage: React.FC<Props> = ({ onProductClick, onAuctionClick }) => {
+const WishlistPage: React.FC<Props> = ({ onProductClick, onAuctionClick, onBack }) => {
   const [activeTab, setActiveTab] = useState<'product' | 'auction'>('product');
 
   const likedProducts = PRODUCTS.filter((p) => p.liked);
@@ -30,8 +27,20 @@ const WishlistPage: React.FC<Props> = ({ onProductClick, onAuctionClick }) => {
 
   return (
     <main className={styles.main}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>관심 목록</h1>
+      <div className={onBack ? subStyles.header : styles.header}>
+        {onBack ? (
+          <>
+            <button className={subStyles.back} onClick={onBack}>
+              <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+              </svg>
+            </button>
+            <span className={subStyles.title}>관심 목록</span>
+            <div style={{ width: 32 }}/>
+          </>
+        ) : (
+          <h1 className={styles.title}>관심 목록</h1>
+        )}
       </div>
 
       <div className={styles.tabs}>

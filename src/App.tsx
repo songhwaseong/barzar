@@ -93,6 +93,7 @@ const App: React.FC = () => {
     cb?.();
   };
   const [screen, setScreen] = useState<Screen>({ type: 'home' });
+  const [termsInitialTab, setTermsInitialTab] = useState('이용약관');
   const [editingProduct, setEditingProduct] = useState<MyProduct | null>(null);
   const [mainTab, setMainTab] = useState<MainTab>('홈');
   const [navTab, setNavTab] = useState<NavTab>('home');
@@ -304,14 +305,14 @@ const App: React.FC = () => {
         '배송 조회': <TrackingPage onBack={backToMy} />,
         '구매 내역': <PurchaseHistoryPage onBack={backToMy} />,
         '입찰 내역': <BidHistoryPage onBack={backToMy} />,
-        '관심 목록': <WishlistPage onProductClick={handleProductClick} onAuctionClick={handleAuctionClick} />,
+        '관심 목록': <WishlistPage onProductClick={handleProductClick} onAuctionClick={handleAuctionClick} onBack={backToMy} />,
         '내 계좌': <MyWalletPage onBack={backToMy} />,
         '받은 후기': <ReceivedReviewsPage onBack={backToMy} />,
         '내 주소 관리': <AddressPage onBack={backToMy} />,
         '알림 설정': <NotificationSettingsPage onBack={backToMy} />,
         '자주 묻는 질문': <FaqPage onBack={backToMy} />,
         '고객센터': <CustomerServicePage onBack={backToMy} />,
-        '이용약관': <TermsPage onBack={backToMy} />,
+        '이용약관': <TermsPage onBack={backToMy} initialTab={termsInitialTab} />,
         '이용 가이드': <GuidePage onBack={backToMy} />,
       };
       return editingProduct
@@ -342,6 +343,8 @@ const App: React.FC = () => {
       onAuthClick={isAdmin ? logoutAdmin : (isLoggedIn ? logout : () => { setIsGuest(false); setAuthScreen('login'); })}
       isAdmin={isAdmin}
       onSwitchToAdmin={switchToAdmin}
+      onTermsClick={() => { setTermsInitialTab('이용약관'); setNavTab('my'); setScreen({ type: 'myMenu', menu: '이용약관' }); }}
+      onPrivacyClick={() => { setTermsInitialTab('개인정보처리방침'); setNavTab('my'); setScreen({ type: 'myMenu', menu: '이용약관' }); }}
     >
       {isHomePage ? (
         <>
