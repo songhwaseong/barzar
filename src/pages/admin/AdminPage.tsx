@@ -772,11 +772,18 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
       {showIdleModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <div className={styles.modalIcon}>⏱️</div>
+            <div className={styles.modalIcon}>
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E24B4A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="13" r="8"/>
+                <path d="M12 9v4l2.5 2.5"/>
+                <path d="M9 2h6"/>
+                <path d="M12 2v3"/>
+              </svg>
+            </div>
             <div className={styles.modalTitle}>자동 로그아웃 예정</div>
             <div className={styles.modalDesc}>
               {idleMinutes}분간 입력이 없었습니다.<br />
-              <span className={styles.idleCountdown}>{countdown}초</span> 후 자동으로 로그아웃됩니다.
+              자동으로 로그아웃됩니다.
             </div>
             <div className={styles.modalBtns}>
               <button className={styles.modalDeleteBtn} onClick={onLogout}>로그아웃</button>
