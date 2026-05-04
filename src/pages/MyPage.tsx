@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './MyPage.module.css';
 
-type MenuKey = '입찰 내역'|'관심 목록'|'내 계좌'|'받은 후기'|'내 주소 관리'|'알림 설정'|'자주 묻는 질문'|'고객센터'|'이용약관'|'배송 조회'|'이용 가이드'|'내 등록 상품';
+type MenuKey = '입찰 내역'|'관심 목록'|'내 계좌'|'받은 후기'|'내 주소 관리'|'알림 설정'|'자주 묻는 질문'|'고객센터'|'이용약관'|'배송 조회'|'이용 가이드'|'내 등록 상품'|'회원탈퇴';
 
 const MENU_ICONS: Record<MenuKey, React.ReactNode> = {
   '내 등록 상품': <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
@@ -16,6 +16,7 @@ const MENU_ICONS: Record<MenuKey, React.ReactNode> = {
   '자주 묻는 질문':<svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
   '고객센터':     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.9 10.81 19.79 19.79 0 01.86 2.18 2 2 0 012.83 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 7.91a16 16 0 006 6l.98-.98a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 15.18v1.74z"/></svg>,
   '이용약관':     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
+  '회원탈퇴':     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
 };
 
 const MENU_GROUPS: { title: string; items: { label: MenuKey }[] }[] = [
@@ -56,6 +57,7 @@ interface Props {
 
 const MyPage: React.FC<Props> = ({ onLogout, onMenuClick, onEditProfile }) => {
   const [mannerTemp] = useState(36.8);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   return (
     <main className={styles.main}>
@@ -105,6 +107,35 @@ const MyPage: React.FC<Props> = ({ onLogout, onMenuClick, onEditProfile }) => {
           ))}
         </div>
       ))}
+
+      <div className={styles.menuGroup}>
+        <button className={`${styles.menuItem} ${styles.withdrawItem}`} onClick={() => setShowWithdrawModal(true)}>
+          <span className={`${styles.menuIcon} ${styles.withdrawIcon}`}>{MENU_ICONS['회원탈퇴']}</span>
+          <span className={`${styles.menuLabel} ${styles.withdrawLabel}`}>회원탈퇴</span>
+        </button>
+      </div>
+
+      {showWithdrawModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <div className={styles.modalIcon}>
+              <svg width="32" height="32" fill="none" stroke="#E24B4A" strokeWidth="1.8" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            </div>
+            <div className={styles.modalTitle}>정말 탈퇴하시겠어요?</div>
+            <div className={styles.modalDesc}>
+              탈퇴하면 모든 데이터가 삭제되며<br />복구할 수 없습니다.
+            </div>
+            <div className={styles.modalBtns}>
+              <button className={styles.modalCancelBtn} onClick={() => setShowWithdrawModal(false)}>취소</button>
+              <button className={styles.modalWithdrawBtn} onClick={() => { setShowWithdrawModal(false); onLogout?.(); }}>탈퇴하기</button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </main>
   );

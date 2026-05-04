@@ -226,8 +226,6 @@ const EditProfilePage: React.FC<Props> = ({ onBack, onSave }) => {
           {saveLoading ? '저장 중...' : '저장하기'}
         </button>
 
-        {/* 계정 탈퇴 */}
-        <button className={styles.deleteBtn}>회원 탈퇴</button>
       </div>
     </div>
   );
