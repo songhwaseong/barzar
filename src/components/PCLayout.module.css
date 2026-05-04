@@ -28,7 +28,7 @@
 /* 로고 */
 .logo {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 26px;
+  font-size: 34px;
   color: var(--primary);
   letter-spacing: 1px;
   background: none;
@@ -210,7 +210,7 @@
 .tabItem {
   padding: 12px 18px;
   background: none; border: none;
-  font-size: 14px; font-weight: 500;
+  font-size: 17px; font-weight: 500;
   color: var(--muted);
   cursor: pointer;
   font-family: 'Noto Sans KR', sans-serif;

@@ -48,7 +48,7 @@
 
 .info { padding: 12px; }
 .name {
-  font-size: 14px; font-weight: 500; margin-bottom: 6px;
+  font-size: 16px; font-weight: 500; margin-bottom: 6px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .price { font-size: 16px; font-weight: 700; color: var(--primary); }
