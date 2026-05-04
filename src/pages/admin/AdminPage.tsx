@@ -462,7 +462,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                         className={styles.statusSelect}
                         value={p.status}
                         onChange={e => {
-                          if ((p.status === '경매예정' || p.status === '승인요청중') && e.target.value === '경매중') {
+                          if (e.target.value === '경매중') {
                             setAlertModal('경매중 변경은\n승인 버튼을 통해서만 가능합니다.');
                             return;
                           }

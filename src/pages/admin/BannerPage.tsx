@@ -77,7 +77,7 @@ const BannerPage: React.FC = () => {
         <div className={s.subtitle}>카테고리 노출 순서와 표시 여부를 관리합니다.</div>
       </div>
 
-      <div style={{ maxWidth: 520 }}>
+      <div style={{ maxWidth: 1040 }}>
       <table className={s.table}>
         <thead>
           <tr><th>순서</th><th>아이콘</th><th>카테고리명</th><th>노출</th><th>순서 변경</th></tr>
