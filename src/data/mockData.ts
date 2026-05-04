@@ -64,12 +64,12 @@ export const AUCTION_ITEMS: AuctionItem[] = [
   {
     id: 10, name: '다이슨 V15 디텍트 청소기',
     image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&q=80',
-    currentPrice: 480000, bidCount: 11, timeLeft: 1*60*60+22*60, isLive: false, category: '디지털/가전',
+    currentPrice: 480000, bidCount: 11, timeLeft: 1*60*60+22*60, isLive: true, category: '디지털/가전',
   },
   {
     id: 11, name: '깁슨 레스폴 스탠다드 2020',
     image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&q=80',
-    currentPrice: 2100000, bidCount: 8, timeLeft: 3*60*60+5*60, isLive: false, category: '음향/악기',
+    currentPrice: 2100000, bidCount: 8, timeLeft: 3*60*60+5*60, isLive: true, category: '음향/악기',
   },
   {
     id: 12, name: '소니 WH-1000XM5 노이즈캔슬링',
@@ -89,7 +89,7 @@ export const AUCTION_ITEMS: AuctionItem[] = [
   {
     id: 15, name: '나이키 줌 페가수스 40',
     image: 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=400&q=80',
-    currentPrice: 89000, bidCount: 5, timeLeft: 38*60, isLive: false, category: '신발',
+    currentPrice: 89000, bidCount: 5, timeLeft: 38*60, isLive: true, category: '신발',
   },
   {
     id: 16, name: '나이키 테크 플리스 집업 후디',
@@ -296,7 +296,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
       'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=800&q=80',
       'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=800&q=80',
     ],
-    currentPrice: 480000, bidCount: 11, timeLeft: 1*60*60+22*60, isLive: false,
+    currentPrice: 480000, bidCount: 11, timeLeft: 1*60*60+22*60, isLive: true,
     description: '다이슨 V15 디텍트 컴플리트 정품입니다.\n2023년 구매, 필터 교체 완료 상태입니다.\n전용 거치대, 청소 헤드 전체 포함입니다.\n영수증 보유 중이며 정품 보증 잔여 6개월입니다.',
     seller: '클린홈', sellerTemp: 37.8, sellerSales: 15,
     startPrice: 350000, immediatePrice: 650000, endDate: '2026.04.30 14:00',
@@ -316,7 +316,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
       'https://images.unsplash.com/photo-1525201548942-d8732f6617a0?w=800&q=80',
       'https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?w=800&q=80',
     ],
-    currentPrice: 2100000, bidCount: 8, timeLeft: 3*60*60+5*60, isLive: false,
+    currentPrice: 2100000, bidCount: 8, timeLeft: 3*60*60+5*60, isLive: true,
     description: '깁슨 레스폴 스탠다드 2020 Heritage Cherry Sunburst입니다.\n구매 후 스튜디오 연주 위주로 사용했습니다.\n하드케이스 포함, 픽업 오리지널 상태입니다.\n넥 상태 양호하며 프렛 마모 거의 없습니다.',
     seller: '기타컬렉터', sellerTemp: 38.5, sellerSales: 7,
     startPrice: 1800000, immediatePrice: 2800000, endDate: '2026.04.30 20:00',
@@ -396,7 +396,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
     ],
-    currentPrice: 89000, bidCount: 5, timeLeft: 38*60, isLive: false,
+    currentPrice: 89000, bidCount: 5, timeLeft: 38*60, isLive: true,
     description: '나이키 줌 페가수스 40 울프 그레이입니다.\n사이즈 275mm, 착용 2회 미만입니다.\n런닝화로 쿠셔닝 최상급입니다.\n박스 포함이며 택배 거래 가능합니다.',
     seller: '러너스클럽', sellerTemp: 37.5, sellerSales: 12,
     startPrice: 65000, immediatePrice: 125000, endDate: '2026.04.28 18:00',
