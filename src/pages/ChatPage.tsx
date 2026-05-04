@@ -65,7 +65,7 @@ const ChatPage: React.FC = () => {
           <span className={styles.productBarEmoji}>{selected.productEmoji}</span>
           <div>
             <p className={styles.productBarName}>{selected.productName}</p>
-            <p className={styles.productBarPrice}>₩ {selected.price.toLocaleString()}</p>
+            <p className={styles.productBarPrice}> {selected.price.toLocaleString()}</p>
           </div>
           <button className={styles.tradeBtn}>거래 확정</button>
         </div>
@@ -120,7 +120,7 @@ const ChatPage: React.FC = () => {
                 <span className={styles.roomMsg}>{room.lastMessage}</span>
                 {room.unread > 0 && <span className={styles.unreadBadge}>{room.unread}</span>}
               </div>
-              <p className={styles.roomProduct}>{room.productEmoji} {room.productName} · ₩{room.price.toLocaleString()}</p>
+              <p className={styles.roomProduct}>{room.productEmoji} {room.productName} · {room.price.toLocaleString()}</p>
             </div>
           </div>
         ))}

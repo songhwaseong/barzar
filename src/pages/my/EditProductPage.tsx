@@ -233,7 +233,7 @@ const EditProductPage: React.FC<Props> = ({ product, onBack, onSaved, onDirtyCha
           <div className={styles.section}>
             <label className={styles.sectionTitle}>경매 시작가 <span className={styles.required}>*</span></label>
             <div className={styles.priceWrap}>
-              <span className={styles.pricePrefix}>₩</span>
+              <span className={styles.pricePrefix}></span>
               <input className={`${styles.input} ${styles.priceInput} ${errors.auctionStartPrice ? styles.inputError : ''}`}
                 placeholder="시작가를 입력해주세요" value={auctionStartPrice}
                 onChange={e => { setAuctionStartPrice(formatPrice(e.target.value)); setErrors(p => ({ ...p, auctionStartPrice: '' })); }}
@@ -246,7 +246,7 @@ const EditProductPage: React.FC<Props> = ({ product, onBack, onSaved, onDirtyCha
           <div className={styles.section}>
             <label className={styles.sectionTitle}>최소 호가 단위 <span className={styles.required}>*</span></label>
             <div className={styles.priceWrap}>
-              <span className={styles.pricePrefix}>₩</span>
+              <span className={styles.pricePrefix}></span>
               <input className={`${styles.input} ${styles.priceInput} ${errors.minBidUnit ? styles.inputError : ''}`}
                 placeholder="예) 1,000" value={minBidUnit}
                 onChange={e => { setMinBidUnit(formatPrice(e.target.value)); setErrors(p => ({ ...p, minBidUnit: '' })); }}

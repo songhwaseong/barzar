@@ -34,7 +34,7 @@ const PaymentPage: React.FC<Props> = ({ onBack }) => {
               <p className={styles.payDate}>{p.date}</p>
             </div>
             <div className={styles.payRight}>
-              <p className={styles.payAmount}>₩{p.amount.toLocaleString()}</p>
+              <p className={styles.payAmount}>{p.amount.toLocaleString()}</p>
               <p className={styles.payStatus}>{p.status}</p>
             </div>
           </div>

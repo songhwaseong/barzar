@@ -52,7 +52,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({ item, onClick }) => {
       </div>
       <div className={styles.info}>
         <p className={styles.name}>{item.name}</p>
-        <p className={styles.price}>₩ {item.currentPrice.toLocaleString()}</p>
+        <p className={styles.price}> {item.currentPrice.toLocaleString()}</p>
         <p className={styles.bids}>입찰 {item.bidCount}회</p>
       </div>
     </div>

@@ -351,7 +351,7 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
             <div className={styles.section}>
               <label className={styles.sectionTitle}>경매 시작가 <span className={styles.required}>*</span></label>
               <div className={styles.priceWrap}>
-                <span className={styles.pricePrefix}>₩</span>
+                <span className={styles.pricePrefix}></span>
                 <input
                   className={`${styles.input} ${styles.priceInput} ${errors.auctionStartPrice ? styles.inputError : ''}`}
                   placeholder="시작가를 입력해주세요"
@@ -368,7 +368,7 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
               <label className={styles.sectionTitle}>즉시낙찰가</label>
               <p className={styles.sectionDesc}>구매자가 바로 낙찰할 수 있는 가격이에요</p>
               <div className={styles.priceWrap}>
-                <span className={styles.pricePrefix}>₩</span>
+                <span className={styles.pricePrefix}></span>
                 <input
                   className={`${styles.input} ${styles.priceInput} ${errors.buyNowPrice ? styles.inputError : ''}`}
                   placeholder="즉시낙찰가를 입력해주세요"
@@ -384,7 +384,7 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
             <div className={styles.section}>
               <label className={styles.sectionTitle}>최소 호가 단위 <span className={styles.required}>*</span></label>
               <div className={styles.priceWrap}>
-                <span className={styles.pricePrefix}>₩</span>
+                <span className={styles.pricePrefix}></span>
                 <input
                   className={`${styles.input} ${styles.priceInput} ${errors.minBidUnit ? styles.inputError : ''}`}
                   placeholder="예) 1,000"
@@ -515,11 +515,11 @@ const SellPage: React.FC<Props> = ({ onBack, onSubmit, onDirtyChange }) => {
                 <span className={styles.summaryLabel}>지역</span>
                 <span className={styles.summaryValue}>{location}</span>
                 <span className={styles.summaryLabel}>경매시작가</span>
-                <span className={styles.summaryValue}>₩ {auctionStartPrice}</span>
+                <span className={styles.summaryValue}> {auctionStartPrice}</span>
                 <span className={styles.summaryLabel}>즉시낙찰가</span>
-                <span className={styles.summaryValue}>{buyNowPrice ? `₩ ${buyNowPrice}` : '-'}</span>
+                <span className={styles.summaryValue}>{buyNowPrice ? ` ${buyNowPrice}` : '-'}</span>
                 <span className={styles.summaryLabel}>최소호가단위</span>
-                <span className={styles.summaryValue}>₩ {minBidUnit}</span>
+                <span className={styles.summaryValue}> {minBidUnit}</span>
               </div>
             </div>
           </div>

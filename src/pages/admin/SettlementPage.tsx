@@ -113,15 +113,15 @@ const SettlementPage: React.FC = () => {
       {/* 요약 카드 */}
       <div className={s.statRow}>
         <div className={s.statCard}>
-          <div className={s.statNum}>{(summary.totalSale / 10000).toLocaleString()}<span style={{ fontSize: 14 }}>만원</span></div>
+          <div className={s.statNum}>{summary.totalSale.toLocaleString()}</div>
           <div className={s.statLabel}>총 거래금액</div>
         </div>
         <div className={s.statCard}>
-          <div className={`${s.statNum} ${s.statNumAmber}`}>{(summary.totalFee / 10000).toLocaleString()}<span style={{ fontSize: 14 }}>만원</span></div>
+          <div className={`${s.statNum} ${s.statNumAmber}`}>{summary.totalFee.toLocaleString()}</div>
           <div className={s.statLabel}>총 수수료 수익</div>
         </div>
         <div className={s.statCard}>
-          <div className={`${s.statNum} ${s.statNumGreen}`}>{(summary.totalNet / 10000).toLocaleString()}<span style={{ fontSize: 14 }}>만원</span></div>
+          <div className={`${s.statNum} ${s.statNumGreen}`}>{summary.totalNet.toLocaleString()}</div>
           <div className={s.statLabel}>총 정산 금액</div>
         </div>
         <div className={s.statCard}>
@@ -179,9 +179,9 @@ const SettlementPage: React.FC = () => {
                   {filterRole !== '구매자' && <td style={{ fontSize: 12, color: '#8B8FA8', fontFamily: 'monospace' }}>{t.sellerNo}</td>}
                   {filterRole !== '판매자' && <td style={{ fontSize: 12, color: '#8B8FA8', fontFamily: 'monospace' }}>{t.buyerNo}</td>}
                   <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.productName}</td>
-                  <td>₩{t.saleAmount.toLocaleString()}</td>
-                  <td style={{ color: '#E65C00', fontWeight: 600 }}>₩{t.feeAmount.toLocaleString()}</td>
-                  <td style={{ fontWeight: 700 }}>₩{t.netAmount.toLocaleString()}</td>
+                  <td>{t.saleAmount.toLocaleString()}</td>
+                  <td style={{ color: '#E65C00', fontWeight: 600 }}>{t.feeAmount.toLocaleString()}</td>
+                  <td style={{ fontWeight: 700 }}>{t.netAmount.toLocaleString()}</td>
                   <td><span style={{ fontSize: 11, fontWeight: 700, padding: '2px 9px', borderRadius: 20, background: statusBg[t.status], color: statusColor[t.status] }}>{t.status}</span></td>
                   <td style={{ fontSize: 12, color: '#8B8FA8' }}>{t.transactionDate}</td>
                   <td>
@@ -223,7 +223,7 @@ const SettlementPage: React.FC = () => {
                     <td>
                       {editFee?.id === r.id
                         ? <input type="number" step="10000" style={{ width: 130, padding: '4px 8px', border: '1px solid #E0E0E0', borderRadius: 6, fontSize: 13 }} value={editFee.minAmount} onChange={e => setEditFee(p => p ? { ...p, minAmount: parseInt(e.target.value) || 0, minFee: Math.round((parseInt(e.target.value) || 0) * p.feeRate / 100) } : null)} />
-                        : <span style={{ fontWeight: 600 }}>₩{r.minAmount.toLocaleString()} 이상</span>
+                        : <span style={{ fontWeight: 600 }}>{r.minAmount.toLocaleString()} 이상</span>
                       }
                     </td>
                     <td>
@@ -234,8 +234,8 @@ const SettlementPage: React.FC = () => {
                     </td>
                     <td style={{ color: '#2E7D32', fontWeight: 600 }}>
                       {editFee?.id === r.id
-                        ? <span style={{ color: '#2E7D32', fontWeight: 600 }}>₩{editCalcMinFee.toLocaleString()} <span style={{ fontSize: 11, color: '#8B8FA8', fontWeight: 400 }}>(자동계산)</span></span>
-                        : `₩${calcMinFee.toLocaleString()}`
+                        ? <span style={{ color: '#2E7D32', fontWeight: 600 }}>{editCalcMinFee.toLocaleString()} <span style={{ fontSize: 11, color: '#8B8FA8', fontWeight: 400 }}>(자동계산)</span></span>
+                        : `${calcMinFee.toLocaleString()}`
                       }
                     </td>
                     <td>

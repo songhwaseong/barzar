@@ -210,7 +210,7 @@ const ProductPreviewModal: React.FC<Props> = ({ data, onClose }) => {
             <h2 className={styles.name}>{data.title || '(상품명 미입력)'}</h2>
             <p className={styles.meta}>{data.location || '지역 미입력'} · 방금 전</p>
             <p className={styles.price}>
-              ₩ {data.auctionStartPrice ? Number(data.auctionStartPrice.replace(/,/g, '')).toLocaleString() : '0'}
+               {data.auctionStartPrice ? Number(data.auctionStartPrice.replace(/,/g, '')).toLocaleString() : '0'}
               <span className={styles.priceLabel}> 경매 시작가</span>
             </p>
           </div>
@@ -239,18 +239,18 @@ const ProductPreviewModal: React.FC<Props> = ({ data, onClose }) => {
               </div>
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>경매 시작가</span>
-                <span className={styles.infoValue}>₩ {data.auctionStartPrice || '-'}</span>
+                <span className={styles.infoValue}> {data.auctionStartPrice || '-'}</span>
               </div>
               {data.buyNowPrice && (
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>즉시낙찰가</span>
-                  <span className={styles.infoValue}>₩ {data.buyNowPrice}</span>
+                  <span className={styles.infoValue}> {data.buyNowPrice}</span>
                 </div>
               )}
               {data.minBidUnit && (
                 <div className={styles.infoItem}>
                   <span className={styles.infoLabel}>최소 호가</span>
-                  <span className={styles.infoValue}>₩ {data.minBidUnit}</span>
+                  <span className={styles.infoValue}> {data.minBidUnit}</span>
                 </div>
               )}
               {data.auctionDate && (

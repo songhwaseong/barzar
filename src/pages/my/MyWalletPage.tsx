@@ -75,7 +75,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
     setBalance(p => p + amount);
     setDepositAmount('');
     setDepositLoading(false);
-    showToast(`₩${amount.toLocaleString()} 충전 완료!`, 'success');
+    showToast(`${amount.toLocaleString()} 충전 완료!`, 'success');
   };
 
   const handleWithdraw = async () => {
@@ -88,7 +88,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
     setBalance(p => p - amount);
     setWithdrawAmount('');
     setWithdrawLoading(false);
-    showToast(`₩${amount.toLocaleString()} 출금 신청 완료!\n영업일 1~2일 내 입금됩니다.`, 'success');
+    showToast(`${amount.toLocaleString()} 출금 신청 완료!\n영업일 1~2일 내 입금됩니다.`, 'success');
   };
 
   const handleVerifyAccount = async () => {
@@ -123,7 +123,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
       {/* 잔액 카드 */}
       <div className={styles.balanceCard}>
         <p className={styles.balanceLabel}>사용 가능 잔액</p>
-        <p className={styles.balanceAmount}>₩ {balance.toLocaleString()}</p>
+        <p className={styles.balanceAmount}> {balance.toLocaleString()}</p>
         <div className={styles.balanceBtns}>
           <button
             className={`${styles.balanceBtn} ${depositMode ? styles.balanceBtnDepositActive : styles.balanceBtnOutline}`}
@@ -163,7 +163,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
               ))}
             </div>
             <div className={styles.inputRow}>
-              <span className={styles.inputPrefix}>₩</span>
+              <span className={styles.inputPrefix}></span>
               <input
                 className={styles.input}
                 placeholder="직접 입력"
@@ -221,7 +221,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
 
                 <p className={styles.sectionTitle} style={{ marginTop: 24 }}>출금 신청</p>
                 <div className={styles.inputRow}>
-                  <span className={styles.inputPrefix}>₩</span>
+                  <span className={styles.inputPrefix}></span>
                   <input
                     className={styles.input}
                     placeholder="출금할 금액 입력"
@@ -230,7 +230,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
                     inputMode="numeric"
                   />
                 </div>
-                <p className={styles.balanceHint}>출금 가능 잔액: ₩{balance.toLocaleString()}</p>
+                <p className={styles.balanceHint}>출금 가능 잔액: {balance.toLocaleString()}</p>
                 <button
                   className={`${styles.actionBtn} ${withdrawLoading ? styles.loading : ''}`}
                   onClick={handleWithdraw}
@@ -315,7 +315,7 @@ const MyWalletPage: React.FC<Props> = ({ onBack }) => {
                 </div>
                 <div className={styles.txRight}>
                   <p className={`${styles.txAmount} ${tx.type === 'deposit' ? styles.txAmountPos : styles.txAmountNeg}`}>
-                    {tx.type === 'deposit' ? '+' : '-'}₩{tx.amount.toLocaleString()}
+                    {tx.type === 'deposit' ? '+' : '-'}{tx.amount.toLocaleString()}
                   </p>
                   <p className={styles.txStatus}>{tx.status}</p>
                 </div>

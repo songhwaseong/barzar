@@ -12,9 +12,9 @@ interface Noti {
 }
 
 const NOTIFICATIONS: Noti[] = [
-  { id: 1, type: 'auction', emoji: '🔨', title: '입찰 경쟁 알림', body: '나이키 에어맥스 90에 새로운 입찰이 들어왔어요. 현재 ₩45,000', time: '2분 전', read: false },
+  { id: 1, type: 'auction', emoji: '🔨', title: '입찰 경쟁 알림', body: '나이키 에어맥스 90에 새로운 입찰이 들어왔어요. 현재 45,000', time: '2분 전', read: false },
   { id: 2, type: 'chat', emoji: '💬', title: '새 메시지', body: '구매자: 직거래 가능한가요? 강남역 근처면 좋겠어요', time: '15분 전', read: false },
-  { id: 3, type: 'price', emoji: '📉', title: '관심상품 가격 인하', body: 'LG 27인치 4K 모니터 ₩280,000 → ₩240,000으로 내렸어요', time: '1시간 전', read: false },
+  { id: 3, type: 'price', emoji: '📉', title: '관심상품 가격 인하', body: 'LG 27인치 4K 모니터 280,000 → 240,000으로 내렸어요', time: '1시간 전', read: false },
   { id: 4, type: 'auction', emoji: '⏰', title: '경매 마감 임박', body: '관심 등록한 소니 A7IV 카메라 경매가 30분 후 종료돼요', time: '2시간 전', read: true },
   { id: 5, type: 'system', emoji: '🎉', title: '거래 완료', body: 'PS5 거래가 완료됐어요. 후기를 남겨주세요!', time: '어제', read: true },
   { id: 6, type: 'chat', emoji: '💬', title: '새 메시지', body: '판매자: 네, 오늘 오후 6시에 만날 수 있어요', time: '어제', read: true },

@@ -25,7 +25,7 @@ const BidHistoryPage: React.FC<Props> = ({ onBack }) => {
             <img src={item.image} alt={item.name} className={styles.tradeImg}/>
             <div className={styles.tradeBody}>
               <p className={styles.tradeName}>{item.name}</p>
-              <p className={styles.tradeMeta}>현재가 ₩{item.currentPrice.toLocaleString()}</p>
+              <p className={styles.tradeMeta}>현재가 {item.currentPrice.toLocaleString()}</p>
               <p className={styles.tradePrice}>입찰 {item.bidCount}회 · ⏱ {item.timeLeft}</p>
             </div>
             <div className={styles.tradeActions}>

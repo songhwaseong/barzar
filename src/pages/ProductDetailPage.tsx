@@ -85,11 +85,11 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
             </div>
 
             {/* 가격 */}
-            <p className={styles.price}>₩ {item.price.toLocaleString()}</p>
+            <p className={styles.price}> {item.price.toLocaleString()}</p>
             {item.immediatePrice && (
               <div className={styles.immediatePriceRow}>
                 <span className={styles.immediatePriceLabel}>즉시낙찰가</span>
-                <span className={styles.immediatePriceValue}>₩ {item.immediatePrice.toLocaleString()}</span>
+                <span className={styles.immediatePriceValue}> {item.immediatePrice.toLocaleString()}</span>
               </div>
             )}
             <p className={styles.meta}>{item.location} · {item.timeAgo}</p>

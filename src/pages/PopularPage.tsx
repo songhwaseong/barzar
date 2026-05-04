@@ -144,7 +144,7 @@ const PopularPage: React.FC<Props> = ({ selectedCategory, onProductClick, onAuct
                   <div className={styles.auctionBody}>
                     <p className={styles.auctionName}>{item.name}</p>
                     <p className={styles.auctionCategory}>{item.category}</p>
-                    <p className={styles.auctionPrice}>₩ {item.currentPrice.toLocaleString()}</p>
+                    <p className={styles.auctionPrice}> {item.currentPrice.toLocaleString()}</p>
                     <div className={styles.auctionMeta}>
                       <span className={styles.auctionTimer}>⏱ {formatTime(item.timeLeft)}</span>
                     </div>

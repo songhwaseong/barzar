@@ -53,18 +53,18 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
   const handleBid = () => {
     const amount = parseInt(bidInput.replace(/,/g, ''), 10);
     if (isNaN(amount) || amount <= currentPrice) {
-      showToast(`현재가(₩${currentPrice.toLocaleString()})보다 높게 입찰하세요`, 'error');
+      showToast(`현재가(${currentPrice.toLocaleString()})보다 높게 입찰하세요`, 'error');
       return;
     }
     if (amount > USER_BALANCE) {
-      showToast(`잔액 부족\n보유: ₩${USER_BALANCE.toLocaleString()} / 입찰: ₩${amount.toLocaleString()}`, 'error');
+      showToast(`잔액 부족\n보유: ${USER_BALANCE.toLocaleString()} / 입찰: ${amount.toLocaleString()}`, 'error');
       return;
     }
     setCurrentPrice(amount);
     setBidCount((p) => p + 1);
     setBidInput('');
     setShowBidModal(false);
-    showToast(`₩${amount.toLocaleString()} 입찰 완료!`, 'success');
+    showToast(`${amount.toLocaleString()} 입찰 완료!`, 'success');
   };
 
 
@@ -154,8 +154,8 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
               <div className={styles.priceRow}>
                 <div>
                   <p className={styles.priceLabel}>현재 최고 입찰가</p>
-                  <p className={styles.price}>₩ {currentPrice.toLocaleString()}</p>
-                  <p className={styles.startPrice}>시작가 ₩{item.startPrice.toLocaleString()}</p>
+                  <p className={styles.price}> {currentPrice.toLocaleString()}</p>
+                  <p className={styles.startPrice}>시작가 {item.startPrice.toLocaleString()}</p>
                 </div>
                 <div className={styles.bidStat}>
                   <p className={styles.bidCount}>{bidCount}회</p>
@@ -165,7 +165,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
               {item.immediatePrice && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 0 4px', borderTop: '1px dashed #E8E8EF', marginTop: 8 }}>
                   <span style={{ fontSize: 13, color: '#8B8FA8' }}>즉시입찰가</span>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: '#E24B4A' }}>₩ {item.immediatePrice.toLocaleString()}</span>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: '#E24B4A' }}> {item.immediatePrice.toLocaleString()}</span>
                 </div>
               )}
 
@@ -203,7 +203,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
                   <div key={b.id} className={styles.historyItem}>
                     <span className={styles.historyRank}>{i + 1}위</span>
                     <span className={styles.historyUser}>{b.memberNo}</span>
-                    <span className={styles.historyAmount}>₩{b.amount.toLocaleString()}</span>
+                    <span className={styles.historyAmount}>{b.amount.toLocaleString()}</span>
                     <span className={styles.historyTime}>{b.time}</span>
                   </div>
                 ))}
@@ -266,24 +266,24 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
           <div className={styles.modalOverlay} onClick={() => setShowBidModal(false)}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
               <p className={styles.modalTitle}>입찰가 입력</p>
-              <p className={styles.modalSub}>최소 입찰가: ₩{minBid.toLocaleString()}</p>
+              <p className={styles.modalSub}>최소 입찰가: {minBid.toLocaleString()}</p>
               <div className={styles.balanceRow}>
                 <span className={styles.balanceLabel}>보유 잔액</span>
                 <span className={`${styles.balanceValue} ${isInsufficient ? styles.balanceInsufficient : ''}`}>
-                  ₩{USER_BALANCE.toLocaleString()}
+                  {USER_BALANCE.toLocaleString()}
                 </span>
               </div>
               <input
                 className={`${styles.modalInput} ${isInsufficient ? styles.modalInputError : ''}`}
                 type="number"
-                placeholder={`₩ ${minBid.toLocaleString()} 이상`}
+                placeholder={` ${minBid.toLocaleString()} 이상`}
                 value={bidInput}
                 onChange={e => setBidInput(e.target.value)}
                 autoFocus
               />
               {isInsufficient && (
                 <p className={styles.insufficientMsg}>
-                  잔액이 부족해요. ₩{(bidAmount - USER_BALANCE).toLocaleString()} 더 필요해요
+                  잔액이 부족해요. {(bidAmount - USER_BALANCE).toLocaleString()} 더 필요해요
                 </p>
               )}
               <div className={styles.modalBtns}>
@@ -311,18 +311,18 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
               <div className={styles.balanceRow}>
                 <span className={styles.balanceLabel}>보유 잔액</span>
                 <span className={`${styles.balanceValue} ${isInsufficient ? styles.balanceInsufficient : ''}`}>
-                  ₩{USER_BALANCE.toLocaleString()}
+                  {USER_BALANCE.toLocaleString()}
                 </span>
               </div>
               <input
                 className={`${styles.modalInput} ${isInsufficient ? styles.modalInputError : ''}`}
                 type="text"
-                value={`₩ ${item.immediatePrice.toLocaleString()}`}
+                value={` ${item.immediatePrice.toLocaleString()}`}
                 readOnly
               />
               {isInsufficient && (
                 <p className={styles.insufficientMsg}>
-                  잔액이 부족해요. ₩{(item.immediatePrice - USER_BALANCE).toLocaleString()} 더 필요해요
+                  잔액이 부족해요. {(item.immediatePrice - USER_BALANCE).toLocaleString()} 더 필요해요
                 </p>
               )}
               <div className={styles.modalBtns}>
@@ -333,7 +333,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
                     setCurrentPrice(item.immediatePrice!);
                     setBidCount(p => p + 1);
                     setShowInstantModal(false);
-                    showToast(`₩${item.immediatePrice!.toLocaleString()} 즉시낙찰 완료!`, 'success');
+                    showToast(`${item.immediatePrice!.toLocaleString()} 즉시낙찰 완료!`, 'success');
                   }}
                   disabled={isInsufficient}
                   style={isInsufficient ? { opacity: 0.4, cursor: 'not-allowed' } : {}}

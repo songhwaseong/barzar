@@ -96,7 +96,7 @@ const FalseBidPage: React.FC = () => {
               <td style={{ fontSize: 12 }}>{c.memberNo}</td>
               <td style={{ fontSize: 13, fontWeight: 500 }}>{c.memberName}</td>
               <td style={{ fontSize: 12, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.auctionItem}</td>
-              <td style={{ fontSize: 12 }}>₩{c.bidAmount.toLocaleString()}</td>
+              <td style={{ fontSize: 12 }}>{c.bidAmount.toLocaleString()}</td>
               <td style={{ fontSize: 12, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.reason}</td>
               <td style={{ fontSize: 12, color: '#8B8FA8', whiteSpace: 'nowrap' }}>{c.detectedAt}</td>
               <td><span className={`${styles.badge} ${statusClass(c.status)}`}>{statusLabel(c.status)}</span></td>
@@ -144,7 +144,7 @@ const FalseBidPage: React.FC = () => {
             </div>
             <div className={styles.infoRow}>
               <span className={styles.infoLabel}>입찰금액</span>
-              <span className={styles.infoValue}>₩{selected.bidAmount.toLocaleString()}</span>
+              <span className={styles.infoValue}>{selected.bidAmount.toLocaleString()}</span>
             </div>
             <div className={styles.infoRow}>
               <span className={styles.infoLabel}>의심 사유</span>

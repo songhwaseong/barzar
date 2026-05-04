@@ -84,7 +84,7 @@ const MyProductsPage: React.FC<Props> = ({ onBack, onEdit }) => {
             <div className={styles.tradeBody}>
               <p className={styles.tradeName}>{p.title}</p>
               <p className={styles.tradeMeta}>{p.location} · {p.condition} · {p.category}</p>
-              <p className={styles.tradePrice}>경매시작가 ₩{p.auctionStartPrice || '—'}</p>
+              <p className={styles.tradePrice}>경매시작가 {p.auctionStartPrice || '—'}</p>
             </div>
             <div className={styles.tradeActions}>
               <span className={`${styles.statusBadge} ${statusColor(p.status)}`}>{p.status}</span>

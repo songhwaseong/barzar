@@ -26,7 +26,7 @@ const SalesHistoryPage: React.FC<Props> = ({ onBack }) => {
             <div className={styles.tradeBody}>
               <p className={styles.tradeName}>{p.name}</p>
               <p className={styles.tradeMeta}>{p.location} · {p.timeAgo}</p>
-              <p className={styles.tradePrice}>₩ {p.price.toLocaleString()}</p>
+              <p className={styles.tradePrice}> {p.price.toLocaleString()}</p>
             </div>
             <div className={styles.tradeActions}>
               <span className={`${styles.statusBadge} ${tab==='판매중'?styles.statusOn:styles.statusDone}`}>{tab==='판매중'?'판매중':'완료'}</span>

@@ -414,7 +414,6 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
         <select className={styles.filterSelect} value={statusFilter} onChange={e => { setStatusFilter(e.target.value); setStatFilter(null); setCurrentPage(1); }}>
           {['전체', '경매예정', '승인요청중', '경매중', '낙찰', '유찰', '숨김'].map(s => <option key={s}>{s}</option>)}
         </select>
-        <span className={styles.filterCount}>총 {filtered.length}건</span>
       </div>
 
       <div className={styles.tableWrap}>
@@ -454,7 +453,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                     </div>
                   </td>
                   <td>{p.seller}</td>
-                  <td>₩{p.price.toLocaleString()}</td>
+                  <td>{p.price.toLocaleString()}</td>
                   <td>{p.registeredAt}</td>
                   <td>
                     <div className={styles.actionCell}>
@@ -661,7 +660,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                 </div>
                 <h2 className={styles.detailName}>{detailProduct.name}</h2>
                 <p className={styles.detailMeta}>등록일 {detailProduct.registeredAt}</p>
-                <p className={styles.detailPrice}>₩ {detailProduct.price.toLocaleString()}</p>
+                <p className={styles.detailPrice}> {detailProduct.price.toLocaleString()}</p>
               </div>
 
               <div className={styles.detailDivider}/>
@@ -684,7 +683,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                   </div>
                   <div className={styles.detailInfoItem}>
                     <span className={styles.detailInfoLabel}>가격</span>
-                    <span className={styles.detailInfoValue}>₩ {detailProduct.price.toLocaleString()}</span>
+                    <span className={styles.detailInfoValue}> {detailProduct.price.toLocaleString()}</span>
                   </div>
                   <div className={styles.detailInfoItem}>
                     <span className={styles.detailInfoLabel}>제품상태</span>
@@ -718,7 +717,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
             <div className={styles.detailScroll}>
               <div className={styles.detailSection}>
                 <p className={styles.detailName} style={{ fontSize: 15 }}>{bidHistoryTarget.name}</p>
-                <p className={styles.detailMeta}>경매 시작가 ₩{bidHistoryTarget.price.toLocaleString()}</p>
+                <p className={styles.detailMeta}>경매 시작가 {bidHistoryTarget.price.toLocaleString()}</p>
               </div>
               <div className={styles.detailDivider}/>
               <div className={styles.detailSection}>
@@ -739,7 +738,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                         </td>
                         <td style={{ padding: '10px 6px', fontWeight: bid.rank === 1 ? 600 : 400 }}>{bid.bidder}</td>
                         <td style={{ padding: '10px 6px', textAlign: 'right', fontWeight: 700, color: bid.rank === 1 ? '#E24B4A' : '#333' }}>
-                          ₩{bid.amount.toLocaleString()}
+                          {bid.amount.toLocaleString()}
                         </td>
                         <td style={{ padding: '10px 6px', textAlign: 'right', color: '#8B8FA8' }}>{bid.time}</td>
                       </tr>

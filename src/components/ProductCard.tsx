@@ -25,7 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick, hideLike = 
       <div className={styles.body}>
         <p className={styles.title}>{product.name}</p>
         <p className={styles.meta}>{product.location} · {product.timeAgo}</p>
-        <p className={styles.price}>₩ {product.price.toLocaleString()}</p>
+        <p className={styles.price}> {product.price.toLocaleString()}</p>
         <div className={styles.tags}>
           {product.tags.filter(tag => tag !== 'free' && tag !== 'auction').map((tag) => (
             <span key={tag} className={`${styles.tag} ${styles[tag]}`}>
