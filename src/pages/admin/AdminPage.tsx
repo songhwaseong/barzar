@@ -560,6 +560,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
 
   return (
     <div className={styles.root}>
+      <div className={styles.inner}>
       {/* 상단 헤더 */}
       <header className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -836,6 +837,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };

@@ -7,6 +7,15 @@
   font-family: 'Noto Sans KR', sans-serif;
 }
 
+.inner {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 /* 상단 헤더 */
 .header {
   display: flex;
