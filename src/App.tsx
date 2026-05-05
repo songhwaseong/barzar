@@ -37,6 +37,7 @@ import EditProfilePage from './pages/my/EditProfilePage';
 import MyWalletPage from './pages/my/MyWalletPage';
 import TrackingPage from './pages/my/TrackingPage';
 import GuidePage from './pages/my/GuidePage';
+import MyInquiryPage from './pages/my/MyInquiryPage';
 import type { MainTab, NavTab, AuctionItem, Product, Category } from './types';
 import { CATEGORIES } from './data/mockData';
 import PCLayout from './components/PCLayout';
@@ -66,7 +67,8 @@ interface SellerInfo { name: string; temp: number; sales: number; location: stri
 type MyMenuKey =
   | '판매 내역' | '구매 내역' | '입찰 내역' | '관심 목록' | '배송 조회'
   | '내 계좌' | '받은 후기' | '내 주소 관리' | '알림 설정'
-  | '자주 묻는 질문' | '고객센터' | '이용약관' | '이용 가이드' | '내 등록 상품';
+  | '자주 묻는 질문' | '고객센터' | '이용약관' | '이용 가이드' | '내 등록 상품'
+  | '내 문의';
 
 const App: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('bazar_is_admin') === 'true');
@@ -306,6 +308,7 @@ const App: React.FC = () => {
         '구매 내역': <PurchaseHistoryPage onBack={backToMy} />,
         '입찰 내역': <BidHistoryPage onBack={backToMy} />,
         '관심 목록': <WishlistPage onProductClick={handleProductClick} onAuctionClick={handleAuctionClick} onBack={backToMy} />,
+        '내 문의': <MyInquiryPage onBack={backToMy} onProductClick={(id) => setScreen({ type: 'productDetail', id })} onAuctionClick={(id) => setScreen({ type: 'auctionDetail', id })} />,
         '내 계좌': <MyWalletPage onBack={backToMy} />,
         '받은 후기': <ReceivedReviewsPage onBack={backToMy} />,
         '내 주소 관리': <AddressPage onBack={backToMy} />,

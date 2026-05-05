@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styles from './MyPage.module.css';
 
-type MenuKey = '입찰 내역'|'관심 목록'|'내 계좌'|'받은 후기'|'내 주소 관리'|'알림 설정'|'자주 묻는 질문'|'고객센터'|'이용약관'|'배송 조회'|'이용 가이드'|'내 등록 상품'|'회원탈퇴';
+type MenuKey = '입찰 내역'|'관심 목록'|'내 계좌'|'받은 후기'|'내 주소 관리'|'알림 설정'|'자주 묻는 질문'|'고객센터'|'이용약관'|'배송 조회'|'이용 가이드'|'내 등록 상품'|'내 문의'|'회원탈퇴';
 
 const MENU_ICONS: Record<MenuKey, React.ReactNode> = {
   '내 등록 상품': <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
   '입찰 내역':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M14.5 2.5l7 7-10 10-3.5-3.5"/><path d="M5 17l-3 3"/><path d="M17.5 6.5l-11 11"/></svg>,
   '관심 목록':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+  '내 문의':      <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
   '배송 조회':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>,
   '내 계좌':      <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>,
   '받은 후기':    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>,
@@ -26,6 +27,7 @@ const MENU_GROUPS: { title: string; items: { label: MenuKey }[] }[] = [
       { label: '내 등록 상품' },
       { label: '입찰 내역' },
       { label: '관심 목록' },
+      { label: '내 문의' },
       { label: '배송 조회' },
     ],
   },

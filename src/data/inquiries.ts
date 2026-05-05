@@ -78,7 +78,21 @@ const auctionSeed: InquiryRecord[] = [
     '연식과 사용 기간이 어떻게 되나요?', null),
 ];
 
-let store: InquiryRecord[] = [...productSeed, ...auctionSeed];
+// 로그인 사용자('나') 본인이 작성한 문의 — 마이페이지 > 내 문의에 노출
+const mySeed: InquiryRecord[] = [
+  make(301, 'product', PRODUCT_DETAILS[1]?.id ?? 2, '나', '4일 전',
+    '결제 후 언제까지 발송 가능하신가요? 가급적 빠르게 받고 싶습니다.',
+    { user: lookup('product', PRODUCT_DETAILS[1]?.id ?? 2).seller, date: '3일 전', text: '결제 확인 즉시 당일 발송 가능합니다. 오후 2시 이전 결제 시 당일, 이후엔 익일 발송됩니다.' }),
+  make(302, 'product', PRODUCT_DETAILS[3]?.id ?? 4, '나', '1일 전',
+    '교환·환불 정책이 어떻게 되나요? 사이즈 안 맞으면 교환 가능할까요?', null),
+  make(303, 'auction', AUCTION_DETAILS[0]?.id ?? 1, '나', '7시간 전',
+    '낙찰 후 결제 마감 기한이 어떻게 되나요?',
+    { user: lookup('auction', AUCTION_DETAILS[0]?.id ?? 1).seller, date: '5시간 전', text: '낙찰 후 24시간 이내 결제 부탁드립니다. 미결제 시 자동 취소되며 페널티가 부과될 수 있어요.' }),
+  make(304, 'auction', AUCTION_DETAILS[2]?.id ?? 3, '나', '20분 전',
+    '실물 사진 추가로 받아볼 수 있을까요? 측면이랑 뒷면이 궁금합니다.', null),
+];
+
+let store: InquiryRecord[] = [...productSeed, ...auctionSeed, ...mySeed];
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach(l => l());
 
