@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PRODUCT_DETAILS } from '../data/mockData';
+import { useInquiries, addInquiry } from '../data/inquiries';
 import styles from './ProductDetailPage.module.css';
 import View360Modal from '../components/View360Modal';
 
@@ -17,9 +18,23 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
   const [likeCount, setLikeCount] = useState(item.likeCount);
   const [activeImg, setActiveImg] = useState(0);
   const [show360, setShow360] = useState(false);
+  const [activeTab, setActiveTab] = useState<'desc' | 'inquiry'>('desc');
+  const [showAskModal, setShowAskModal] = useState(false);
+  const [newInquiry, setNewInquiry] = useState('');
+  const allInquiries = useInquiries();
+  const inquiries = allInquiries.filter(q => q.kind === 'product' && q.itemId === item.id);
 
   const TAG_LABEL: Record<string, string> = {
     new: '거의새것', auction: '경매가능', free: '나눔', good: '상태양호',
+  };
+
+  const handleSubmitInquiry = () => {
+    const text = newInquiry.trim();
+    if (!text) return;
+    addInquiry('product', item.id, '나', text);
+    setNewInquiry('');
+    setShowAskModal(false);
+    setActiveTab('inquiry');
   };
 
   return (
@@ -124,10 +139,69 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
 
             <div className={styles.divider} />
 
-            {/* 상품 설명 */}
+            {/* 상품 설명 / 상품 문의 탭 */}
             <div className={styles.section}>
-              <p className={styles.sectionTitle}>상품 설명</p>
-              <p className={styles.description}>{item.description}</p>
+              <div className={styles.tabsRow}>
+                <div className={styles.tabs}>
+                  <button
+                    className={`${styles.tab} ${activeTab === 'desc' ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab('desc')}
+                  >
+                    상품 설명
+                  </button>
+                  <button
+                    className={`${styles.tab} ${activeTab === 'inquiry' ? styles.tabActive : ''}`}
+                    onClick={() => setActiveTab('inquiry')}
+                  >
+                    상품 문의
+                    <span className={styles.tabCount}>{inquiries.length}</span>
+                  </button>
+                </div>
+                {activeTab === 'inquiry' && (
+                  <button className={styles.askBtn} onClick={() => setShowAskModal(true)}>
+                    <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                    문의하기
+                  </button>
+                )}
+              </div>
+
+              {activeTab === 'desc' && (
+                <p className={styles.description}>{item.description}</p>
+              )}
+
+              {activeTab === 'inquiry' && (
+                <div className={styles.qnaList}>
+                  {inquiries.length === 0 ? (
+                    <p className={styles.qnaEmpty}>아직 등록된 문의가 없습니다.</p>
+                  ) : inquiries.map(q => (
+                    <div key={q.id} className={styles.qnaItem}>
+                      <div className={styles.qnaQuestion}>
+                        <div className={styles.qnaHead}>
+                          <span className={styles.qnaBadgeQ}>Q</span>
+                          <span className={styles.qnaUser}>{q.user}</span>
+                          <span className={styles.qnaDate}>{q.date}</span>
+                        </div>
+                        <p className={styles.qnaText}>{q.question}</p>
+                      </div>
+                      {q.answer && (
+                        <div className={styles.qnaAnswer}>
+                          <div className={styles.qnaHead}>
+                            <span className={styles.qnaBadgeA}>A</span>
+                            <span className={styles.qnaUser}>
+                              {q.answer.user}
+                              <span className={styles.qnaSellerTag}>판매자</span>
+                            </span>
+                            <span className={styles.qnaDate}>{q.answer.date}</span>
+                          </div>
+                          <p className={styles.qnaText}>{q.answer.text}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className={styles.divider} />
@@ -153,6 +227,27 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
         productName={item.name}
         onClose={() => setShow360(false)}
       />
+    )}
+    {showAskModal && (
+      <div className={styles.askOverlay} onClick={() => setShowAskModal(false)}>
+        <div className={styles.askModal} onClick={e => e.stopPropagation()}>
+          <div className={styles.askModalHead}>
+            <span className={styles.askModalTitle}>상품 문의하기</span>
+            <button className={styles.askModalClose} onClick={() => setShowAskModal(false)}>✕</button>
+          </div>
+          <textarea
+            className={styles.askTextarea}
+            value={newInquiry}
+            onChange={e => setNewInquiry(e.target.value)}
+            placeholder="궁금한 점을 작성해주세요. 판매자가 확인 후 답변드립니다."
+            autoFocus
+          />
+          <div className={styles.askActions}>
+            <button className={styles.askCancel} onClick={() => setShowAskModal(false)}>취소</button>
+            <button className={styles.askSubmit} onClick={handleSubmitInquiry} disabled={!newInquiry.trim()}>등록</button>
+          </div>
+        </div>
+      </div>
     )}
   </>
   );

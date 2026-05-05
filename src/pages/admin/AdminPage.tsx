@@ -7,6 +7,8 @@ import NoticePage from './NoticePage';
 import BannerPage from './BannerPage';
 import SettlementPage from './SettlementPage';
 import InquiryPage from './InquiryPage';
+import InquiryProductPage from './InquiryProductPage';
+import { useInquiries } from '../../data/inquiries';
 import FalseBidPage from './FalseBidPage';
 import SanctionPage from './SanctionPage';
 import ChatLogPage from './ChatLogPage';
@@ -95,7 +97,7 @@ const buildInitialProducts = (): AdminProduct[] => {
 // ─── 사이드바 메뉴 구조 ─────────────────────────────────────────────────
 type MenuKey =
   | '대시보드'
-  | '상품 관리'
+  | '상품 관리' | '상품 문의'
   | '허위입찰' | '제재 내역' | '채팅 로그'
   | '회원 목록' | '탈퇴 회원'
   | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ'
@@ -110,6 +112,8 @@ const SIDE_ICONS: Record<MenuKey, React.ReactNode> = {
   '대시보드':    <IC><rect x="3" y="3" width="7" height="10" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="17" width="7" height="4" rx="1.5"/></IC>,
   /* ShoppingBag */
   '상품 관리':   <IC><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></IC>,
+  /* MessageSquare (상품 문의) */
+  '상품 문의':   <IC><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></IC>,
   /* Flag */
   '허위입찰':    <IC><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></IC>,
   /* ShieldX */
@@ -139,7 +143,10 @@ const SIDE_SECTIONS: { label: string; items: { key: MenuKey; label: string }[] }
   },
   {
     label: 'Products',
-    items: [{ key: '상품 관리', label: 'Product Management' }],
+    items: [
+      { key: '상품 관리', label: 'Product Management' },
+      { key: '상품 문의', label: 'Product Inquiries' },
+    ],
   },
   {
     label: 'Reports & Sanctions',
@@ -190,6 +197,8 @@ const IDLE_WARNED_KEY = 'bazar_admin_idle_warned';
 
 const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   const [activeMenu, setActiveMenu] = useState<MenuKey>('대시보드');
+  const inquiryStore = useInquiries();
+  const pendingInquiryCount = inquiryStore.filter(i => !i.answer).length;
   const [products, setProducts] = useState<AdminProduct[]>(buildInitialProducts);
 
   // ─── 자동 로그아웃 ─────────────────────────────────────────────────
@@ -314,7 +323,10 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
   };
 
   // ─── 배지 카운트 (사이드바용) ──────────────────────────────────────
-  const getBadge = (_key: MenuKey): number | null => null;
+  const getBadge = (key: MenuKey): number | null => {
+    if (key === '상품 문의') return pendingInquiryCount > 0 ? pendingInquiryCount : null;
+    return null;
+  };
 
   // ─── 검색/드롭다운 필터만 적용 (statFilter 제외) ────────────────
   const baseFiltered = useMemo(() => {
@@ -538,6 +550,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
     switch (activeMenu) {
       case '대시보드': return <DashboardPage totalProducts={products.length} />;
       case '상품 관리': return renderProducts();
+      case '상품 문의': return <InquiryProductPage />;
       case '허위입찰': return <FalseBidPage />;
       case '제재 내역': return <SanctionPage />;
       case '채팅 로그': return <ChatLogPage />;
