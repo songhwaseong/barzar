@@ -5,6 +5,7 @@ import { useToast } from '../components/Toast';
 const ADMIN_CREDENTIALS = [
   { email: 'admin@admin.com',       password: 'admin'       },
   { email: 'admin@bazar.kr',        password: 'admin1234'   },
+  { email: 'kmikyung761@gmail.com', password: '1' },
   { email: 'manager@bazar.kr',      password: 'manager5678' },
   { email: 'yalejong96@gmail.com',      password: '2' },
   { email: 'zes1357@outlook.com',      password: '1' },
