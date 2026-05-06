@@ -576,7 +576,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
       {/* 상단 헤더 */}
       <header className={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span className={styles.headerLogo}><span>BAZ</span>AR</span>
+          <span className={styles.headerLogo}>MO<span>IDA</span></span>
         </div>
         <div className={styles.headerRight}>
           <span className={styles.headerAdmin}><strong>관리자</strong>로 로그인 중</span>

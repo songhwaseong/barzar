@@ -54,7 +54,7 @@ const LoginPage: React.FC<Props> = ({ onLogin, onAdmin, onGoSignup, onFindAccoun
   return (
     <div className={styles.page}>
       <div className={styles.top}>
-        <div className={styles.logo}>BAZAR</div>
+        <div className={styles.logo}>MOIDA</div>
         <p className={styles.tagline}>중고거래와 경매를 한번에</p>
       </div>
 

@@ -81,7 +81,7 @@ const PCLayout: React.FC<Props> = ({
     <div className={styles.layout}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <button className={styles.logo} onClick={() => onMainTabChange('홈')}>BAZAR</button>
+          <button className={styles.logo} onClick={() => onMainTabChange('홈')}><span className={styles.logoMo}>MO</span><span className={styles.logoIda}>IDA</span></button>
           <div className={styles.searchBar}>
             <SearchIcon />
             <input

@@ -45,7 +45,7 @@ const TopBar: React.FC<TopBarProps> = ({
   return (
     <header className={styles.topbar}>
       <div className={styles.row}>
-        <div className={styles.logo}>BAZAR</div>
+        <div className={styles.logo}>MOIDA</div>
         <div className={styles.icons}>
           <button className={styles.iconBtn} aria-label="알림" onClick={onBellClick}>
             <BellIcon />

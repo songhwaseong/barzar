@@ -27,10 +27,10 @@
 
 /* 로고 */
 .logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 34px;
-  color: var(--primary);
-  letter-spacing: 1px;
+  font-family: 'Gugi', sans-serif;
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 2px;
   background: none;
   border: none;
   cursor: pointer;
@@ -38,6 +38,8 @@
   padding: 0;
   line-height: 1;
 }
+.logoMo { color: #E53935; }
+.logoIda { color: #111111; }
 
 /* 검색바 */
 .searchBar {

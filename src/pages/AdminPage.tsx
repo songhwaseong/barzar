@@ -50,7 +50,7 @@ const AdminPage: React.FC<Props> = ({ onLogout }) => {
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
         <div className={styles.sideTop}>
-          <div className={styles.logo}>BAZAR</div>
+          <div className={styles.logo}>MOIDA</div>
           <div className={styles.adminBadge}>관리자</div>
         </div>
         <nav className={styles.nav}>
