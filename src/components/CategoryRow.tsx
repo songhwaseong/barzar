@@ -72,6 +72,21 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
+const CATEGORY_COLORS: Record<string, { bg: string; color: string; selectedBg: string }> = {
+  '전체':      { bg: '#EDE7F6', color: '#6C63FF', selectedBg: '#6C63FF' },
+  '디지털/가전': { bg: '#E3F2FD', color: '#1E88E5', selectedBg: '#1E88E5' },
+  '패션/의류':  { bg: '#FCE4EC', color: '#E91E63', selectedBg: '#E91E63' },
+  '명품':      { bg: '#FFF8E1', color: '#F59F00', selectedBg: '#F59F00' },
+  '시계/주얼리': { bg: '#F3E5F5', color: '#9C27B0', selectedBg: '#9C27B0' },
+  '신발':      { bg: '#E8F5E9', color: '#43A047', selectedBg: '#43A047' },
+  '스포츠/레저': { bg: '#E0F7FA', color: '#00ACC1', selectedBg: '#00ACC1' },
+  '뷰티/미용':  { bg: '#FCE4EC', color: '#EC407A', selectedBg: '#EC407A' },
+  '게임/취미':  { bg: '#FBE9E7', color: '#F4511E', selectedBg: '#F4511E' },
+  '음향/악기':  { bg: '#EFEBE9', color: '#6D4C41', selectedBg: '#6D4C41' },
+  '한정판':    { bg: '#FFFDE7', color: '#F9A825', selectedBg: '#E53935' },
+  '이월상품':   { bg: '#ECEFF1', color: '#546E7A', selectedBg: '#1E88E5' },
+};
+
 interface CategoryRowProps {
   categories: Category[];
   selectedLabel?: string | null;
@@ -82,22 +97,32 @@ const CategoryRow: React.FC<CategoryRowProps> = ({ categories, selectedLabel, on
   return (
     <div className={styles.wrapper}>
       <div className={styles.row}>
-        {categories.map((cat, idx) => {
-          const isSelected = selectedLabel === cat.label;
+        {categories.map((cat) => {
+          const isSelected = cat.label === '전체'
+            ? selectedLabel === null || selectedLabel === '전체'
+            : selectedLabel === cat.label;
+          const palette = CATEGORY_COLORS[cat.label] ?? { bg: '#F0F0F0', color: '#555', selectedBg: '#555' };
+          const highlightBorder = cat.label === '한정판' ? '#1E88E5' : cat.label === '이월상품' ? '#E53935' : '#D0D3DE';
+          const chipStyle = isSelected
+            ? { background: palette.selectedBg, borderColor: palette.selectedBg }
+            : { background: '#fff', borderColor: highlightBorder };
+          const iconColor = isSelected ? '#fff' : '#6B7080';
+          const labelColor = isSelected ? '#fff' : '#6B7080';
           return (
             <React.Fragment key={cat.id}>
               <button
-                className={`${styles.chip} ${isSelected ? styles.chipSelected : ''}`}
+                className={styles.chip}
+                style={chipStyle}
                 onClick={() => onSelect?.(cat)}
                 aria-label={cat.label}
                 aria-pressed={isSelected}
               >
-                <div className={`${styles.icon} ${isSelected ? styles.iconSelected : ''}`}>
+                <div className={styles.icon} style={{ color: iconColor }}>
                   {CATEGORY_ICONS[cat.label] ?? (
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="12" r="9"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="12" r="9"/></svg>
                   )}
                 </div>
-                <span className={`${styles.label} ${isSelected ? styles.labelSelected : ''}`}>
+                <span className={styles.label} style={{ color: labelColor, fontWeight: isSelected ? 700 : 500 }}>
                   {cat.label}
                 </span>
               </button>

@@ -41,6 +41,27 @@
 .logoMo { color: #E53935; }
 .logoIda { color: #111111; }
 
+@keyframes bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-10px); }
+  55%  { transform: translateY(-3px); }
+  75%  { transform: translateY(-7px); }
+  100% { transform: translateY(0); }
+}
+
+.letter1, .letter2, .letter3, .letter4, .letter5 {
+  display: inline-block;
+}
+
+.letter1:hover,
+.letter2:hover,
+.letter3:hover,
+.letter4:hover,
+.letter5:hover {
+  animation: bounce 0.6s ease forwards 1;
+  animation-delay: 0s;
+}
+
 /* 검색바 */
 .searchBar {
   flex: 1;

@@ -15,6 +15,7 @@ import ChatLogPage from './ChatLogPage';
 import MemberListPage from './MemberListPage';
 import WithdrawnMemberPage from './WithdrawnMemberPage';
 import AdminSettingsPage, { IDLE_OPTIONS } from './AdminSettingsPage';
+import AuctionManagePage from './AuctionManagePage';
 import type { IdleMinutes } from './AdminSettingsPage';
 import styles from './AdminPage.module.css';
 
@@ -97,7 +98,7 @@ const buildInitialProducts = (): AdminProduct[] => {
 // ─── 사이드바 메뉴 구조 ─────────────────────────────────────────────────
 type MenuKey =
   | '대시보드'
-  | '상품 관리' | '상품 문의'
+  | '상품 관리' | '상품 문의' | '경매 관리'
   | '허위입찰' | '제재 내역' | '채팅 로그'
   | '회원 목록' | '탈퇴 회원'
   | '공지사항' | '카테고리/배너' | '정산/수수료' | '고객문의/FAQ'
@@ -114,6 +115,8 @@ const SIDE_ICONS: Record<MenuKey, React.ReactNode> = {
   '상품 관리':   <IC><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></IC>,
   /* MessageSquare (상품 문의) */
   '상품 문의':   <IC><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></IC>,
+  /* Gavel (경매 관리) */
+  '경매 관리':   <IC><path d="M14 14l6 6"/><path d="M4 4l4 4"/><path d="M9 4h5v2l2 2v1l-7 7-1-1v-2l-2-2V9l3-5z"/><path d="M5 19l4-4"/></IC>,
   /* Flag */
   '허위입찰':    <IC><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></IC>,
   /* ShieldX */
@@ -146,6 +149,7 @@ const SIDE_SECTIONS: { label: string; items: { key: MenuKey; label: string }[] }
     items: [
       { key: '상품 관리', label: 'Product Management' },
       { key: '상품 문의', label: 'Product Inquiries' },
+      { key: '경매 관리', label: 'Auction Management' },
     ],
   },
   {
@@ -389,8 +393,6 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
           { key: '경매예정', label: '경매예정', value: stats.selling },
           { key: '승인요청중', label: '승인요청', value: stats.approving },
           { key: '경매중', label: '경매중', value: stats.inBid },
-          { key: '낙찰', label: '낙찰', value: stats.won },
-          { key: '유찰', label: '유찰', value: stats.failed },
           { key: '숨김', label: '숨김', value: stats.hidden },
         ].map(s => (
           <div
@@ -438,17 +440,16 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
           <table className={styles.table} style={{ tableLayout: 'fixed' }}>
             <colgroup>
               <col style={{ width: 100 }} />
-              <col style={{ width: 220 }} />
+              <col style={{ width: 240 }} />
+              <col style={{ width: 120 }} />
               <col style={{ width: 110 }} />
               <col style={{ width: 110 }} />
+              <col style={{ width: 150 }} />
               <col style={{ width: 110 }} />
-              <col style={{ width: 130 }} />
-              <col style={{ width: 90 }} />
-              <col style={{ width: 80 }} />
             </colgroup>
             <thead>
               <tr>
-                <th style={{ textAlign: 'center' }}>상품번호</th><th style={{ textAlign: 'center' }}>상품</th><th>판매자</th><th>가격</th><th>등록일</th><th>관리</th><th>입찰이력</th><th>승인</th>
+                <th style={{ textAlign: 'center' }}>상품번호</th><th style={{ textAlign: 'center' }}>상품</th><th>판매자</th><th>가격</th><th>등록일</th><th>관리</th><th>승인</th>
               </tr>
             </thead>
             <tbody>
@@ -484,17 +485,10 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
                           <option value="경매예정">경매예정</option>
                           <option value="승인요청중">승인요청중</option>
                           <option value="경매중">경매중</option>
-                          <option value="낙찰">낙찰</option>
-                          <option value="유찰">유찰</option>
                           <option value="숨김">숨김</option>
                         </>
                       </select>
                     </div>
-                  </td>
-                  <td>
-                    {p.status === '경매중' && (
-                      <button className={styles.bidBtn} onClick={() => setBidHistoryTarget(p)}>입찰이력</button>
-                    )}
                   </td>
                   <td>
                     {p.status === '승인요청중' && (
@@ -551,6 +545,7 @@ const AdminPage: React.FC<Props> = ({ onLogout, onSwitchToNormal }) => {
       case '대시보드': return <DashboardPage totalProducts={products.length} />;
       case '상품 관리': return renderProducts();
       case '상품 문의': return <InquiryProductPage />;
+      case '경매 관리': return <AuctionManagePage />;
       case '허위입찰': return <FalseBidPage />;
       case '제재 내역': return <SanctionPage />;
       case '채팅 로그': return <ChatLogPage />;

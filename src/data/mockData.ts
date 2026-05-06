@@ -16,90 +16,26 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const AUCTION_ITEMS: AuctionItem[] = [
-  {
-    id: 1, name: '나이키 에어맥스 90',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80',
-    currentPrice: 43000, bidCount: 17, timeLeft: 12*60+43, isLive: true, category: '신발', liked: true,
-  },
-  {
-    id: 2, name: '맥북 프로 M2',
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80',
-    currentPrice: 980000, bidCount: 42, timeLeft: 4*60+21, isLive: true, category: '디지털/가전', liked: true,
-  },
-  {
-    id: 3, name: '소니 A7IV 카메라',
-    image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80',
-    currentPrice: 1250000, bidCount: 8, timeLeft: 31*60+5, isLive: true, category: '디지털/가전', liked: true,
-  },
-  {
-    id: 4, name: '펜더 스트라토캐스터',
-    image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&q=80',
-    currentPrice: 320000, bidCount: 5, timeLeft: 58*60+12, isLive: true, category: '음향/악기', liked: true,
-  },
-  {
-    id: 5, name: '롤렉스 서브마리너 Date',
-    image: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=400&q=80',
-    currentPrice: 9800000, bidCount: 31, timeLeft: 2*60+15, isLive: true, category: '시계/주얼리', liked: true,
-  },
-  {
-    id: 6, name: '다이슨 에어랩 컴플리트',
-    image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=400&q=80',
-    currentPrice: 380000, bidCount: 19, timeLeft: 8*60+50, isLive: true, category: '뷰티/미용',
-  },
-  {
-    id: 7, name: '에르메스 버킨 35 에투프',
-    image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80',
-    currentPrice: 14500000, bidCount: 23, timeLeft: 19*60+33, isLive: true, category: '명품',
-  },
-  {
-    id: 8, name: '나이키 덩크 로우 판다',
-    image: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400&q=80',
-    currentPrice: 85000, bidCount: 11, timeLeft: 23*60+10, isLive: true, category: '신발',
-  },
-  {
-    id: 9, name: '아이패드 프로 12.9 M2 256GB',
-    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80',
-    currentPrice: 920000, bidCount: 19, timeLeft: 45*60+10, isLive: true, category: '디지털/가전',
-  },
-  {
-    id: 10, name: '다이슨 V15 디텍트 청소기',
-    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&q=80',
-    currentPrice: 480000, bidCount: 11, timeLeft: 1*60*60+22*60, isLive: true, category: '디지털/가전',
-  },
-  {
-    id: 11, name: '깁슨 레스폴 스탠다드 2020',
-    image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&q=80',
-    currentPrice: 2100000, bidCount: 8, timeLeft: 3*60*60+5*60, isLive: true, category: '음향/악기',
-  },
-  {
-    id: 12, name: '소니 WH-1000XM5 노이즈캔슬링',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80',
-    currentPrice: 265000, bidCount: 14, timeLeft: 28*60, isLive: true, category: '음향/악기',
-  },
-  {
-    id: 13, name: '삼성 갤럭시 S25 울트라 256GB',
-    image: 'https://images.unsplash.com/photo-1512054502232-10a0a035d672?w=400&q=80',
-    currentPrice: 1050000, bidCount: 27, timeLeft: 55*60, isLive: true, category: '디지털/가전',
-  },
-  {
-    id: 14, name: '나이키 에어포스 1 로우 화이트',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80',
-    currentPrice: 72000, bidCount: 9, timeLeft: 14*60+30, isLive: true, category: '신발',
-  },
-  {
-    id: 15, name: '나이키 줌 페가수스 40',
-    image: 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=400&q=80',
-    currentPrice: 89000, bidCount: 5, timeLeft: 38*60, isLive: true, category: '신발',
-  },
-  {
-    id: 16, name: '나이키 테크 플리스 집업 후디',
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80',
-    currentPrice: 95000, bidCount: 12, timeLeft: 1*60*60+10*60, isLive: true, category: '패션/의류',
-  },
+  { id: 1,  auctionNo: 'A2600001', name: '나이키 에어맥스 90', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', currentPrice: 43000, bidCount: 17, timeLeft: 12*60+43, isLive: true, category: '신발', liked: true },
+  { id: 2,  auctionNo: 'A2600002', name: '맥북 프로 M2', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', currentPrice: 980000, bidCount: 42, timeLeft: 4*60+21, isLive: true, category: '디지털/가전', liked: true },
+  { id: 3,  auctionNo: 'A2600003', name: '소니 A7IV 카메라', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80', currentPrice: 1250000, bidCount: 8, timeLeft: 31*60+5, isLive: true, category: '디지털/가전', liked: true },
+  { id: 4,  auctionNo: 'A2600004', name: '펜더 스트라토캐스터', image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&q=80', currentPrice: 320000, bidCount: 5, timeLeft: 58*60+12, isLive: true, category: '음향/악기', liked: true },
+  { id: 5,  auctionNo: 'A2600005', name: '롤렉스 서브마리너 Date', image: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=400&q=80', currentPrice: 9800000, bidCount: 31, timeLeft: 2*60+15, isLive: true, category: '시계/주얼리', liked: true },
+  { id: 6,  auctionNo: 'A2600006', name: '다이슨 에어랩 컴플리트', image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=400&q=80', currentPrice: 380000, bidCount: 19, timeLeft: 8*60+50, isLive: true, category: '뷰티/미용' },
+  { id: 7,  auctionNo: 'A2600007', name: '에르메스 버킨 35 에투프', image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80', currentPrice: 14500000, bidCount: 23, timeLeft: 19*60+33, isLive: true, category: '명품' },
+  { id: 8,  auctionNo: 'A2600008', name: '나이키 덩크 로우 판다', image: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400&q=80', currentPrice: 85000, bidCount: 11, timeLeft: 23*60+10, isLive: true, category: '신발' },
+  { id: 9,  auctionNo: 'A2600009', name: '아이패드 프로 12.9 M2 256GB', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&q=80', currentPrice: 920000, bidCount: 19, timeLeft: 45*60+10, isLive: true, category: '디지털/가전' },
+  { id: 10, auctionNo: 'A2600010', name: '다이슨 V15 디텍트 청소기', image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&q=80', currentPrice: 480000, bidCount: 11, timeLeft: 1*60*60+22*60, isLive: true, category: '디지털/가전' },
+  { id: 11, auctionNo: 'A2600011', name: '깁슨 레스폴 스탠다드 2020', image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&q=80', currentPrice: 2100000, bidCount: 8, timeLeft: 3*60*60+5*60, isLive: true, category: '음향/악기' },
+  { id: 12, auctionNo: 'A2600012', name: '소니 WH-1000XM5 노이즈캔슬링', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80', currentPrice: 265000, bidCount: 14, timeLeft: 28*60, isLive: true, category: '음향/악기' },
+  { id: 13, auctionNo: 'A2600013', name: '삼성 갤럭시 S25 울트라 256GB', image: 'https://images.unsplash.com/photo-1512054502232-10a0a035d672?w=400&q=80', currentPrice: 1050000, bidCount: 27, timeLeft: 55*60, isLive: true, category: '디지털/가전' },
+  { id: 14, auctionNo: 'A2600014', name: '나이키 에어포스 1 로우 화이트', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', currentPrice: 72000, bidCount: 9, timeLeft: 14*60+30, isLive: true, category: '신발' },
+  { id: 15, auctionNo: 'A2600015', name: '나이키 줌 페가수스 40', image: 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=400&q=80', currentPrice: 89000, bidCount: 5, timeLeft: 38*60, isLive: true, category: '신발' },
+  { id: 16, auctionNo: 'A2600016', name: '나이키 테크 플리스 집업 후디', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', currentPrice: 95000, bidCount: 12, timeLeft: 1*60*60+10*60, isLive: true, category: '패션/의류' },
 ];
 export const AUCTION_DETAILS: AuctionDetail[] = [
   {
-    id: 1, name: '나이키 에어맥스 90',
+    id: 1, auctionNo: 'A2600001', name: '나이키 에어맥스 90',
     image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
@@ -121,7 +57,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 2, name: '맥북 프로 M2',
+    id: 2, auctionNo: 'A2600002', name: '맥북 프로 M2',
     image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80',
@@ -143,7 +79,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 3, name: '소니 A7IV 카메라',
+    id: 3, auctionNo: 'A2600003', name: '소니 A7IV 카메라',
     image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80',
@@ -163,7 +99,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 4, name: '펜더 스트라토캐스터',
+    id: 4, auctionNo: 'A2600004', name: '펜더 스트라토캐스터',
     image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800&q=80',
@@ -183,7 +119,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 5, name: '롤렉스 서브마리너 Date',
+    id: 5, auctionNo: 'A2600005', name: '롤렉스 서브마리너 Date',
     image: 'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1587836374828-4dbafa94cf0e?w=800&q=80',
@@ -205,7 +141,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 6, name: '다이슨 에어랩 컴플리트',
+    id: 6, auctionNo: 'A2600006', name: '다이슨 에어랩 컴플리트',
     image: 'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1522338242992-e1a54906a8da?w=800&q=80',
@@ -226,7 +162,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 7, name: '에르메스 버킨 35 에투프',
+    id: 7, auctionNo: 'A2600007', name: '에르메스 버킨 35 에투프',
     image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=800&q=80',
@@ -248,7 +184,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 8, name: '나이키 덩크 로우 판다',
+    id: 8, auctionNo: 'A2600008', name: '나이키 덩크 로우 판다',
     image: 'https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=800&q=80',
@@ -268,7 +204,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 9, name: '아이패드 프로 12.9 M2 256GB',
+    id: 9, auctionNo: 'A2600009', name: '아이패드 프로 12.9 M2 256GB',
     image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&q=80',
@@ -289,7 +225,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 10, name: '다이슨 V15 디텍트 청소기',
+    id: 10, auctionNo: 'A2600010', name: '다이슨 V15 디텍트 청소기',
     image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&q=80',
@@ -309,7 +245,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 11, name: '깁슨 레스폴 스탠다드 2020',
+    id: 11, auctionNo: 'A2600011', name: '깁슨 레스폴 스탠다드 2020',
     image: 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=800&q=80',
@@ -328,7 +264,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 12, name: '소니 WH-1000XM5 노이즈캔슬링',
+    id: 12, auctionNo: 'A2600012', name: '소니 WH-1000XM5 노이즈캔슬링',
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80',
@@ -348,7 +284,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 13, name: '삼성 갤럭시 S25 울트라 256GB',
+    id: 13, auctionNo: 'A2600013', name: '삼성 갤럭시 S25 울트라 256GB',
     image: 'https://images.unsplash.com/photo-1512054502232-10a0a035d672?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1512054502232-10a0a035d672?w=800&q=80',
@@ -369,7 +305,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 14, name: '나이키 에어포스 1 로우 화이트',
+    id: 14, auctionNo: 'A2600014', name: '나이키 에어포스 1 로우 화이트',
     image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
@@ -389,7 +325,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 15, name: '나이키 줌 페가수스 40',
+    id: 15, auctionNo: 'A2600015', name: '나이키 줌 페가수스 40',
     image: 'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=800&q=80',
@@ -408,7 +344,7 @@ export const AUCTION_DETAILS: AuctionDetail[] = [
     ],
   },
   {
-    id: 16, name: '나이키 테크 플리스 집업 후디',
+    id: 16, auctionNo: 'A2600016', name: '나이키 테크 플리스 집업 후디',
     image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',
     images: [
       'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=80',

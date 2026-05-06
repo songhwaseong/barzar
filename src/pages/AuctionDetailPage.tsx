@@ -320,6 +320,7 @@ const AuctionDetailPage: React.FC<Props> = ({ itemId, onBack, isLoggedIn = false
               <p className={styles.sectionTitle}>거래 정보</p>
               <div className={styles.infoGrid}>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>상품번호</span><span className={styles.infoValue} style={{ fontFamily: 'monospace', fontSize: 12 }}>{`26${String(item.id).padStart(5, '0')}`}</span></div>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>경매번호</span><span className={styles.infoValue}>{item.auctionNo}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>상태</span><span className={styles.infoValue}>{item.condition}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>지역</span><span className={styles.infoValue}>{item.location}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>카테고리</span><span className={styles.infoValue}>{item.category}</span></div>

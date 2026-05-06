@@ -1,5 +1,6 @@
 export interface AuctionItem {
   id: number;
+  auctionNo: string;
   name: string;
   image: string;
   currentPrice: number;

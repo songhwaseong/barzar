@@ -25,18 +25,21 @@ const SearchPage: React.FC<Props> = ({ onProductClick, onAuctionClick, initialQu
   }, [initialQuery]);
   const [activeTab, setActiveTab] = useState<SearchTab>('전체');
 
-  const filteredProducts = query.trim()
+  const q = query.trim().toLowerCase();
+  const filteredProducts = q
     ? PRODUCTS.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
-        p.category.toLowerCase().includes(query.toLowerCase()) ||
-        p.location.includes(query)
+        p.name.toLowerCase().includes(q) ||
+        p.id.toString().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.location.includes(q)
       )
     : [];
 
-  const filteredAuctions = query.trim()
+  const filteredAuctions = q
     ? AUCTION_ITEMS.filter((a) =>
-        a.name.toLowerCase().includes(query.toLowerCase()) ||
-        a.category.toLowerCase().includes(query.toLowerCase())
+        a.name.toLowerCase().includes(q) ||
+        a.auctionNo.toLowerCase().includes(q) ||
+        a.category.toLowerCase().includes(q)
       )
     : [];
 
@@ -65,7 +68,7 @@ const SearchPage: React.FC<Props> = ({ onProductClick, onAuctionClick, initialQu
         <input
           autoFocus
           type="text"
-          placeholder="상품명, 카테고리, 지역으로 검색"
+          placeholder="상품명, 상품번호로 검색"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSearch(query)}

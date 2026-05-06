@@ -81,12 +81,18 @@ const PCLayout: React.FC<Props> = ({
     <div className={styles.layout}>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <button className={styles.logo} onClick={() => onMainTabChange('홈')}><span className={styles.logoMo}>MO</span><span className={styles.logoIda}>IDA</span></button>
+          <button className={styles.logo} onClick={() => onMainTabChange('홈')}>
+  <span className={`${styles.logoMo} ${styles.letter1}`}>M</span>
+  <span className={`${styles.logoMo} ${styles.letter2}`}>O</span>
+  <span className={`${styles.logoIda} ${styles.letter3}`}>I</span>
+  <span className={`${styles.logoIda} ${styles.letter4}`}>D</span>
+  <span className={`${styles.logoIda} ${styles.letter5}`}>A</span>
+</button>
           <div className={styles.searchBar}>
             <SearchIcon />
             <input
               type="text"
-              placeholder="브랜드, 상품명으로 검색"
+              placeholder="상품명, 상품번호로 검색"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}

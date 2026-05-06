@@ -210,6 +210,7 @@ const ProductDetailPage: React.FC<Props> = ({ productId, onBack, onSellerClick }
             <div className={styles.section}>
               <p className={styles.sectionTitle}>거래 정보</p>
               <div className={styles.infoGrid}>
+                <div className={styles.infoItem}><span className={styles.infoLabel}>상품번호</span><span className={styles.infoValue}>{`${String(new Date().getFullYear()).slice(2)}${String(item.id).padStart(5, '0')}`}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>상태</span><span className={styles.infoValue}>{item.condition}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>지역</span><span className={styles.infoValue}>{item.location}</span></div>
                 <div className={styles.infoItem}><span className={styles.infoLabel}>관심</span><span className={styles.infoValue}>{likeCount}명</span></div>
