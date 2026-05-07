@@ -13,9 +13,9 @@ const Footer: React.FC<Props> = ({ onTermsClick, onPrivacyClick }) => (
       <div className={styles.bottom}>
         <div className={styles.companyInfo}>
           <p>
-            <span>바자 주식회사</span>
+            <span>MOIDA 주식회사</span>
             <span className={styles.sep}>|</span>
-            <span>대표 김바자</span>
+            <span>대표 MOIDA</span>
             <span className={styles.sep}>|</span>
             <span>사업자등록번호 000-00-00000</span>
           </p>
@@ -29,10 +29,10 @@ const Footer: React.FC<Props> = ({ onTermsClick, onPrivacyClick }) => (
             <span className={styles.sep}>|</span>
             <span>평일 10:00 – 18:00 (주말·공휴일 휴무)</span>
             <span className={styles.sep}>|</span>
-            <span>support@bazar.co.kr</span>
+            <span>moida@modia.co.kr</span>
           </p>
         </div>
-        <p className={styles.copyright}>© 2025 BAZAR Inc. All rights reserved.</p>
+        <p className={styles.copyright}>© 2026 MOIDA Inc. All rights reserved.</p>
       </div>
 
     </div>
