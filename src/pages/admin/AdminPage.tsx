@@ -149,6 +149,11 @@ const SIDE_SECTIONS: { label: string; items: { key: MenuKey; label: string }[] }
     items: [
       { key: '상품 관리', label: 'Product Management' },
       { key: '상품 문의', label: 'Product Inquiries' },
+    ],
+  },
+  {
+    label: 'Auction',
+    items: [
       { key: '경매 관리', label: 'Auction Management' },
     ],
   },
